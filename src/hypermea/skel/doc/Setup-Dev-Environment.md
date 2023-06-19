@@ -21,7 +21,7 @@ This document provides details for developers working on `{$project_name}`.
 in `src` folder
 
 ```bash
-./image-build 1.0.0
+hypermea docker build
 docker compose up -d
 ```
 
@@ -121,8 +121,8 @@ in the `src` folder:
 
 ```bash
 docker stop {$project_name}
-./wipe_all_images
-./image-build 1.0.0
+hypermea docker wipe  // TODO: this is no longer strictly necessary
+hypermea docker build
 docker compose up -d
 ```
 
