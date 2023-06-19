@@ -45,7 +45,7 @@ def wire_up_service():
 
 def add(silent=False):
     try:
-        settings = hypermea.jump_to_api_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
 

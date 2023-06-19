@@ -47,7 +47,7 @@ class LinkManager:
 
     def _list_missing_resources(self):
         try:
-            hypermea.jump_to_api_folder('src/{project_name}/domain')
+            hypermea.jump_to_folder('src/{project_name}/domain')
         except RuntimeError:
             return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -77,7 +77,7 @@ class LinkManager:
     @staticmethod
     def get_relations():
         try:
-            settings = hypermea.jump_to_api_folder('src/{project_name}/domain')
+            starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
         except RuntimeError:
             return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -131,7 +131,7 @@ class LinkManager:
     @staticmethod
     def _add_remote_relations(rels):
         try:
-            settings = hypermea.jump_to_api_folder('src/{project_name}/hooks')
+            starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/hooks')
         except RuntimeError:
             return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -175,7 +175,7 @@ class LinkManager:
 
     def add(self):
         try:
-            hypermea.jump_to_api_folder('src/{project_name}')
+            hypermea.jump_to_folder('src/{project_name}')
         except RuntimeError:
             return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -188,7 +188,7 @@ class LinkManager:
         if self.remote_parent:
             hypermea.commands.api._add_addins({'add_validation': 'n/a'}, silent=True)
 
-        hypermea.jump_to_api_folder('src/{project_name}')
+        hypermea.jump_to_folder('src/{project_name}')
         # update parent code
         if not self.remote_parent:
             ParentLinksInserter(self).transform(f'hooks/{self.parents}.py', )
@@ -201,7 +201,7 @@ class LinkManager:
 
     def remove(self):
         try:
-            hypermea.jump_to_api_folder('src/{project_name}')
+            hypermea.jump_to_folder('src/{project_name}')
         except RuntimeError:
             return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -210,7 +210,7 @@ class LinkManager:
 
         print(f'Removing link from {self.parent} to {self.children}')
 
-        hypermea.jump_to_api_folder('src/{project_name}')
+        hypermea.jump_to_folder('src/{project_name}')
         DomainRelationsRemover(self.parents, self.children).transform('domain/__init__.py')
         if not self.remote_parent:
             ChildLinksRemover(self.children).transform(f'hooks/{self.parents}.py')

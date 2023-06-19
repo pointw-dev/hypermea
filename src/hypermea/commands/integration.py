@@ -38,7 +38,7 @@ def create(integration, name, prefix):
     Type 'hypermea integration create' by itself to see a list of integrations available.
     """
     try:
-        settings = hypermea.jump_to_api_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -80,7 +80,7 @@ def create(integration, name, prefix):
                   help_priority=2)
 def list_integrations():
     try:
-        settings = hypermea.jump_to_api_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 

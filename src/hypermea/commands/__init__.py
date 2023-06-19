@@ -8,6 +8,9 @@ from . import affordance
 from . import endpoint
 from . import setting
 from . import run
+
+from . import docker
+
 from .command_help_order import CommandHelpOrder
 
 @click.group()
@@ -25,4 +28,7 @@ def initialize():
     main.add_command(endpoint.commands)
     main.add_command(setting.commands)
     main.add_command(run.commands)
+
+    main.add_command((docker.commands))
+
     main()

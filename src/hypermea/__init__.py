@@ -3,7 +3,6 @@ import sys
 import subprocess
 import inflect
 import json
-import glob
 from distutils.dir_util import copy_tree, remove_tree
 
 from . import addins
@@ -11,19 +10,20 @@ from . import commands
 from . import code_gen
 
 
-def jump_to_api_folder(path=None):
-    keep_going = True
-    while keep_going:
+def jump_to_folder(path=None):
+    starting_folder = os.getcwd()
+    while True:
         if os.path.isfile('.hypermea'):
-            keep_going = False
             break
 
         current_dir = os.getcwd()
         if os.path.isdir('..'):
             os.chdir('..')
             if os.getcwd() == current_dir:
-                raise RuntimeError('Not in a hypermea folder')            
+                jump_back_to(starting_folder)
+                raise RuntimeError('Not in a hypermea folder')
         else:
+            jump_back_to(starting_folder)
             raise RuntimeError('Not in a hypermea folder')
 
     with open('.hypermea', 'r') as f:
@@ -34,12 +34,37 @@ def jump_to_api_folder(path=None):
         path = eval("f'" + f'{path}' + "'")
         os.chdir(path)
     
-    return settings
+    return starting_folder, settings
+
+
+def jump_back_to(starting_folder):
+    os.chdir(starting_folder)
+
+
+def get_api_version():
+    try:
+        starting_folder, settings = jump_to_folder('src/{project_name}/configuration')
+    except RuntimeError:
+        return escape('This command must be run in a hypermea folder structure', 1)
+
+    with open('__init__.py', 'r') as f:
+        lines = f.readlines()
+
+    version = 'unknown_version'
+    starts_with = 'VERSION = '
+
+    for line in lines:
+        if line.startswith(starts_with):
+            version = line.split(' = ')[1].strip().replace("'", '').replace('"', '')
+            break
+
+    jump_back_to(starting_folder)
+    return version
 
 
 def add_to_settings(key, value):
     try:
-        settings = jump_to_api_folder()
+        starting_folder, settings = jump_to_folder()
     except RuntimeError:
         return escape('This command must be run in a hypermea folder structure', 1)
 

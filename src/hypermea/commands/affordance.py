@@ -40,7 +40,7 @@ def create(affordance_name, resource_name):
     path into the _links of a given resource.
     """
     try:
-        hypermea.jump_to_api_folder('src/{project_name}')
+        hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -90,7 +90,7 @@ def list_affordances():
     Lists affordances previously created
     """
     try:
-        hypermea.jump_to_api_folder('src/{project_name}')
+        hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -119,7 +119,7 @@ def list_affordances():
 @click.argument('resource_name', metavar='<resource>', default='n/a')
 def remove(affordance_name, resource_name):
     try:
-        hypermea.jump_to_api_folder('src/{project_name}')
+        hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -151,7 +151,7 @@ def attach(affordance_name, resource_name):
     route into the _links of the resource.
     """
     try:
-        hypermea.jump_to_api_folder('src/{project_name}')
+        hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 

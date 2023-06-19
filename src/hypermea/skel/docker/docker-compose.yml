@@ -1,4 +1,6 @@
 version: '3'
+name: {$project_name}
+
 services:
   {$project_name}:
     image: {$project_name}

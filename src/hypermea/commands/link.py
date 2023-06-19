@@ -24,7 +24,7 @@ def commands():
               help='Change name of related ref to "parent" (instead of the name of the parent).')
 def create(parent, child, as_parent_ref):
     try:
-        settings = hypermea.jump_to_api_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -45,7 +45,7 @@ def create(parent, child, as_parent_ref):
               help='Choose the output format of the relationships list')
 def list_rels(output):
     try:
-        settings = hypermea.jump_to_api_folder('src/{project_name}/domain')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -102,7 +102,7 @@ def list_rels(output):
 @click.argument('child', metavar='<child|remote:child>')
 def remove(parent, child):
     try:
-        hypermea.jump_to_api_folder('src/{project_name}')
+        hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 

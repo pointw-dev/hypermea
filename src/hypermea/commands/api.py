@@ -83,7 +83,7 @@ def version(new_version):
 
 def _api_already_exist():
     try:
-        hypermea.jump_to_api_folder()
+        hypermea.jump_to_folder()
         return True
     except RuntimeError:
         return False
@@ -138,7 +138,7 @@ def _create_api(project_name):
 
 def _add_addins(which_addins, silent=False):
     try:
-        settings = hypermea.jump_to_api_folder()
+        starting_folder, settings = hypermea.jump_to_folder()
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
 
@@ -170,7 +170,7 @@ def _show_or_set_version(new_version):
         return hypermea.escape('The value for --set-version is not correct (e.g. --set-version=1.0.0)', 11)
 
     try:
-        settings = hypermea.jump_to_api_folder('src/{project_name}/configuration')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/configuration')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 

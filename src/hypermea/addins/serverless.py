@@ -160,7 +160,7 @@ def add(silent=False):
     warning(silent)
 
     try:
-        settings = hypermea.jump_to_api_folder('src')
+        starting_folder, settings = hypermea.jump_to_folder('src')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
 

@@ -42,7 +42,7 @@ import hypermea
 
 def add(remote, silence=False):
     try:
-        settings = hypermea.jump_to_api_folder()
+        starting_folder, settings = hypermea.jump_to_folder()
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1, silence)
 
