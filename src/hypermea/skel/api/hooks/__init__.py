@@ -30,7 +30,6 @@ def add_hooks(app):
 
 
 @trace
-@trace
 def _tidy_post_links(resource, request, payload):
     if payload.status_code == 201:
         document = json.loads(payload.data)
