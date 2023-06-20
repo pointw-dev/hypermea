@@ -171,18 +171,23 @@ def add(silent=False):
     hypermea.replace_project_name(settings['project_name'], '.')
 
     if not is_node_installed(silent):
+        hypermea.jump_back_to(starting_folder)
         return hypermea.escape('', 602, silent)
 
     if not ensure_serverless_is_installed(silent):
+        hypermea.jump_back_to(starting_folder)
         return hypermea.escape('', 603, silent)
 
     os.chdir(f"./{settings['project_name']}")
     hypermea.install_packages(['dnspython'], 'add-serverless')
 
     if not ensure_node_initialized(silent):
+        hypermea.jump_back_to(starting_folder)
         return hypermea.escape('', 604, silent)
 
     if not ensure_serverless_plugins_installed(silent):
+        hypermea.jump_back_to(starting_folder)
         return hypermea.escape('', 605, silent)
 
+    hypermea.jump_back_to(starting_folder)
     return 0

@@ -40,7 +40,7 @@ def create(affordance_name, resource_name):
     path into the _links of a given resource.
     """
     try:
-        hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -80,6 +80,7 @@ def create(affordance_name, resource_name):
     os.chdir('..')
 
     _add_affordance_resource(affordance_name, folder, resource_name)
+    hypermea.jump_back_to(starting_folder)
 
 
 @commands.command(name='list',
@@ -90,12 +91,13 @@ def list_affordances():
     Lists affordances previously created
     """
     try:
-        hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
     if not os.path.exists('affordances'):
         click.echo('There are no affordances')
+        hypermea.jump_back_to(starting_folder)
         return
 
     os.chdir('affordances')
@@ -111,6 +113,8 @@ def list_affordances():
             for attached in attaches:
                 click.echo(f'   - {attached}')
 
+    hypermea.jump_back_to(starting_folder)
+
 
 @commands.command(name='remove',
                   short_help='Removes an affordance, or detaches it from a resource',
@@ -119,7 +123,7 @@ def list_affordances():
 @click.argument('resource_name', metavar='<resource>', default='n/a')
 def remove(affordance_name, resource_name):
     try:
-        hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -131,12 +135,15 @@ def remove(affordance_name, resource_name):
 
     affordance = f'affordances.{folder + "." if folder else ""}{affordance_name}'  # TODO: this is in multiple places
     if not os.path.exists(f'affordances{"/"+folder if folder else ""}/{affordance_name}.py'):  # TODO: this is in multiple places
+        hypermea.jump_back_to(starting_folder)
         return hypermea.escape(f'{affordance} does not exist', 1002)
 
     if resource_name == 'n/a':
         _remove_affordance(affordance_name, folder)
     else:
         _detach_affordance(affordance_name, folder, resource_name)
+    hypermea.jump_back_to(starting_folder)
+
 
 
 @commands.command(name='attach',
@@ -151,7 +158,7 @@ def attach(affordance_name, resource_name):
     route into the _links of the resource.
     """
     try:
-        hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -169,6 +176,7 @@ def attach(affordance_name, resource_name):
         folder = None
     affordance_filename = f'affordances{"/"+folder if folder else ""}/{affordance_name}.py'
     if not os.path.exists(affordance_filename):
+        hypermea.jump_back_to(starting_folder)
         return hypermea.escape(f'{affordance} does not exist', 1002)
     click.echo(attaching)
 
@@ -191,6 +199,7 @@ def attach(affordance_name, resource_name):
         f.write(handler)
 
     _add_affordance_resource(affordance_name, folder, resource_name)
+    hypermea.jump_back_to(starting_folder)
 
 
 def _write_affordance_file(affordance_name, resource_name):

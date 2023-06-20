@@ -43,3 +43,5 @@ def commands(host, debug, single_threaded):
         cmd = f"start \"{title}\" python run.py {args}"
 
     os.system(cmd)
+    hypermea.jump_back_to(starting_folder)
+

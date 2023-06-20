@@ -37,6 +37,16 @@ def jump_to_folder(path=None):
     return starting_folder, settings
 
 
+def get_settings():
+    try:
+        starting_folder, settings = jump_to_folder()
+    except RuntimeError:
+        return escape('This command must be run in a hypermea folder structure', 1, silent)
+
+    jump_back_to(starting_folder)
+    return settings
+
+
 def jump_back_to(starting_folder):
     os.chdir(starting_folder)
 
@@ -73,6 +83,8 @@ def add_to_settings(key, value):
     with open('.hypermea', 'w') as f:
         to_write = json.dumps(settings) + '\n'
         f.write(to_write)
+    jump_back_to(starting_folder)
+    return settings
 
 
 def install_packages(packages, command):

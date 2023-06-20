@@ -14,6 +14,7 @@ def _prepare_for_docker_command():
         return hypermea.escape('This api does not have the docker addin installed.\n'
                                '- You can install docker with: hypermea api addin --add-docker', 2001)
 
+    # DO NOT  hypermea.jump_back_to(starting_folder)  - part of the preparation is to jump here
     return settings
 
 

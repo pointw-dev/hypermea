@@ -44,6 +44,7 @@ def create(integration, name, prefix):
 
     if integration == 'empty' and name is None:
         print('You must supply a name when choosing the "empty" integration.')
+        hypermea.jump_back_to(starting_folder)
         sys.exit(902)
 
     if name is None:
@@ -53,6 +54,7 @@ def create(integration, name, prefix):
     
     if os.path.exists(f'integration/{name}'):
         print(f'There already is an integration named "{name}".')
+        hypermea.jump_back_to(starting_folder)
         sys.exit(901)
 
     print(f'creating {name} integration')
@@ -73,6 +75,7 @@ def create(integration, name, prefix):
         f.write(f'from . import {name}\n')
     # TODO: handle settings/prefix
     # TODO: ensure outer requirements.txt contains libraries required by the integration
+    hypermea.jump_back_to(starting_folder)
 
 
 @commands.command(name='list',
@@ -86,6 +89,7 @@ def list_integrations():
 
     if not os.path.exists('integration'):
         print('No integrations have been added')
+        hypermea.jump_back_to(starting_folder)
         sys.exit(0)
     
     integrations =  [name for name in os.listdir('./integration') ]
@@ -93,3 +97,5 @@ def list_integrations():
         if integration.startswith('_'):
             continue
         print(f'- {integration}')
+
+    hypermea.jump_back_to(starting_folder)

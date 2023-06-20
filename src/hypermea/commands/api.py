@@ -83,7 +83,8 @@ def version(new_version):
 
 def _api_already_exist():
     try:
-        hypermea.jump_to_folder()
+        starting_folder, settings = hypermea.jump_to_folder()
+        hypermea.jump_back_to(starting_folder)
         return True
     except RuntimeError:
         return False
@@ -147,9 +148,10 @@ def _add_addins(which_addins, silent=False):
         settings_addins = settings.get('addins', {})
         if addin_name in settings_addins:
             if not silent: print(f'{addin_name} is already added.')
+            hypermea.jump_back_to(starting_folder)
             return
         settings_addins[addin_name] = which_addins[keyword]
-        hypermea.add_to_settings('addins', settings_addins)
+        settings = hypermea.add_to_settings('addins', settings_addins)
 
         if addin_name == 'git':
             continue
@@ -163,6 +165,8 @@ def _add_addins(which_addins, silent=False):
 
     if which_addins.get('add_git', False):
         addins.git.add(which_addins['add_git'], silent)
+        
+    hypermea.jump_back_to(starting_folder)
 
 
 def _show_or_set_version(new_version):
@@ -194,3 +198,5 @@ def _show_or_set_version(new_version):
             f.write(modified)
     else:
         print('- unchanged\n')
+        
+    hypermea.jump_back_to(starting_folder)

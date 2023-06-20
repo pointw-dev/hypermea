@@ -62,8 +62,10 @@ def add(silent=False):
         return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
 
     if os.path.exists('./websocket'):
+        hypermea.jump_back_to(starting_folder)
         return hypermea.escape('websocket has already been added', 501, silent)
 
     modify_hypermea_service()
     hypermea.copy_skel(settings['project_name'], 'websocket', '.', silent=silent)
     hypermea.install_packages(['Flask-SocketIO'], 'add-websocket')
+    hypermea.jump_back_to(starting_folder)

@@ -32,7 +32,7 @@ def create(resource_name, no_common):
 
            e.g. if you enter "cactus" hypermea mistakenly believes that is the plural of "cactu" so enter "cactus,cactuses" or "cactus,cacti" to override hypermea's decision"""
     try:
-        hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -46,14 +46,12 @@ def create(resource_name, no_common):
     if _resource_already_exists(plural):
         hypermea.escape('This resource already exist', 702)
     else:
-        # resource_already_exists() jumps to a different folder, need to jump back.
-        # No need to try/except - we know we're in an API folder
-        hypermea.jump_to_folder('src/{project_name}')
-
         _create_resource_domain_file(plural, add_common)
         _insert_domain_definition(plural)
         _create_resource_hook_file(singular, plural)
         _insert_hooks(plural)
+
+    hypermea.jump_back_to(starting_folder)
 
 
 @commands.command(name='list',
@@ -71,7 +69,7 @@ def list_resources():
 @click.argument('resource_name', metavar='<name>')
 def remove(resource_name):
     try:
-        hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -82,12 +80,13 @@ def remove(resource_name):
     if not _resource_already_exists(plural):
         hypermea.escape('This resource does not exist', 703)
 
-    hypermea.jump_to_folder('src/{project_name}')
     _remove_domain_definition(plural)
     _remove_hooks(plural)
     _delete_resource_files(plural)
     _remove_references_from_children(plural)
     _remove_child_links(plural)
+    hypermea.jump_back_to(starting_folder)
+
 
 
 @commands.command(name='check',
@@ -120,7 +119,7 @@ def _is_resource_name_is_invalid(singular, plural):
 
 def _get_resource_list():
     try:
-        hypermea.jump_to_folder('src/{project_name}/domain')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -131,6 +130,7 @@ def _get_resource_list():
         if resource.startswith('_'):
             continue
         resources.append(file[2:-3])
+    hypermea.jump_back_to(starting_folder)
     return resources
 
 

@@ -1,6 +1,7 @@
 import os
 import platform
 import subprocess
+import re
 import click
 
 
@@ -42,7 +43,8 @@ class DockerManager:
         api_images = []
         all_images_list = subprocess.getoutput('docker image ls --format="{{.Repository}}:{{.Tag}}"').split('\n')
         for image in all_images_list:
-            if self.image_name in image:
+            parts = re.split('/|:', image)
+            if self.image_name in parts:
                 api_images.append(image)
         return api_images
 

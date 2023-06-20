@@ -62,4 +62,5 @@ def add(silent=False):
     hypermea.install_packages(['isodate'], 'add-validation')
     wire_up_service()
 
+    hypermea.jump_back_to(starting_folder)
     return hypermea.escape('validation module added', 0, silent)

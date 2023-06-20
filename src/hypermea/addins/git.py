@@ -65,7 +65,8 @@ def add(remote, silence=False):
     os.system('git status')
     
     if not remote == 'no remote':
-        result = os.system(f'git remote add origin {remote}')
+        os.system(f'git remote add origin {remote}')
         os.system('git push -u origin main')
     
+    hypermea.jump_back_to(starting_folder)
     return 0

@@ -33,6 +33,8 @@ def create(parent, child, as_parent_ref):
     except LinkManagerException as err:
         click.echo(err)
         sys.exit(err.exit_code)
+    finally:
+        hypermea.jump_back_to(starting_folder)
 
 
 # TODO: refactor/SLAP
@@ -93,6 +95,8 @@ def list_rels(output):
                     if ':' not in item:
                         print(f'{item} ||--o{{ {rel}')
         print('@enduml')
+    hypermea.jump_back_to(starting_folder)
+
 
 
 @commands.command(name='remove',
@@ -102,7 +106,7 @@ def list_rels(output):
 @click.argument('child', metavar='<child|remote:child>')
 def remove(parent, child):
     try:
-        hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -111,3 +115,6 @@ def remove(parent, child):
     except LinkManagerException as err:
         click.echo(err)
         sys.exit(err.exit_code)
+    finally:
+        hypermea.jump_back_to(starting_folder)
+

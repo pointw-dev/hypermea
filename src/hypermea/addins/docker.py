@@ -46,4 +46,5 @@ def add(silent=False):
 
     hypermea.copy_skel(settings['project_name'], 'docker', '.', silent=silent)
     hypermea.replace_project_name(settings['project_name'], '.')
+    hypermea.jump_back_to(starting_folder)
     return 0
