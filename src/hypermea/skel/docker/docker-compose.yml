@@ -8,8 +8,11 @@ services:
     ports:
       - "2112:80"
     environment:
-      - HY_INSTANCE_NAME={$project_name} development container
-      - HY_MONGO_HOST={$project_name}-mongo
+      HY_INSTANCE_NAME: {$project_name} development container
+      HY_MONGO_HOST: {$project_name}-mongo
+      HY_API_PORT: 80
+      HY_CACHE_CONTROL: no-cache, no-store, must-revalidate
+      HY_CACHE_EXPIRES: 30
     volumes:
     - ./logs:/var/log/{$project_name}
     depends_on:

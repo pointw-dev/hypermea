@@ -72,13 +72,11 @@ def addin(**kwargs):
 
 @commands.command(name='version',
                   short_help='View or set the version number of the API, man',
-                  cls=OptionalFlags,
                   help_priority=3)
-@click.option('new_version', '--set-version', is_flag=True, flag_value='n/a',
-              help='set the version number (e.g. --set-version=1.0.0)', metavar='<new-version>')
-def version(new_version):
+@click.argument('set_version', metavar='[set_version]', default=None, required=False)
+def version(set_version):
     """View or set the version number of the API"""
-    _show_or_set_version(new_version)
+    _show_or_set_version(set_version)
 
 
 def _api_already_exist():
@@ -170,9 +168,6 @@ def _add_addins(which_addins, silent=False):
 
 
 def _show_or_set_version(new_version):
-    if new_version == 'n/a':
-        return hypermea.escape('The value for --set-version is not correct (e.g. --set-version=1.0.0)', 11)
-
     try:
         starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/configuration')
     except RuntimeError:
@@ -188,7 +183,7 @@ def _show_or_set_version(new_version):
     for line in lines:
         if line.startswith(starts_with):
             print(line.rstrip().lstrip())
-            line = f'{starts_with}{new_version}\n'
+            line = f"{starts_with}'{new_version}'\n"
 
         modified += line
 
