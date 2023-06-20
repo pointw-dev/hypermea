@@ -1,5 +1,5 @@
 """
-The auth module used for ES.
+The auth module used for HY.
 """
 from bson.objectid import ObjectId
 from eve_negotiable_auth import NegotiableAuth, AUTH_PARSER
@@ -18,12 +18,12 @@ class HypermeaAuthorization(NegotiableAuth):
         super(HypermeaAuthorization, self).__init__()
 
     def process_claims(self, claims, allowed_roles, resource, method):
-        if method == 'HEAD':
-            return True
-
         authorized = 'user' in claims
         if not authorized:
             return False
+
+        if method == 'HEAD':
+            return True
 
         is_admin = claims.get('role') == 'admin'
 

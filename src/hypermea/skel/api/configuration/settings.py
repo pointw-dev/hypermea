@@ -67,7 +67,7 @@ class Settings():
                               e.g. 
                                   prefix == None, setting_name == HY_INSTANCE_NAME 
                                      becomes 
-                                  prefix == ES, setting_name == INSTANCE_NAME
+                                  prefix == HY, setting_name == INSTANCE_NAME
                                   
       has_enabled             A value is considered "enabled" if it begins with Y, T, or E
                               i.e. the following means a setting (if it exists) is enabled:
