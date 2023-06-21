@@ -24,9 +24,10 @@ services:
     volumes:
       - mongodb:/data/db
       - mongodb_config:/data/configdb      
-    ports:
-      - "27017:27017"
+    # ports:
+    #   - "27017:27017"
+    # uncomment the above if you want to connect to this mongodb from outside the container
 
 volumes:
-    mongodb:
-    mongodb_config:
+     {$project_name}-mongodb:
+     {$project_name}-mongodb_config:

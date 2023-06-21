@@ -1,6 +1,6 @@
 FROM python:3.9-slim
 
-ENV ES_API_PORT=80
+ENV HY_API_PORT=80
 EXPOSE 80
 
 WORKDIR app

@@ -9,6 +9,7 @@ from configuration import SETTINGS
 LOG = logging.getLogger('gateway')
 REGISTRATIONS = {}
 
+
 def register(app):
     if not SETTINGS['HY_GATEWAY_URL']:
         return
@@ -23,8 +24,8 @@ def register(app):
     LOG.info(f'Registering with gateway as {name} at {base_url} to {url}')
     api = app.test_client()
     response = api.get('/')
-    j = response.json
-    rels = j.get('_links', {})
+    document = response.json
+    rels = document.get('_links', {})
 
     if rels:
         body = {
@@ -86,9 +87,9 @@ def _handle_post_from_remote(resource, request):
     if not remote_relation:
         return
 
-    j = json.loads(request.get_data())  # ASSERT: is json format, etc
-    j[field] = remote_id
-    request._cached_data = json.dumps(j).encode('utf-8')
+    document = json.loads(request.get_data())  # ASSERT: is json format, etc
+    document[field] = remote_id
+    request._cached_data = json.dumps(document).encode('utf-8')
 
 
 @trace

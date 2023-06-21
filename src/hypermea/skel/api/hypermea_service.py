@@ -12,13 +12,13 @@ LOG = logging.getLogger('run')
 
 class HypermeaService:
     def __init__(self, **kwargs):
-        self._grap_kwargs(kwargs)
+        self._grab_kwargs(kwargs)
         self._name = SETTINGS.get('HY_API_NAME', default_value='{$project_name}')
         self._app = Eve(import_name=self._name)
         CORS(self._app)
         hooks.add_hooks(self._app)
 
-    def _grap_kwargs(self, kwargs):
+    def _grab_kwargs(self, kwargs):
         self.host = kwargs['host'] if 'host' in kwargs else '0.0.0.0'
         self.debug = False if 'debug' not in kwargs else kwargs['debug'][0] in 'tTyYeE'  # true, yes, enable
         self.threaded = True if 'threaded' not in kwargs else kwargs['threaded'][0] in 'tTyYeE'  # true, yes, enable

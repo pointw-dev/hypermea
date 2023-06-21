@@ -1,3 +1,4 @@
+import os
 import click
 from .command_help_order import CommandHelpOrder
 from .docker_manager import DockerManager  #, DockerManagerException
@@ -14,7 +15,7 @@ def _prepare_for_docker_command():
         return hypermea.escape('This api does not have the docker addin installed.\n'
                                '- You can install docker with: hypermea api addin --add-docker', 2001)
 
-    # DO NOT  hypermea.jump_back_to(starting_folder)  - part of the preparation is to jump here
+    # DO NOT hypermea.jump_back_to(starting_folder)  - part of the preparation is to jump here
     return settings
 
 
@@ -49,11 +50,11 @@ def build(version, repository):
 
 
 @commands.command(name='list',
-                  short_help=f'Lists all docker images built from this api.',
+                  short_help=f'Lists the docker images built from this api.',
                   help_priority=2)
 def list_images():
     """
-    Launches docker build, using the current version as a label (unless overriden by --version).
+    Lists the docker images:tags built with this api.
     """
     settings = _prepare_for_docker_command()
     image_name = settings['project_name']
@@ -67,7 +68,7 @@ def list_images():
                   help_priority=3)
 def wipe():
     """
-    Launches docker build, using the current version as a label (unless overriden by --version).
+    Deletes all docker images build from this api.
     """
     settings = _prepare_for_docker_command()
     image_name = settings['project_name']
@@ -75,3 +76,39 @@ def wipe():
     docker_manager = DockerManager(image_name)
     docker_manager.wipe()
 
+
+@commands.command(name='up',
+                  short_help=f'Runs `docker compose up -d`',
+                  help_priority=4)
+def up():
+    """
+    Runs `docker compose up -d` using this api's docker-compose.yml
+    """
+    _prepare_for_docker_command()
+    os.system('docker compose up -d')
+
+
+@commands.command(name='down',
+                  short_help=f'Runs `docker compose down`',
+                  help_priority=5)
+def down():
+    """
+    Runs `docker compose down`
+    """
+    _prepare_for_docker_command()
+    os.system('docker compose down')
+
+
+@commands.command(name='logs',
+                  short_help=f'Shows docker logs for the running api.',
+                  help_priority=6)
+@click.option('--follow', '-f',
+              is_flag=True, help='Follow log output')
+def logs(follow):
+    """
+    Shows (and optionally follows) the docker log for the running api.
+    """
+    settings = _prepare_for_docker_command()
+    image_name = settings['project_name']
+
+    os.system(f'docker logs {image_name} {"--follow" if follow else ""}')

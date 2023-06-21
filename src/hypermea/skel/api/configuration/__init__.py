@@ -7,27 +7,28 @@ VERSION = '0.1.0'
 
 
 # set environment variables from _env.conf (which is in .gitignore)
-if os.path.exists('_env.conf'):
-    with open('_env.conf') as setting:
-        for line in setting:
-            if not line.startswith('#'):
-                line = line.rstrip()
-                nvp = line.split('=')
-                if len(nvp) == 2:
-                    os.environ[nvp[0].strip()] = nvp[1].strip()
+# if os.path.exists('_env.conf'):
+#     with open('_env.conf') as setting:
+#         for line in setting:
+#             if not line.startswith('#'):
+#                 line = line.rstrip()
+#                 nvp = line.split('=')
+#                 if len(nvp) == 2:
+#                     os.environ[nvp[0].strip()] = nvp[1].strip()
 
 
 SETTINGS = settings.Settings.instance()
 SETTINGS.set_prefix_description('HY', 'HypermeaService base configuration')
 SETTINGS.create('HY', {
     'API_NAME': '{$project_name}',
+    'API_PORT': 2112,
+    'INSTANCE_NAME': socket.gethostname(),
 
     'MONGO_ATLAS': 'Disabled',
     'MONGO_HOST': 'localhost',
     'MONGO_PORT': 27017,
     'MONGO_DBNAME': '{$project_name}',
-    'API_PORT': 2112,
-    'INSTANCE_NAME': socket.gethostname(),
+
     'TRACE_LOGGING': 'Enabled',
     'PAGINATION_LIMIT': 3000,
     'PAGINATION_DEFAULT': 1000,
