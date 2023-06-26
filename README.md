@@ -489,7 +489,7 @@ The `HypermeaService` ships with a sophisticated settings/configuration manageme
   * This file is in `.gitignore` and `.dockerignore` so it will never accidentally be shipped anywhere but your dev environment
 * Visible:  all setting values are logged at startup and can be viewed with `GET /_settings` - no more wondering what value was set when debugging a problem at 3:00 AM
 
-(TODO: cancellable, optional, prefix stuff?,  `utils.is_enabled()`   [0] == 'YyTtEe')
+(TODO: cancellable, optional, prefix stuff?,  `settings.has_enabled()`   [0] == 'YyTtEe')
 
 ### Logging
 
@@ -553,7 +553,8 @@ HAL media type
 
 * hypermea errorlevels / exit codes:
   1 - not run in API folder structure
-* 11 - --set-version value not specified correctly
+  2 - an API already exists in this folder  
+  11 - --set-version value not specified correctly
 
   10x - git
   101 - git already added
@@ -576,6 +577,7 @@ HAL media type
   603 - serverless not installed
   604 - node not initialized
   605 - serverless plugin not installed
+  666 - serverless installation canceled by user
   
   70x - resource
   701 - resource name invalid 

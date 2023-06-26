@@ -39,7 +39,7 @@ from subprocess import Popen, PIPE
 import hypermea
 
 
-def warning(silent=False):
+def confirmed_after_warning(silent=False):
     if not silent: print('''
 NOTE: this feature is still under development - use at your own risk!
 
@@ -70,8 +70,7 @@ Before you deploy
   to serverless.yml, then you can leave off the --config...
 
 ''')
-    click.confirm('Do you want to continue?', abort=True)
-
+    return click.confirm('Do you want to continue?')
 
 
 def run_process(cmd):
@@ -112,7 +111,6 @@ def is_node_installed(silent=False):
         # UNREACHABLE: is there a minimun npm version required by serverlesss?
         if not silent: print('npm is installed, version must be greater than XX (yours is {out}).\nPlease upgrade and try again.')
         return False
-
 
     return True
 
@@ -157,7 +155,8 @@ def ensure_serverless_plugins_installed(silent=False):
 
 
 def add(silent=False):
-    warning(silent)
+    if not confirmed_after_warning(silent):
+        return 666
 
     try:
         starting_folder, settings = hypermea.jump_to_folder('src')

@@ -58,7 +58,6 @@ X_HEADERS = [
     'Cache-Control'
 ]
 
-UPLOAD_FOLDER = 'uploads/'
 RETURN_MEDIA_AS_BASE64_STRING = False
 RETURN_MEDIA_AS_URL = True
 

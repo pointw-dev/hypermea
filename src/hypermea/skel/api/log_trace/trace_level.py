@@ -59,22 +59,3 @@ def add_logging_level(level_name, level_number, method_name=None):
 
 
 add_logging_level(TRACE_NAME, TRACE_LEVEL, TRACE_METHOD)
-
-
-# logging.addLevelName(TRACE_LEVEL, TRACE_NAME)
-#
-#
-# def trace(self, message, *args, **kws):
-#     """Extends logging with TRACE level"""
-#     if self.isEnabledFor(TRACE_LEVEL):
-#         self._log(TRACE_LEVEL, message, args, **kws)  # pylint: disable=protected-access
-#
-#
-# def log_to_root(message, *args, **kwargs):
-#     logging.log(TRACE_LEVEL, message, *args, **kwargs)
-#
-#
-# # logging.Logger.trace = trace
-# setattr(logging, TRACE_NAME, TRACE_LEVEL)
-# setattr(logging.getLoggerClass(), TRACE_METHOD, trace)
-# setattr(logging, TRACE_METHOD, log_to_root)

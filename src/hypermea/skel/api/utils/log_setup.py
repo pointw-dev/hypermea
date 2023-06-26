@@ -11,6 +11,7 @@ from cerberus import __version__ as cerberus_version
 from werkzeug.utils import secure_filename
 from configuration import SETTINGS, VERSION
 
+
 # TODO: refactor lengthy method
 def _configure_logger():
     api_name = SETTINGS.get('HY_API_NAME')

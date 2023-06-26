@@ -69,3 +69,4 @@ def add(silent=False):
     hypermea.copy_skel(settings['project_name'], 'websocket', '.', silent=silent)
     hypermea.install_packages(['Flask-SocketIO'], 'add-websocket')
     hypermea.jump_back_to(starting_folder)
+    return 0

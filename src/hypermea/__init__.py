@@ -98,7 +98,7 @@ def install_packages(packages, command):
             out = subprocess.check_output([sys.executable, "-m", "pip", "freeze"]).decode('utf-8')
             for line in out.split('\n'):
                 if package in line:
-                    f.write(f'{line}\n')
+                    f.write(f'{line.strip()}\n')
 
         f.write(f'# end: added by {command}\n')
 

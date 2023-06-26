@@ -94,8 +94,8 @@ def _create_api(project_name):
     if project_name == '.':
         project_name = os.path.basename(os.getcwd())
     if _api_already_exist():
-      click.echo('Please run in a folder that does not already contain an API service')
-      return
+        return hypermea.escape('Please run in a folder that does not already contain an hypermea service', 2)
+
     os.chdir(current_dir)
     click.echo(f'Creating {project_name} api')
     settings = {
@@ -148,22 +148,28 @@ def _add_addins(which_addins, silent=False):
             if not silent: print(f'{addin_name} is already added.')
             hypermea.jump_back_to(starting_folder)
             return
-        settings_addins[addin_name] = which_addins[keyword]
-        settings = hypermea.add_to_settings('addins', settings_addins)
 
         if addin_name == 'git':
+            settings_addins[addin_name] = {}
+            settings = hypermea.add_to_settings('addins', settings_addins)
             continue
 
         addin_module = importlib.import_module(f'hypermea.addins.{addin_name}')
         add = getattr(addin_module, 'add')
+        error_level = 1
         if which_addins[keyword] == 'n/a':
-            add(silent)
+            error_level = add(silent)
         else:
-            add(which_addins[keyword], silent)
+            error_level = add(which_addins[keyword], silent)
+
+        added = error_level == 0
+        if added:
+            settings_addins[addin_name] = {}
+            settings = hypermea.add_to_settings('addins', settings_addins)
 
     if which_addins.get('add_git', False):
         addins.git.add(which_addins['add_git'], silent)
-        
+
     hypermea.jump_back_to(starting_folder)
 
 

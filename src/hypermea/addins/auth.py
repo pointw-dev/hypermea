@@ -60,4 +60,4 @@ def add(silent=False):
     wire_up_service()
 
     hypermea.jump_back_to(starting_folder)
-    return hypermea.escape('auth modules added', 0, silent)
+    return 0

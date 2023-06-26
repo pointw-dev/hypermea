@@ -32,11 +32,10 @@ def _fetch_settings(response):
     response['versions'] = {}
     response['settings'] = []
 
-    response['versions']['{$project_name}'] = VERSION
+    response['versions'][SETTINGS['HY_API_NAME']] = VERSION
     response['versions']['eve'] = eve_version
     response['versions']['cerberus'] = cerberus_version
     response['versions']['python'] = platform.sys.version
-
 
     for prefix in SETTINGS.settings:
         section = {
@@ -44,5 +43,6 @@ def _fetch_settings(response):
             'settings': {}
         }
         for setting in SETTINGS.settings[prefix]:
-            section['settings'][f'{prefix}_{setting}'] = SETTINGS.settings[prefix][setting]
+            if ("PASSWORD" not in setting) and ("SECRET" not in setting):
+                section['settings'][f'{prefix}_{setting}'] = SETTINGS.settings[prefix][setting]
         response['settings'].append(section)

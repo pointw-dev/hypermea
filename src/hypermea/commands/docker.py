@@ -99,9 +99,31 @@ def down():
     os.system('docker compose down')
 
 
+@commands.command(name='cycle',
+                  short_help=f'The same as down, wipe, build, up',
+                  help_priority=6)
+def cycle():
+    """
+    Runs hypermea docker down / wipe / build / up
+    """
+    settings = _prepare_for_docker_command()
+    image_name = settings['project_name']
+    docker_manager = DockerManager(image_name)
+    version = hypermea.get_api_version()
+
+    click.echo('-- docker down --')
+    os.system('docker compose down')
+    click.echo('-- docker wipe --')
+    docker_manager.wipe()
+    click.echo('-- docker build --')
+    docker_manager.build(version, None)
+    click.echo('-- docker up --')
+    os.system('docker compose up -d')
+
+
 @commands.command(name='logs',
                   short_help=f'Shows docker logs for the running api.',
-                  help_priority=6)
+                  help_priority=7)
 @click.option('--follow', '-f',
               is_flag=True, help='Follow log output')
 def logs(follow):
