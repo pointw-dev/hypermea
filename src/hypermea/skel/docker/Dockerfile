@@ -1,7 +1,7 @@
-FROM python:3.9-slim
+FROM python:3.11.4-slim
 
 ENV HY_API_PORT=80
-EXPOSE 80
+EXPOSE $HY_API_PORT
 
 WORKDIR app
 COPY {$project_name}/requirements.txt .

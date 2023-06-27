@@ -7,7 +7,7 @@ from flask_cors import CORS
 import hooks
 
 
-LOG = logging.getLogger('run')
+LOG = logging.getLogger('service')
 
 
 class HypermeaService:

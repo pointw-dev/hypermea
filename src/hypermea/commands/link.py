@@ -57,7 +57,8 @@ def list_rels(output):
         for rel in rels:
             print(rel)
             for item in rels[rel].get('parents', []):
-                print(f'- belong to a {item}')
+                article = 'an' if item[0].lower() in 'aeiou' else 'a'
+                print(f'- belong to {article} {item}')
             for item in rels[rel].get('children', []):
                 print(f'- have {item}')
     elif output == 'json':
@@ -96,7 +97,6 @@ def list_rels(output):
                         print(f'{item} ||--o{{ {rel}')
         print('@enduml')
     hypermea.jump_back_to(starting_folder)
-
 
 
 @commands.command(name='remove',

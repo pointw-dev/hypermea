@@ -120,7 +120,7 @@ def list_affordances():
                   short_help='Removes an affordance, or detaches it from a resource',
                   help_priority=3)
 @click.argument('affordance_name', metavar='<name>')
-@click.argument('resource_name', metavar='<resource>', default='n/a')
+@click.argument('resource_name', metavar='[resource]', default='n/a')
 def remove(affordance_name, resource_name):
     try:
         starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')

@@ -123,15 +123,33 @@ def _get_resource_list():
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
-    files = glob.glob('./*.py')
-    resources = []
-    for file in files:
-        resource = Path(file).stem
+    with open('__init__.py', 'r') as f:
+        lines = f.readlines()
+
+    resources = set()
+    listening = False
+    for line in [line.strip() for line in lines]:
+        if line.startswith('DOMAIN_DEFINITIONS'):
+            listening = True
+            continue
+
+        if not listening:
+            continue
+
+        if line.startswith('}'):
+            break
+
+        if ':' not in line:
+            continue
+
+        resource = line.split(':')[0].strip().replace('"', '').replace("'", '')
         if resource.startswith('_'):
             continue
-        resources.append(file[2:-3])
+
+        resources.add(resource)
+
     hypermea.jump_back_to(starting_folder)
-    return resources
+    return sorted(resources)
 
 
 def _create_resource_domain_file(resource, add_common):

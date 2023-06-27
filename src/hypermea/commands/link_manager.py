@@ -1,5 +1,6 @@
 import os
 import glob
+import re
 from hypermea.code_gen import \
     ChildLinksInserter, \
     ParentLinksInserter, \
@@ -85,50 +86,56 @@ class LinkManager:
         with open('__init__.py', 'r') as f:
             lines = f.readlines()
 
+        relations = {}
+        dict_string = ''
         listening = False
-        rels = {}
         for line in lines:
-            if 'DOMAIN_RELATIONS' in line:
+            if line.startswith('DOMAIN_RELATIONS'):
+                line = re.sub('DOMAIN_RELATIONS.*?=', '', line)
                 listening = True
-                continue
 
             if not listening:
                 continue
 
             if line.startswith('}'):
+                dict_string += '}'
                 break
 
-            if line.startswith("    '"):
-                rel_name = line.split("'")[1]
-                continue
+            dict_string += line
 
-            if line.startswith("        'url':"):
-                if not line.split('/')[1].startswith('<'):
-                    listening = False
-                    continue
+        dict_string = re.sub('["\']schema["\'].*?\,', '', dict_string, flags=re.DOTALL)
+        keep_trying = True
+        result = ''
+        while keep_trying:  # TODO: this is icky but works 99.9% of the time
+            try:
+                result = eval(dict_string)
+                keep_trying = False
+            except NameError as ex:
+                variable_name = f'{ex}'.split("'")[1]
+                dict_string = re.sub(variable_name, '0', dict_string, flags=re.DOTALL)
 
-            if line.startswith("        'resource_title':"):
-                child = line.split("'")[3]
-                parent = rel_name.replace(f"_{child}", "")
-                parent, parents = hypermea.get_singular_plural(parent)
-                child, children = hypermea.get_singular_plural(child)
+        for relation in result:
+            child = result[relation]['resource_title']
+            parent = relation.replace(f"_{child}", "")
+            parent, parents = hypermea.get_singular_plural(parent)
+            child, children = hypermea.get_singular_plural(child)
 
-                if parents not in rels:
-                    rels[parents] = {}
-                if 'children' not in rels[parents]:
-                    rels[parents]['children'] = set()
-                rels[parents]['children'].add(children)
+            if parents not in relations:
+                relations[parents] = {}
+            if 'children' not in relations[parents]:
+                relations[parents]['children'] = set()
+            relations[parents]['children'].add(children)
 
-                if children not in rels:
-                    rels[children] = {}
-                if 'parents' not in rels[children]:
-                    rels[children]['parents'] = set()
-                rels[children]['parents'].add(parent)
+            if children not in relations:
+                relations[children] = {}
+            if 'parents' not in relations[children]:
+                relations[children]['parents'] = set()
+            relations[children]['parents'].add(parent)
 
-        LinkManager._add_remote_relations(rels)
+        LinkManager._add_remote_relations(relations)
 
         hypermea.jump_back_to(starting_folder)
-        return rels
+        return relations
 
     @staticmethod
     def _add_remote_relations(rels):

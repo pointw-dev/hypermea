@@ -13,13 +13,14 @@ from . import docker
 
 from .command_help_order import CommandHelpOrder
 
+
 @click.group()
 @click.version_option(package_name='hypermea')
 def main():
     pass
 
 
-def initialize():        
+def initialize():
     main.add_command(api.commands)
     main.add_command(resource.commands)
     main.add_command(link.commands)

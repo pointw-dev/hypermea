@@ -80,12 +80,16 @@ def wipe():
 @commands.command(name='up',
                   short_help=f'Runs `docker compose up -d`',
                   help_priority=4)
-def up():
+@click.argument('suffix', metavar='[suffix]', default='none')
+def up(suffix):
     """
     Runs `docker compose up -d` using this api's docker-compose.yml
+
+    pass a suffix to run docker-compose.{suffix}.yml instead.
     """
     _prepare_for_docker_command()
-    os.system('docker compose up -d')
+    file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
+    os.system(f'docker compose {file_parameter} up -d')
 
 
 @commands.command(name='down',
@@ -102,9 +106,12 @@ def down():
 @commands.command(name='cycle',
                   short_help=f'The same as down, wipe, build, up',
                   help_priority=6)
-def cycle():
+@click.argument('suffix', metavar='[suffix]', default='none')
+def cycle(suffix):
     """
     Runs hypermea docker down / wipe / build / up
+
+    pass a suffix to run docker-compose.{suffix}.yml instead.
     """
     settings = _prepare_for_docker_command()
     image_name = settings['project_name']
@@ -113,12 +120,16 @@ def cycle():
 
     click.echo('-- docker down --')
     os.system('docker compose down')
+
     click.echo('-- docker wipe --')
     docker_manager.wipe()
+
     click.echo('-- docker build --')
     docker_manager.build(version, None)
-    click.echo('-- docker up --')
-    os.system('docker compose up -d')
+
+    click.echo(f"-- docker up {'' if suffix == 'none' else suffix + ' ' }--")
+    file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
+    os.system(f'docker compose {file_parameter} up -d')
 
 
 @commands.command(name='logs',

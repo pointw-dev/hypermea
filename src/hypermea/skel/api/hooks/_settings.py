@@ -12,7 +12,7 @@ from cerberus import __version__ as cerberus_version
 from log_trace.decorators import trace
 
 
-LOG = logging.getLogger('hooks.utils')
+LOG = logging.getLogger('hooks.settings')
 
 
 @trace
