@@ -26,7 +26,7 @@ def commands(host, debug, single_threaded):
 
     # TODO: warn if mongo is not running at localhost:27017
         
-    cmd = 'python run.py'    
+    command = 'python run.py'
     if platform.system() == 'Windows':
         title = f"{settings['project_name']}"
         args = ' '
@@ -40,8 +40,8 @@ def commands(host, debug, single_threaded):
             args += f'--single_threaded'
 
         print(args)
-        cmd = f"start \"{title}\" python run.py {args}"
+        command = f"start \"{title}\" python run.py {args}"
 
-    os.system(cmd)
+    os.system(command)
     hypermea.jump_back_to(starting_folder)
 

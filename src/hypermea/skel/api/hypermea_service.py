@@ -1,5 +1,5 @@
 import logging
-import utils.log_setup
+import utils.log_setup      # do not remove this import
 from utils.gateway import register
 from configuration import SETTINGS
 from eve import Eve

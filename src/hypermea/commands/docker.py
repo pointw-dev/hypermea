@@ -1,4 +1,6 @@
 import os
+import platform
+
 import click
 from .command_help_order import CommandHelpOrder
 from .docker_manager import DockerManager  #, DockerManagerException
@@ -85,7 +87,7 @@ def up(suffix):
     """
     Runs `docker compose up -d` using this api's docker-compose.yml
 
-    pass a suffix to run docker-compose.{suffix}.yml instead.
+    pass a suffix to use docker-compose.{suffix}.yml instead.
     """
     _prepare_for_docker_command()
     file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
@@ -95,12 +97,16 @@ def up(suffix):
 @commands.command(name='down',
                   short_help=f'Runs `docker compose down`',
                   help_priority=5)
-def down():
+@click.argument('suffix', metavar='[suffix]', default='none')
+def down(suffix):
     """
     Runs `docker compose down`
+
+    pass a suffix to use docker-compose.{suffix}.yml instead.
     """
     _prepare_for_docker_command()
-    os.system('docker compose down')
+    file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
+    os.system(f'docker compose {file_parameter} down')
 
 
 @commands.command(name='cycle',
@@ -117,9 +123,10 @@ def cycle(suffix):
     image_name = settings['project_name']
     docker_manager = DockerManager(image_name)
     version = hypermea.get_api_version()
+    file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
 
-    click.echo('-- docker down --')
-    os.system('docker compose down')
+    click.echo(f"-- docker down {'' if suffix == 'none' else suffix + ' ' }--")
+    os.system(f'docker compose {file_parameter} down')
 
     click.echo('-- docker wipe --')
     docker_manager.wipe()
@@ -128,7 +135,6 @@ def cycle(suffix):
     docker_manager.build(version, None)
 
     click.echo(f"-- docker up {'' if suffix == 'none' else suffix + ' ' }--")
-    file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
     os.system(f'docker compose {file_parameter} up -d')
 
 
@@ -137,11 +143,20 @@ def cycle(suffix):
                   help_priority=7)
 @click.option('--follow', '-f',
               is_flag=True, help='Follow log output')
-def logs(follow):
+@click.option('--popup', '-p',
+              is_flag=True, help='Launch log in popup (assumes --follow)')
+def logs(follow, popup):
     """
     Shows (and optionally follows) the docker log for the running api.
     """
     settings = _prepare_for_docker_command()
     image_name = settings['project_name']
+    command = f'docker logs {image_name} {"--follow" if follow or popup else ""}'
 
-    os.system(f'docker logs {image_name} {"--follow" if follow else ""}')
+    if popup:
+        if platform.system() != 'Windows':
+            click.echo('popups for your platform are not yet supported')
+        else:
+            title = f"{settings['project_name']} - docker logs --follow"
+            command = f"start \"{title}\" {command}"
+    os.system(command)

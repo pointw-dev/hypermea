@@ -1,12 +1,11 @@
-import os
 import socket
 
-from . import settings
+from .settings_manager import SettingsManager
 
 VERSION = '0.1.0'
 
 
-SETTINGS = settings.Settings.instance()
+SETTINGS = SettingsManager.instance()
 SETTINGS.set_prefix_description('HY', 'HypermeaService base configuration')
 SETTINGS.create('HY', {
     'API_NAME': '{$project_name}',
@@ -27,6 +26,8 @@ SETTINGS.create('HY', {
 })
 
 # optional settings...
+SETTINGS.create('HY', 'USE_ABSOLUTE_URLS', is_optional=True)
+SETTINGS.create('HY', 'BASE_PATH', is_optional=True)
 SETTINGS.create('HY', 'BASE_URL', is_optional=True)
 SETTINGS.create('HY', 'GATEWAY_URL', is_optional=True)
 SETTINGS.create('HY', 'NAME_ON_GATEWAY', is_optional=True)

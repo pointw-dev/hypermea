@@ -1,7 +1,7 @@
 import logging
 import json
 import re
-from utils import echo_message
+from utils import echo_message, get_base_url
 import hooks._gateway
 import hooks._error_handlers
 import hooks._settings
@@ -94,7 +94,7 @@ def _add_missing_slashes(link):
 
 @trace
 def _insert_base_url(link):
-    base_url = SETTINGS.get('HY_BASE_URL', '')
+    base_url = get_base_url()
     if link['href'].startswith('/'):
         link['href'] = f'{base_url}{link["href"]}'
 
@@ -114,7 +114,7 @@ def _rewrite_schema_links(links):
     old = links['child']
     del links['child']
 
-    base_url = SETTINGS.get('HY_BASE_URL', '')
+    base_url = get_base_url()
 
     new_links = {
         'self': {'href': f'{base_url}/', 'title': 'endpoints'},

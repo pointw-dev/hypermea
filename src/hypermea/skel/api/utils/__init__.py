@@ -1,7 +1,7 @@
 import logging
+import re
 from flask import jsonify, make_response
 from flask import current_app, request
-from . import log_setup
 from bson import ObjectId
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError, OperationFailure
@@ -16,6 +16,23 @@ unauthorized_message = {
         "code": 401
     }
 }
+
+
+def get_my_base_url():
+    if not SETTINGS.get('HY_GATEWAY_URL') and not SETTINGS.has_enabled('HY_USE_ABSOLUTE_URLS'):
+        return ''
+
+    if SETTINGS.get('HY_BASE_URL'):
+        return SETTINGS.get('HY_BASE_URL')
+
+    base_url = re.sub(r'(.*://)?([^/?]+).*', r'\g<1>\g<2>', request.base_url)
+    base_url = url_join(base_url, SETTINGS.get('HY_BASE_PATH', ''))
+
+    return base_url
+
+
+def url_join(*parts):
+    return '/'.join([p.strip().strip('/') for p in parts])
 
 
 def get_id_field(collection_name):

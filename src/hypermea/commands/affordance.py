@@ -212,7 +212,7 @@ def _write_affordance_file(affordance_name, resource_name):
 This module defines functions to add the {affordance_name} affordance.
 """
 import logging
-from utils import make_error_response, unauthorized_message, get_resource_id, get_id_field
+from utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_base_url
 
 LOG = logging.getLogger("affordances.{affordance_name}")
 
@@ -220,8 +220,9 @@ LOG = logging.getLogger("affordances.{affordance_name}")
 def add_affordance(app):
 {route}
 
+
 def add_link({singular}):
-    base_url = SETTINGS.get('HY_BASE_URL', '')
+    base_url = get_base_url()
     {singular}_id = get_resource_id('{plural}', {singular})
 
     {singular}['_links']['{affordance_name}'] = {{

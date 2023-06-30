@@ -1,4 +1,8 @@
+import logging
 import os
+
+LOG = logging.getLogger('settings.manager')
+
 
 class Singleton:
     """
@@ -36,9 +40,8 @@ class Singleton:
         raise TypeError('Singletons must be accessed through `instance()`.')
 
 
-
 @Singleton
-class Settings():
+class SettingsManager:
     """
     A collection of grouped name/value pairs that act as setting/configuration items.
     Groups are identified by a prefix.
@@ -86,6 +89,7 @@ class Settings():
                                   port = settings['HY_API_PORT']
                                   settings['HY_LOGGING_LEVEL'] = 'Debug'
     """
+
     def __init__(self):
         self.settings = {}
         self.optional_settings = {}
@@ -154,15 +158,18 @@ class Settings():
         else:
             for prefix in self.settings:
                 self._dump_prefix(prefix, callback)
-                
+
+        if self.settings.get('HY_BASE_URL') and self.settings.get('HY_BASE_PATH'):
+            LOG.warning('HY_BASE_URL and HY_BASE_PATH cannot both be set.  Ignoring HY_BASE_PATH.')
+
     def has_enabled(self, setting_name, prefix=None):
         value = self.get(setting_name, prefix)
         
         return value[0].upper() in 'YTE' if value else False
-            # i.e. the following means a setting (if it exists) is enabled:
-            # - 'Yes' or 'yes' or 'Y' or 'y'
-            # - 'True' or 'true' or 'T' or 't'
-            # - 'Enabled' or 'enabled' or 'E' or 'e'
+        # i.e. the following means a setting (if it exists) is enabled:
+        # - 'Yes' or 'yes' or 'Y' or 'y'
+        # - 'True' or 'true' or 'T' or 't'
+        # - 'Enabled' or 'enabled' or 'E' or 'e'
 
     # _PRIVATE METHODS
     def _set_from_environment(self):
@@ -200,7 +207,8 @@ class Settings():
                     if new_value:
                         self.settings[prefix][setting_name] = new_value
 
-    def _parse_setting_name(self, setting_name):
+    @staticmethod
+    def _parse_setting_name(setting_name):
         first_underscore = setting_name.index('_')
         prefix = setting_name[:first_underscore]
         setting_name = setting_name[first_underscore+1:]
@@ -215,44 +223,4 @@ class Settings():
                 value = '***'
             callback(f'{prefix}_{setting_name}: {value}')
 
-
-
 # TODO: handle cancellable values
-if __name__ == '__main__':
-    settings = Settings.instance()
-    settings.set_prefix_description('es', 'HypermeaService base settings')
-    settings.create('es', 'api_name', 'ishowroom-catalog-api')
-    settings.create('es', {
-        'INSTANCE_NAME': 'my service name',
-        'TRACE_LOGGING': 'Enabled',
-        'ADD_ECHO': 'False',
-        'API_PORT': 2112
-    })
-
-    auth_settings = Settings.instance()
-    auth_settings.set_prefix_description('auth', 'HypermeaService authorization settings')
-    auth_settings.create('auth', 'enable_Basic', 'Yes')
-    auth_settings.create('auth', 'root_password', 'swordfish')
-
-    settings.dump()
-    print('==========\n')
-
-    print(f"settings['HY_INSTANCE_NAME']: {settings['HY_INSTANCE_NAME']}")
-    print('...changing instance name')
-    settings['HY_INSTANCE_NAME'] = 'new name via __setitem__'
-    print(f"settings['HY_INSTANCE_NAME']: {settings['HY_INSTANCE_NAME']}")
-    
-    print('==========\n')
-    
-    print(f'HY_API_PORT in settings: {"HY_API_PORT" in settings}')
-    print(f'HY_NOT_CREATED in settings {"HY_NOT_CREATED" in settings}')
-
-    print('==========\n')
-    
-    print(f'is HY_TRACE_LOGGING enabled? {settings.has_enabled("HY_TRACE_LOGGING")}')
-    print(f'is HY_ADD_ECHO enabled? {settings.has_enabled("HY_ADD_ECHO")}')
-    print(f'IS HY_NOT_CREATED enabled {settings.has_enabled("HY_NOT_CREATED")}')
-
-    print('==========\n')
-
-    
