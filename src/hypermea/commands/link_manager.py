@@ -10,6 +10,7 @@ from hypermea.code_gen import \
     ParentReferenceRemover, \
     DomainRelationsRemover
 import hypermea
+from hypermea.commands.resource import get_resource_list
 
 
 class LinkManager:
@@ -86,6 +87,7 @@ class LinkManager:
         with open('__init__.py', 'r') as f:
             lines = f.readlines()
 
+        resources = get_resource_list()
         relations = {}
         dict_string = ''
         listening = False
@@ -119,6 +121,9 @@ class LinkManager:
             parent = relation.replace(f"_{child}", "")
             parent, parents = hypermea.get_singular_plural(parent)
             child, children = hypermea.get_singular_plural(child)
+
+            if parent not in resources:
+                continue
 
             if parents not in relations:
                 relations[parents] = {}

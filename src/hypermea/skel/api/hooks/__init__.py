@@ -117,7 +117,7 @@ def _rewrite_schema_links(links):
     base_url = get_base_url()
 
     new_links = {
-        'self': {'href': f'{base_url}/', 'title': 'endpoints'},
+        'self': {'href': f'{base_url}/', 'title': '{$project_name} root'},
         'logging': {'href': f'{base_url}/_logging', 'title': 'logging'}
     }
 

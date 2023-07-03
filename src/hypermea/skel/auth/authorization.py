@@ -17,8 +17,15 @@ class HypermeaAuthorization(NegotiableAuth):
     def __init__(self):
         super(HypermeaAuthorization, self).__init__()
 
+    def authorized(self, allowed_roles, resource, method):
+        get_home_allowed = SETTINGS.has_enabled('AUTH_ALLOW_GET_HOME') or SETTINGS.get('HY_GATEWAY_URL', False)
+        if get_home_allowed and method == 'GET' and resource is None:
+            return True
+
+        return super().authorized(allowed_roles, resource, method)
+
     def process_claims(self, claims, allowed_roles, resource, method):
-        authorized = 'user' in claims
+        authorized = "user" in claims and "permissions" in claims
         if not authorized:
             return False
 

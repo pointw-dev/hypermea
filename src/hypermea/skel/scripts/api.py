@@ -38,7 +38,7 @@ License:
 """
 
 import json
-from requestshelper import requests, RequestsWithDefaults
+from requests_helper import requests, RequestsWithDefaults
 import socket
 import re
 import sys
@@ -51,6 +51,10 @@ class Api:
             'Cache-Control': 'no-cache',
             'Authorization': auth
         })
+
+    def href_for_rel(self, resource, rel):
+        href = resource['_links'][rel]['href']
+        return href
 
     def post(self, url, data):
         if type(data) is not str:
@@ -71,13 +75,13 @@ class Api:
             raise RuntimeError(f'POST {url} - {message}\n{details}\n\n{data}')
 
     def post_rel(self, resource, rel, data):
-        url = resource['_links'][rel]['href']
+        url = self.href_for_rel(resource, rel)
         return self.post(url, data)
 
     def patch(self, resource, data):
         if type(data) is not str:
             data = json.dumps(data)
-        url = resource['_links']['self']['href']
+        url = self.href_for_rel(resource, 'self')
         headers = {
             'If-Match': resource['_etag']
         }
@@ -94,7 +98,7 @@ class Api:
     def put(self, resource, data, rel='self'):
         if type(data) is not str:
             data = json.dumps(data)
-        url = resource['_links'][rel]['href']
+        url = self.href_for_rel(resource, rel)
         headers = {
             'If-Match': resource['_etag']
         }
@@ -121,7 +125,7 @@ class Api:
             raise RuntimeError(f'{message}\n{details}')
 
     def get_rel(self, resource, rel='self'):
-        url = resource['_links'][rel]['href']
+        url = self.href_for_rel(resource, rel)
         return self.get(url)
 
     def delete_collection(self, url):
@@ -135,7 +139,7 @@ class Api:
             raise RuntimeError(f'DELETE {url}\n{headers}\n{message}\n{details}')
 
     def delete_resource(self, resource):
-        url = resource['_links']['self']['href']
+        url = self.href_for_rel(resource, 'self')
         headers = {
             'If-Match': resource['_etag']
         }

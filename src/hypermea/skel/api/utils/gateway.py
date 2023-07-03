@@ -18,7 +18,7 @@ def register(app):
         LOG.warning('HY_GATEWAY_URL is set, but cannot register because HY_BASE_URL is not set - cancelling')
         return
 
-    url = f"{SETTINGS['HY_GATEWAY_URL']}/registrations"  # TODO: use _links[registrations]
+    url = get_href_from_gateway('registrations')
     name = SETTINGS['HY_API_NAME'] if not SETTINGS['HY_NAME_ON_GATEWAY'] else SETTINGS['HY_NAME_ON_GATEWAY']
     base_url = SETTINGS['HY_BASE_URL']
     LOG.info(f'Registering with gateway as {name} at {base_url} to {url}')
@@ -37,17 +37,19 @@ def register(app):
         headers = {'content-type': 'application/json'}
 
         try:
-            response = requests.get(url + '/' + name)
-            if response.status_code == 404:
+            prior_registration = _get_prior_registration(url, name)
+            if prior_registration is None:
                 response = requests.post(url, data=data, headers=headers)
             else:
-                etag = response.json()['_etag']
-                url = f"{SETTINGS['HY_GATEWAY_URL']}/{response.json()['_links']['self']['href']}"
+                etag = prior_registration['_etag']
+                url = prior_registration['_links']['self']['href']
                 headers = {
                     'content-type': 'application/json',
                     'If-Match': etag
                 }
                 response = requests.put(url, data=data, headers=headers)
+            if response.status_code >= 400:
+                LOG.error(f'Could not register rels: {response.content}')
         except ConnectionError:
             LOG.warning(f'Could not connect to API gateway at {url} - cancelling')
         # TODO: handle response
@@ -56,6 +58,9 @@ def register(app):
 
 
 def get_href_from_gateway(rel):
+    # ASSERT: HY_GATEWAY_URL is set
+    # ASSERT: the gateway it points to is up and running
+    # ASSERT: the rel is afforded on the gateway
     global REGISTRATIONS
     url = f"{SETTINGS['HY_GATEWAY_URL']}/"
     etag = REGISTRATIONS.get('_etag')
@@ -72,6 +77,23 @@ def get_href_from_gateway(rel):
     # TODO: document how curies work, and how they are used to manage rel collisions - esp. for the non-business rels
     #  e.g. _logging, _settings, etc.
     return REGISTRATIONS.get('_links', {}).get(rel, {}).get('href', '')  # TODO: robustify
+
+
+def _get_prior_registration(url, name):
+    prior_registration = None
+
+    try:
+        # response = requests.get(f'{url}/{name}')  # TODO: why did gateway's additional_lookup stop working?
+        # if response.status_code == 404:
+        #     return None
+        # prior_registration = response.json()
+
+        response = requests.get(f'{url}?where={{"name":"{name}"}}')
+        prior_registration = response.json()['_items'][0]
+    except:
+        pass
+
+    return prior_registration
 
 
 def _handle_post_from_remote(resource, request):

@@ -162,9 +162,10 @@ class SettingsManager:
         if self.settings.get('HY_BASE_URL') and self.settings.get('HY_BASE_PATH'):
             LOG.warning('HY_BASE_URL and HY_BASE_PATH cannot both be set.  Ignoring HY_BASE_PATH.')
 
-    def has_enabled(self, setting_name, prefix=None):
-        value = self.get(setting_name, prefix)
-        
+    def has_enabled(self, setting_name):
+        value = self.get(setting_name)
+        if not value:
+            return False
         return value[0].upper() in 'YTE' if value else False
         # i.e. the following means a setting (if it exists) is enabled:
         # - 'Yes' or 'yes' or 'Y' or 'y'

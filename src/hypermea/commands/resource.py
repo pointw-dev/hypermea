@@ -58,7 +58,7 @@ def create(resource_name, no_common):
                   short_help='List the resources in the domain.',
                   help_priority=2)
 def list_resources():
-    resources_list = _get_resource_list()
+    resources_list = get_resource_list()
     for resource in resources_list:
         print('- ' + resource)
 
@@ -108,7 +108,7 @@ def check(resource_name):
 
 
 def _resource_already_exists(resource_name):
-    resources_list = _get_resource_list()
+    resources_list = get_resource_list()
     return resource_name in resources_list
 
 
@@ -117,7 +117,7 @@ def _is_resource_name_is_invalid(singular, plural):
     return False
 
 
-def _get_resource_list():
+def get_resource_list():
     try:
         starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
     except RuntimeError:

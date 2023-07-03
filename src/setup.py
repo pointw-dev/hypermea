@@ -27,7 +27,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'libcst',
-        'inflect',
+        'inflect==4.1.0',
         'click'
     ],
     entry_points='''

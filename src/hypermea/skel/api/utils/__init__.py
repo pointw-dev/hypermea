@@ -28,6 +28,9 @@ def get_my_base_url():
     base_url = re.sub(r'(.*://)?([^/?]+).*', r'\g<1>\g<2>', request.base_url)
     base_url = url_join(base_url, SETTINGS.get('HY_BASE_PATH', ''))
 
+    if base_url[-1] == '/':
+        base_url = base_url[0:-1]
+
     return base_url
 
 
