@@ -28,7 +28,9 @@ setup(
     install_requires=[
         'libcst',
         'inflect==4.1.0',
-        'click'
+        'click',
+        'requests',
+        'halchemy'
     ],
     entry_points='''
         [console_scripts]

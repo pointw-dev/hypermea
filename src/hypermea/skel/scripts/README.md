@@ -1,0 +1,1 @@
+Use this folder to store scripts, utilities, etc. to keep them tidy and away from the service code.

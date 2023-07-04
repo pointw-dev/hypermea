@@ -617,3 +617,5 @@ HAL media type
   _x
   name
   description
+  
+* HALchemy
