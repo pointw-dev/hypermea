@@ -3,7 +3,7 @@
 
 
 
-![](./img/hypermea-letterhead.png)
+![](https://github.com/pointw-dev/hypermea/blob/main/img/hypermea-letterhead.png?raw=True)
 
 
 
