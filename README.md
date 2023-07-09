@@ -1,6 +1,8 @@
 # hypermea
 **The fastest way to build production-ready Hypermedia APIs.**
 
+
+
 ![](./img/hypermea-letterhead.png)
 
 
