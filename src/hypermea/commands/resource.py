@@ -203,7 +203,7 @@ import json
 from flask import current_app
 from log_trace.decorators import trace
 from configuration import SETTINGS
-from utils import get_resource_id, get_id_field, get_base_url
+from utils import get_resource_id, get_id_field, get_my_base_url
 from utils.gateway import get_href_from_gateway
 
 LOG = logging.getLogger('hooks.{plural}')
@@ -235,7 +235,7 @@ def _add_links_to_{plural}_collection({plural}_collection):
         _add_links_to_{singular}({singular})
         
     if '_links' in {plural}_collection:
-        base_url = get_base_url()
+        base_url = get_my_base_url()
 
         id_field = get_id_field('{plural}')
         if id_field.startswith('_'):
@@ -250,7 +250,7 @@ def _add_links_to_{plural}_collection({plural}_collection):
 
 @trace
 def _add_links_to_{singular}({singular}):
-    base_url = get_base_url()
+    base_url = get_my_base_url()
     {singular}_id = get_resource_id('{plural}', {singular})
 
     _add_remote_children_links({singular})
