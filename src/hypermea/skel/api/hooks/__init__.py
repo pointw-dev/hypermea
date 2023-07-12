@@ -8,6 +8,7 @@ import hooks._settings
 import hooks._logs
 from log_trace.decorators import trace
 from configuration import SETTINGS
+import affordances
 
 LOG = logging.getLogger('hooks')
 
@@ -17,6 +18,9 @@ def add_hooks(app):
     app.on_post_GET += _fix_links
     app.on_post_PATCH += _fix_links
     app.on_post_POST += _tidy_post_links
+
+    affordances.rfc6861.create_form.add_affordance(app)
+    affordances.rfc6861.edit_form.add_affordance(app)
 
     if SETTINGS.has_enabled('HY_ADD_ECHO'):
         @app.route('/_echo', methods=['PUT'])

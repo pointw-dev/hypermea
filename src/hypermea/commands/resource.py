@@ -205,6 +205,7 @@ from log_trace.decorators import trace
 from configuration import SETTINGS
 from utils import get_resource_id, get_id_field, get_my_base_url
 from utils.gateway import get_href_from_gateway
+import affordances
 
 LOG = logging.getLogger('hooks.{plural}')
 
@@ -246,6 +247,8 @@ def _add_links_to_{plural}_collection({plural}_collection):
             'title': '{singular}',
             'templated': True
         }}
+        self_href = {plural}_collection['_links']['self']['href']
+        affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', self_href)                
 
 
 @trace
@@ -260,6 +263,8 @@ def _add_links_to_{singular}({singular}):
         'href': f"{{base_url}}/{plural}/{{{singular}_id}}",
         'title': '{singular}'
     }}
+    affordances.rfc6861.edit_form.add_link({singular}, '{plural}')
+    
 
     
 @trace
