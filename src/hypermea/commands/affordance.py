@@ -4,21 +4,58 @@ import glob
 import click
 from .command_help_order import CommandHelpOrder
 from .optional_flags import OptionalFlags
-from hypermea.code_gen import AffordanceInserter, AffordanceDetacher, AffordanceRemover, AffordanceImportRemover
+from hypermea.code_gen import \
+    AffordanceRouteInserter, \
+    AffordanceLinkInserter, \
+    AffordanceRouteRemover, \
+    AffordanceRemover, \
+    AffordanceImportRemover
 import hypermea
 
+NA = 'n/a'
 
 ROUTE_TEMPLATE = """    @app.route("/{plural}/<{singular}_id>/{affordance_name}", methods=["PUT"])
-    def do_{affordance_name}_{singular}({singular}_id):
+    def do_{affordance_identifier}_{singular}({singular}_id):
         if app.auth and (not app.auth.authorized(None, "{affordance_name}", "PUT")):
             return make_error_response(unauthorized_message, 401)
 
-        return _do_{affordance_name}_{singular}({singular}_id)
+        return _do_{affordance_identifier}_{singular}({singular}_id)
 """
 
-HANDLER_TEMPLATE = """def _do_{affordance_name}_{singular}({singular}_id):
-    LOG.info(f'_do_{affordance_name}_{singular}: {{{singular}_id}}')
+HANDLER_TEMPLATE = """def _do_{affordance_identifier}_{singular}({singular}_id):   
+    return make_response('affordances.{affordance_fullname} is not yet implemented for {{plural}}', 501)
 """
+
+
+class Affordance:
+    def __init__(self, name):
+        self.folder = ''
+        if '.' in name:
+            # ASSERT: folder was not specified (else warn? abort?)
+            # ASSERT: only one dot in affordance_name
+            # ASSERT: everything else I'm not thinking about right now
+            self.folder, self.name = name.split('.')
+        else:
+            self.name = name
+
+    @property
+    def identifier(self):
+        rtn = self.name.replace('-', '_')
+        rtn = ''.join(filter(
+            lambda c: str.isidentifier(c) or str.isdecimal(c), rtn))
+        return rtn
+
+    @property
+    def full_name(self):
+        return f'{self.folder + "." if self.folder else ""}{self.name}'
+
+    @property
+    def full_identifier(self):
+        return f'{self.folder + "." if self.folder else ""}{self.identifier}'
+
+    @property
+    def filename(self):
+        return f'affordances/{self.folder + "/" if self.folder else ""}{self.identifier}.py'
 
 
 @click.group(name='affordance',
@@ -33,7 +70,7 @@ def commands():
                   cls=OptionalFlags,
                   help_priority=1)
 @click.argument('affordance_name', metavar='<name>')
-@click.argument('resource_name', metavar='<resource>')
+@click.argument('resource_name', metavar='[resource]', default=NA)
 def create(affordance_name, resource_name):
     """
     Creates an affordance, adds a route from a resource, and wires the affordance's
@@ -46,40 +83,39 @@ def create(affordance_name, resource_name):
 
     # TODO: SLAP!
     # TODO: Use LinkManager pattern
-    # TODO: refactor affordance/folder parse
-    folder = None
-    if '.' in affordance_name:
-        # ASSERT: folder was not specified (else warn? abort?)
-        # ASSERT: only one dot in affordance_name
-        folder, affordance_name = affordance_name.split('.')
-    affordance = f'affordances.{folder + "." if folder else ""}{affordance_name}'
-    creating = f'Creating {affordance} and attaching to {resource_name}'
-    if folder == 'root':
-        folder = None
-    if os.path.exists(f'affordances{"/"+folder if folder else ""}/{affordance_name}.py'):
-        return hypermea.escape(f'{affordance} already exists', 1001)
+    affordance = Affordance(affordance_name)
+    creating = f'Creating {affordance.full_name}'
+    if resource_name != NA:
+        creating += f' and attaching to {resource_name}'
+
+    if os.path.exists(affordance.filename):
+        return hypermea.escape(f'affordances.{affordance.full_name} already exists', 1001)
+
+    if not _resource_exists(resource_name):
+        return hypermea.escape(f'cannot attach {affordance.full_name}: {resource_name} does not exist', 1003)
+
     click.echo(creating)
 
     if not os.path.exists('affordances'):
         os.mkdir('affordances')
     os.chdir('affordances')
 
-    if folder:
-        if not os.path.exists(folder):
-            os.mkdir(folder)
-        os.chdir(folder)
+    if affordance.folder:
+        if not os.path.exists(affordance.folder):
+            os.mkdir(affordance.folder)
+        os.chdir(affordance.folder)
 
-    _write_affordance_file(affordance_name, resource_name)
+    _write_affordance_file(affordance, resource_name)
 
-    with open(f'__init__.py', 'a') as file:
-        file.write(f'from . import {affordance_name}\n')
-    if folder:
+    _append_import_if_needed('__init__.py', f'from . import {affordance.identifier}')
+    if affordance.folder:
         os.chdir('..')
-        with open(f'__init__.py', 'a') as file:
-            file.write(f'from . import {folder}\n')
+        _append_import_if_needed('__init__.py', f'from . import {affordance.folder}')
     os.chdir('..')
 
-    _add_affordance_resource(affordance_name, folder, resource_name)
+    AffordanceRouteInserter(affordance).transform(f'hooks/__init__.py')
+    if resource_name != NA:
+        _add_affordance_resource(affordance, resource_name)
     hypermea.jump_back_to(starting_folder)
 
 
@@ -90,60 +126,38 @@ def list_affordances():
     """
     Lists affordances previously created
     """
-    try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
-    except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
-    if not os.path.exists('affordances'):
-        click.echo('There are no affordances')
-        hypermea.jump_back_to(starting_folder)
-        return
-
-    os.chdir('affordances')
-    files = glob.glob('**/*.py', recursive=True)
-    for filename in files:
-        with open(filename, 'r') as f:
-            contents = f.read()
-        if 'def add_affordance(app):' in contents:
-            affordance = filename.replace('\\', '.').replace('/', '.')[:-3]
-            attaches = re.findall(r'@app\.route\(\"\/(.*?)\/', contents)
-            click.echo(f'- affordances.{affordance}')
-            click.echo('   attached to:')
-            for attached in attaches:
-                click.echo(f'   - {attached}')
-
-    hypermea.jump_back_to(starting_folder)
+    affordances = _get_affordances()
+    for affordance in affordances:
+        click.echo(affordance)
+        if affordances[affordance]:
+            click.echo('- attached to')
+            for resource in affordances[affordance]:
+                click.echo(f'  - {resource}')
 
 
 @commands.command(name='remove',
                   short_help='Removes an affordance, or detaches it from a resource',
                   help_priority=3)
 @click.argument('affordance_name', metavar='<name>')
-@click.argument('resource_name', metavar='[resource]', default='n/a')
+@click.argument('resource_name', metavar='[resource]', default=NA)
 def remove(affordance_name, resource_name):
     try:
         starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
     except RuntimeError:
         return hypermea.escape('This command must be run in a hypermea folder structure', 1)
 
-    folder = None
-    if '.' in affordance_name:
-        # ASSERT: folder was not specified (else warn? abort?)
-        # ASSERT: only one dot in affordance_name
-        folder, affordance_name = affordance_name.split('.')
-
-    affordance = f'affordances.{folder + "." if folder else ""}{affordance_name}'  # TODO: this is in multiple places
-    if not os.path.exists(f'affordances{"/"+folder if folder else ""}/{affordance_name}.py'):  # TODO: this is in multiple places
+    affordance = Affordance(affordance_name)
+    if not os.path.exists(affordance.filename):
         hypermea.jump_back_to(starting_folder)
-        return hypermea.escape(f'{affordance} does not exist', 1002)
+        return hypermea.escape(f'affordances.{affordance.full_name} does not exist', 1002)
 
-    if resource_name == 'n/a':
-        _remove_affordance(affordance_name, folder)
+    if resource_name == NA:
+        _detach_all_resources(affordance)
+        _remove_affordance(affordance)
     else:
-        _detach_affordance(affordance_name, folder, resource_name)
+        _detach_affordance(affordance, resource_name)
     hypermea.jump_back_to(starting_folder)
-
 
 
 @commands.command(name='attach',
@@ -164,30 +178,38 @@ def attach(affordance_name, resource_name):
 
     # TODO: SLAP!
     # TODO: Use LinkManager pattern
-    # TODO: refactor affordance/folder parse
-    folder = None
-    if '.' in affordance_name:
-        # ASSERT: folder was not specified (else warn? abort?)
-        # ASSERT: only one dot in affordance_name
-        folder, affordance_name = affordance_name.split('.')
-    affordance = f'affordances.{folder + "." if folder else ""}{affordance_name}'
-    attaching = f'Attaching {affordance} to {resource_name}'
-    if folder == 'root':
-        folder = None
-    affordance_filename = f'affordances{"/"+folder if folder else ""}/{affordance_name}.py'
-    if not os.path.exists(affordance_filename):
+    affordance = Affordance(affordance_name)
+    attaching = f'Attaching {affordance.name} to {resource_name}'
+    if not os.path.exists(affordance.filename):
         hypermea.jump_back_to(starting_folder)
-        return hypermea.escape(f'{affordance} does not exist', 1002)
+        return hypermea.escape(f'affordances.{affordance.full_name} does not exist', 1002)
+
+    if not _resource_exists(resource_name):
+        return hypermea.escape(f'cannot attach {affordance.full_name}: {resource_name} does not exist', 1003)
+
+    if _affordance_is_already_attached(affordance, resource_name):
+        return hypermea.escape(f'{affordance.full_name} is already attached to {resource_name}', 1004)
+
     click.echo(attaching)
 
-    singular, plural = hypermea.get_singular_plural(resource_name)
-    route = ROUTE_TEMPLATE.format(affordance_name=affordance_name, plural=plural, singular=singular)
-    handler = HANDLER_TEMPLATE.format(affordance_name=affordance_name, singular=singular)
+    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+    route = ROUTE_TEMPLATE.format(
+        affordance_name=affordance.name,
+        affordance_identifier=affordance.identifier,
+        plural=plural,
+        singular=singular
+    )
+    handler = HANDLER_TEMPLATE.format(
+        affordance_identifier=affordance.identifier,
+        affordance_fullname=affordance.full_name,
+        plural=plural,
+        singular=singular
+    )
 
-    with open(affordance_filename, 'r') as f:
+    with open(affordance.filename, 'r') as f:
         lines = f.readlines()
 
-    with open(affordance_filename, 'w') as f:
+    with open(affordance.filename, 'w') as f:
         for line in lines:
             if line == '    pass\n':
                 continue
@@ -198,61 +220,139 @@ def attach(affordance_name, resource_name):
         f.write('\n')
         f.write(handler)
 
-    _add_affordance_resource(affordance_name, folder, resource_name)
+    _add_affordance_resource(affordance, resource_name)
     hypermea.jump_back_to(starting_folder)
 
 
-def _write_affordance_file(affordance_name, resource_name):
-    singular, plural = hypermea.get_singular_plural(resource_name)
-    bracketed_id = f'{{{singular}_id}}'
-    route = ROUTE_TEMPLATE.format(affordance_name=affordance_name, plural=plural, singular=singular)
-    handler = HANDLER_TEMPLATE.format(affordance_name=affordance_name, singular=singular)
-    with open(f'{affordance_name}.py', 'w') as file:
-        file.write(f'''"""
-This module defines functions to add the {affordance_name} affordance.
+def _write_affordance_file(affordance, resource_name):
+    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+    route = ROUTE_TEMPLATE.format(
+        affordance_name=affordance.name,
+        affordance_identifier=affordance.identifier,
+        plural=plural,
+        singular=singular
+    )
+    handler = HANDLER_TEMPLATE.format(
+        affordance_identifier=affordance.identifier,
+        affordance_fullname=affordance.full_name,
+        plural=plural,
+        singular=singular
+    )
+
+    contents = f'''"""
+This module defines functions to add affordances.{affordance.full_name}.
 """
 import logging
+from flask import make_response
 from utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url
 
-LOG = logging.getLogger("affordances.{affordance_name}")
+LOG = logging.getLogger("affordances.{affordance.full_name}")
 
 
 def add_affordance(app):
-{route}
+{'    pass' if resource_name == NA else route}
 
 
-def add_link({singular}):
+def add_link(resource, collection_name):
     base_url = get_my_base_url()
-    {singular}_id = get_resource_id('{plural}', {singular})
+    resource_id = get_resource_id(resource, collection_name)
 
-    {singular}['_links']['{affordance_name}'] = {{
-        'href': f'/{plural}/{bracketed_id}/{affordance_name}',
-        'title': 'PUT to do {affordance_name}'    
+    resource['_links']['{affordance.name}'] = {{
+        'href': f'{{base_url}}/{{collection_name}}/{{resource_id}}/{affordance.name}',
+        'title': 'PUT to do {affordance.name}'    
     }}
 
+{'' if resource_name == NA else handler }'''
 
-{handler}''')
-
-
-def _add_affordance_resource(affordance_name, folder, resource):
-    singular, plural = hypermea.get_singular_plural(resource)
-    AffordanceInserter(affordance_name, folder, singular, plural).transform(f'hooks/{plural}.py')
+    with open(f'{affordance.identifier}.py', 'w') as file:
+        file.write(contents)
 
 
-def _detach_affordance(affordance_name, folder, resource_name):
-    singular, plural = hypermea.get_singular_plural(resource_name)
-    affordance = f'affordances.{folder + "." if folder else ""}{affordance_name}'
-    click.echo(f'Detaching {affordance} from {resource_name}')
-    AffordanceDetacher(affordance_name, singular).transform(f'affordances{"/"+folder if folder else ""}/{affordance_name}.py')
-    AffordanceRemover(affordance_name, folder, singular).transform(f'hooks/{plural}.py')
+def _affordance_is_already_attached(affordance, resource_name):
+    if resource_name == NA:
+        return False
+    affordances = _get_affordances()
+
+    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+
+    return plural in affordances.get(affordance.name, [])
 
 
-def _remove_affordance(affordance_name, folder):
-    affordance = f'affordances.{folder + "." if folder else ""}{affordance_name}'
-    click.echo(f'Removing {affordance}')
-    os.remove(f'affordances/{folder + "/" if folder else ""}{affordance_name}.py')
-    for filename in [file for file in glob.glob('hooks/*.py') if not (file.startswith('hooks/_') or file.startswith('hooks\\_'))]:
+def _resource_exists(resource_name):
+    if resource_name == NA:
+        return True
+    try:
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+    except RuntimeError:
+        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+
+    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+
+    hypermea.jump_back_to(starting_folder)
+    return os.path.exists(f'hooks/{plural}.py')
+
+
+def _append_import_if_needed(filename, import_statement):
+    if os.path.exists(filename):
+        with open(filename, 'r') as file:
+            contents = file.read()
+
+        if import_statement in contents:
+            return
+
+    with open(filename, 'a') as file:
+        file.write(f'{import_statement}\n')
+
+
+def _get_affordances():
+    try:
+        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+    except RuntimeError:
+        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+
+    rtn = {}
+    if os.path.exists('affordances'):
+        os.chdir('affordances')
+        files = glob.glob('**/*.py', recursive=True)
+        for filename in files:
+            with open(filename, 'r') as f:
+                contents = f.read()
+            if 'def add_affordance(app):' in contents:
+                affordance = filename.replace('\\', '.').replace('/', '.')[:-3]
+                attaches = re.findall(r'@app\.route\(\"\/(.*?)\/', contents)
+                rtn[affordance] = attaches
+
+    hypermea.jump_back_to(starting_folder)
+    return rtn
+
+
+def _add_affordance_resource(affordance, resource):
+    singular, plural = hypermea.get_singular_plural(resource)  # TODO: DRY
+    AffordanceLinkInserter(affordance, singular, plural).transform(f'hooks/{plural}.py')
+
+
+def _detach_affordance(affordance, resource_name):
+    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+    click.echo(f'Detaching affordances.{affordance.full_name} from {resource_name}')
+    AffordanceRouteRemover(affordance, singular).transform(affordance.filename)
+    AffordanceRemover(affordance, singular).transform(f'hooks/__init__.py')
+    AffordanceRemover(affordance, singular).transform(f'hooks/{plural}.py')
+
+
+def _detach_all_resources(affordance):
+    affordances = _get_affordances()
+    if affordance.full_identifier in affordances:
+        for resource_name in affordances[affordance.full_identifier]:
+            _detach_affordance(affordance, resource_name)
+
+
+def _remove_affordance(affordance):
+    click.echo(f'Removing affordances.{affordance.full_name}')
+    os.remove(f'affordances/{affordance.folder + "/" if affordance.folder else ""}{affordance.name}.py')
+    for filename in [file for file in glob.glob('hooks/*.py') if
+                     not (file.startswith('hooks/_') or file.startswith('hooks\\_'))]:
         resource_name = filename[6:-3]
-        singular, plural = hypermea.get_singular_plural(resource_name)
-        AffordanceRemover(affordance_name, folder, singular).transform(filename)
-    AffordanceImportRemover(affordance_name).transform(f'affordances/{folder + "/" if folder else ""}__init__.py')
+        singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+        AffordanceRemover(affordance, singular).transform(filename)
+    AffordanceImportRemover(affordance.identifier).transform(
+        f'affordances/{affordance.folder + "/" if affordance.folder else ""}__init__.py')

@@ -251,7 +251,7 @@ def _add_links_to_{plural}_collection({plural}_collection):
 @trace
 def _add_links_to_{singular}({singular}):
     base_url = get_my_base_url()
-    {singular}_id = get_resource_id('{plural}', {singular})
+    {singular}_id = get_resource_id({singular}, '{plural}')
 
     _add_remote_children_links({singular})
     _add_remote_parent_links({singular})
@@ -266,7 +266,7 @@ def _add_links_to_{singular}({singular}):
 def _add_remote_children_links({singular}):
     if not SETTINGS['HY_GATEWAY_URL']:
         return
-    {singular}_id = get_resource_id('{plural}', {singular})
+    {singular}_id = get_resource_id({singular}, '{plural}')
 
     # == do not edit this method above this line ==    
 
@@ -275,7 +275,7 @@ def _add_remote_children_links({singular}):
 def _add_remote_parent_links({singular}):
     if not SETTINGS['HY_GATEWAY_URL']:
         return
-    {singular}_id = get_resource_id('{plural}', {singular})
+    {singular}_id = get_resource_id({singular}, '{plural}')
 
     # == do not edit this method above this line ==    
 ''')

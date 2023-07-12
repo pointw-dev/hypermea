@@ -8,13 +8,14 @@ from .child_links_inserter import ChildLinksInserter
 from .parent_links_inserter import ParentLinksInserter
 from .domain_children_definition_inserter import DomainChildrenDefinitionInserter
 from .domain_relations_inserter import DomainRelationsInserter
-from .affordance_inserter import  AffordanceInserter
+from .affordance_route_inserter import  AffordanceRouteInserter
+from .affordance_link_inserter import  AffordanceLinkInserter
 from .domain_resource_remover import DomainResourceRemover
 from .domain_relations_remover import DomainRelationsRemover
 from .hooks_remover import HooksRemover
 from .parent_reference_remover import ParentReferenceRemover
 from .child_links_remover import ChildLinksRemover
-from .affordance_detacher import AffordanceDetacher
+from .affordance_route_remover import AffordanceRouteRemover
 from .affordance_remover import AffordanceRemover
 from .affordance_import_remover import AffordanceImportRemover
 

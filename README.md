@@ -604,6 +604,8 @@ HAL media type
  100x - affordances
  1001 - affordance already exists
  1002 - affordance does not exist
+ 1003 - cannot attach affordance to a resource that does not exist
+ 1004 - affordance already attached 
 
   
 

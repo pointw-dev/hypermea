@@ -5,11 +5,10 @@ from .file_transformer import FileTransformer
 import hypermea
 
 
-class AffordanceInserter(FileTransformer):
-    def __init__(self, affordance_name, folder, singular, plural):
+class AffordanceLinkInserter(FileTransformer):
+    def __init__(self, affordance, singular, plural):
         super().__init__()
-        self.affordance_name = affordance_name
-        self.folder = folder
+        self.affordance = affordance
         self.singular = singular
         self.plural = plural
 
@@ -44,31 +43,16 @@ class AffordanceInserter(FileTransformer):
             value=Attribute(
                 value=Name('affordances'),
                 dot=Dot(),
-                attr=Name(self.folder)
+                attr=Name(self.affordance.folder)
             ),
             dot=Dot(),
-            attr=Name(self.affordance_name),
-        ) if self.folder else Attribute(
+            attr=Name(self.affordance.identifier),
+        ) if self.affordance.folder else Attribute(
             value=Name('affordances'),
             dot=Dot(),
-            attr=Name(self.affordance_name)
+            attr=Name(self.affordance.identifier)
         )
         additions = {
-            'add_hooks': SimpleStatementLine(
-                body=[
-                    Expr(
-                        value=Call(
-                            func=Attribute(
-                                value=method_prefix,
-                                dot=Dot(),
-                                attr=Name('add_affordance'),
-                            ),
-                            args=[Arg(Name('app'))]
-                        )
-                    )
-                ],
-                trailing_whitespace=hypermea.code_gen.TWNL
-            ),
             f'_add_links_to_{self.singular}': SimpleStatementLine(
                 body=[
                     Expr(
@@ -78,7 +62,7 @@ class AffordanceInserter(FileTransformer):
                                 dot=Dot(),
                                 attr=Name('add_link'),
                             ),
-                            args=[Arg(Name(f'{self.singular}'))]
+                            args=[Arg(Name(f'{self.singular}')), Arg(SimpleString(f"'{self.plural}'"))]
                         )
                     )
                 ],

@@ -42,7 +42,7 @@ def get_id_field(collection_name):
     return current_app.config['DOMAIN'][collection_name]['id_field']
 
 
-def get_resource_id(collection_name, resource):
+def get_resource_id(resource, collection_name):
     id_field = get_id_field(collection_name)
     rtn = resource.get(id_field, None)
     if not rtn:
