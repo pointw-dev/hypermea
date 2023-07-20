@@ -1,30 +1,12 @@
-import os
-import platform
-
 import click
 from .command_help_order import CommandHelpOrder
-from .docker_manager import DockerManager  #, DockerManagerException
-import hypermea
-
-
-def _prepare_for_docker_command():
-    try:
-        starting_folder, settings = hypermea.jump_to_folder('src')
-    except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
-
-    if 'docker' not in settings.get('addins', {}):
-        return hypermea.escape('This api does not have the docker addin installed.\n'
-                               '- You can install docker with: hypermea api addin --add-docker', 2001)
-
-    # DO NOT hypermea.jump_back_to(starting_folder)  - part of the preparation is to jump here
-    return settings
 
 
 @click.group(name='docker',
              help='Shortcuts to managing docker.',
              cls=CommandHelpOrder)
 def commands():
+    # This method is empty as it is a group in which the following commands are inserted
     pass
 
 
@@ -41,14 +23,8 @@ def build(version, repository):
     """
     Launches docker build, using the current version as a label (unless overriden by --version).
     """
-    settings = _prepare_for_docker_command()
-    image_name = settings['project_name']
-
-    if not version:
-        version = hypermea.get_api_version()
-
-    docker_manager = DockerManager(image_name)
-    docker_manager.build(version, repository)
+    from ._docker import _build
+    return _build(version, repository)
 
 
 @commands.command(name='list',
@@ -58,11 +34,8 @@ def list_images():
     """
     Lists the docker images:tags built with this api.
     """
-    settings = _prepare_for_docker_command()
-    image_name = settings['project_name']
-
-    docker_manager = DockerManager(image_name)
-    docker_manager.list()
+    from ._docker import _list_images
+    return _list_images()
 
 
 @commands.command(name='wipe',
@@ -72,11 +45,8 @@ def wipe():
     """
     Deletes all docker images build from this api.
     """
-    settings = _prepare_for_docker_command()
-    image_name = settings['project_name']
-
-    docker_manager = DockerManager(image_name)
-    docker_manager.wipe()
+    from ._docker import _wipe
+    return _wipe()
 
 
 @commands.command(name='up',
@@ -89,9 +59,8 @@ def up(suffix):
 
     pass a suffix to use docker-compose.{suffix}.yml instead.
     """
-    _prepare_for_docker_command()
-    file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
-    os.system(f'docker compose {file_parameter} up -d')
+    from ._docker import _up
+    return _up(suffix)
 
 
 @commands.command(name='down',
@@ -104,9 +73,8 @@ def down(suffix):
 
     pass a suffix to use docker-compose.{suffix}.yml instead.
     """
-    _prepare_for_docker_command()
-    file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
-    os.system(f'docker compose {file_parameter} down')
+    from ._docker import _down
+    return _down(suffix)
 
 
 @commands.command(name='cycle',
@@ -119,23 +87,8 @@ def cycle(suffix):
 
     pass a suffix to run docker-compose.{suffix}.yml instead.
     """
-    settings = _prepare_for_docker_command()
-    image_name = settings['project_name']
-    docker_manager = DockerManager(image_name)
-    version = hypermea.get_api_version()
-    file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
-
-    click.echo(f"-- docker down {'' if suffix == 'none' else suffix + ' ' }--")
-    os.system(f'docker compose {file_parameter} down')
-
-    click.echo('-- docker wipe --')
-    docker_manager.wipe()
-
-    click.echo('-- docker build --')
-    docker_manager.build(version, None)
-
-    click.echo(f"-- docker up {'' if suffix == 'none' else suffix + ' ' }--")
-    os.system(f'docker compose {file_parameter} up -d')
+    from ._docker import _cycle
+    return _cycle(suffix)
 
 
 @commands.command(name='logs',
@@ -149,14 +102,5 @@ def logs(follow, popup):
     """
     Shows (and optionally follows) the docker log for the running api.
     """
-    settings = _prepare_for_docker_command()
-    image_name = settings['project_name']
-    command = f'docker logs {image_name} {"--follow" if follow or popup else ""}'
-
-    if popup:
-        if platform.system() != 'Windows':
-            click.echo('popups for your platform are not yet supported')
-        else:
-            title = f"{settings['project_name']} - docker logs --follow"
-            command = f"start \"{title}\" {command}"
-    os.system(command)
+    from ._docker import _logs
+    return _logs(follow, popup)

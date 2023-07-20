@@ -1,15 +1,12 @@
-import json
-import sys
 import click
 from .command_help_order import CommandHelpOrder
-from .link_manager import LinkManager, LinkManagerException
-import hypermea
 
 
 @click.group(name='link',
              help='Manage parent/child links amongst resources.',
              cls=CommandHelpOrder)
 def commands():
+    # This method is empty as it is a group in which the following commands are inserted
     pass
 
 
@@ -23,18 +20,8 @@ def commands():
               is_flag=True,
               help='Change name of related ref to "parent" (instead of the name of the parent).')
 def create(parent, child, as_parent_ref):
-    try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
-    except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
-
-    try:
-        LinkManager(parent, child, as_parent_ref).add()
-    except LinkManagerException as err:
-        click.echo(err)
-        sys.exit(err.exit_code)
-    finally:
-        hypermea.jump_back_to(starting_folder)
+    from ._link import _create
+    return _create(parent, child, as_parent_ref)
 
 
 # TODO: refactor/SLAP
@@ -46,57 +33,8 @@ def create(parent, child, as_parent_ref):
               default='english',
               help='Choose the output format of the relationships list')
 def list_rels(output):
-    try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
-    except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
-
-    rels = LinkManager.get_relations()
-
-    if output == 'english':
-        for rel in rels:
-            print(rel)
-            for item in rels[rel].get('parents', []):
-                article = 'an' if item[0].lower() in 'aeiou' else 'a'
-                print(f'- belong to {article} {item}')
-            for item in rels[rel].get('children', []):
-                print(f'- have {item}')
-    elif output == 'json':
-        print(json.dumps(rels, indent=4, default=list))
-    elif output == 'python_dict':
-        print(rels)
-    elif output == 'plant_uml':  # TODO: wonky/needs help
-        print('@startuml')
-        print('hide <<resource>> circle')
-        print('hide <<remote>> circle')
-        print('hide members ')
-        print()
-        print('skinparam class {')
-        print('    BackgroundColor<<remote>> LightBlue')
-        print('}')
-        print()
-        for rel in rels:
-            if ':' not in rel:
-                print(f'class {rel} <<resource>>')
-            for item in rels[rel]:
-                for member in rels[rel][item]:
-                    if member.startswith(LinkManager.REMOTE_PREFIX):
-                        target = member[len(LinkManager.REMOTE_PREFIX):]
-                        print(f'class {target} <<remote>>')
-        print()
-        for rel in rels:
-            for item in rels[rel].get('children', []):
-                if item.startswith(LinkManager.REMOTE_PREFIX):
-                    item = item[len(LinkManager.REMOTE_PREFIX):]
-                if ':' not in rel:
-                    print(f'{rel} ||--o{{ {item}')
-            for item in rels[rel].get('parents', []):
-                if item.startswith(LinkManager.REMOTE_PREFIX):
-                    item = item[len(LinkManager.REMOTE_PREFIX):]
-                    if ':' not in item:
-                        print(f'{item} ||--o{{ {rel}')
-        print('@enduml')
-    hypermea.jump_back_to(starting_folder)
+    from ._link import _list_rels
+    return _list_rels(output)
 
 
 @commands.command(name='remove',
@@ -105,16 +43,5 @@ def list_rels(output):
 @click.argument('parent', metavar='<parent|remote:parent>')
 @click.argument('child', metavar='<child|remote:child>')
 def remove(parent, child):
-    try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
-    except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
-
-    try:
-        LinkManager(parent, child).remove()
-    except LinkManagerException as err:
-        click.echo(err)
-        sys.exit(err.exit_code)
-    finally:
-        hypermea.jump_back_to(starting_folder)
-
+    from ._link import _remove
+    return _remove(parent, child)

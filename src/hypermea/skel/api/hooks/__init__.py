@@ -43,10 +43,7 @@ def _tidy_post_links(resource, request, payload):
         else:
             _remove_unnecessary_links(links=document.get('_links', {}))
 
-        if 'pretty' in request.args:
-            payload.data = json.dumps(document, indent=4)
-        else:
-            payload.data = json.dumps(document)
+        payload.data = json.dumps(document, indent=4 if 'pretty' in request.args else None)
 
 
 @trace

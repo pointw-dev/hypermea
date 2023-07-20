@@ -553,13 +553,16 @@ HAL media type
 
 * CORS permissively set by default
 
+* create_form / edit_form (RFC 6861)
+
 * `utils.get_db()` to quickly access the mongodb collections
 
 * `utils.get_api()` to make http requests in your code to the API itself
 
 * hypermea errorlevels / exit codes:
   1 - not run in API folder structure
-  2 - an API already exists in this folder  
+  2 - an API already exists in this folder
+  3 - user cancelled when folder is not empty
   11 - --set-version value not specified correctly
 
   10x - git

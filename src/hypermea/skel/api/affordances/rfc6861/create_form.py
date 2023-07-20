@@ -3,7 +3,7 @@ This module defines functions to add affordances.rfc6861.create-form.
 """
 import logging
 import json
-from flask import make_response, current_app
+from flask import make_response, current_app, request
 from utils import make_error_response, unauthorized_message, get_my_base_url
 from ._common import generate_hal_forms_template
 
@@ -31,11 +31,13 @@ def add_link(collection, collection_name, self_href=''):
 
     collection['_links']['create-form'] = {
         'href': f'{base_url}{self_href}/create-form',
-        'title': 'GET to fetch create-form'
+        'title': f'GET to fetch create-form to add to {collection_name}'
     }
 
 
 def _do_get_create_form(collection_name, parent=None):
+    LOG.info(f'GET create-form for {f"{parent[0]}/{parent[1]}/{collection_name}" if parent else f"{collection_name}"}')
+
     base_url = get_my_base_url()
     schema = current_app.config['DOMAIN'].get(collection_name, {}).get('schema', {})
 
@@ -48,7 +50,7 @@ def _do_get_create_form(collection_name, parent=None):
 
     template = generate_hal_forms_template('POST', schema, self_href)
 
-    # TODO: is pretty
-    response = make_response(json.dumps(template, indent=4), 200)
+    data = json.dumps(template, indent=4 if 'pretty' in request.args else None)
+    response = make_response(data, 200)
     response.headers['Content-type'] = 'application/prs.hal-forms+json'
     return response

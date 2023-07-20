@@ -1,6 +1,8 @@
 import os
 import glob
 import re
+
+import hypermea.commands._api
 from hypermea.code_gen import \
     ChildLinksInserter, \
     ParentLinksInserter, \
@@ -10,7 +12,7 @@ from hypermea.code_gen import \
     ParentReferenceRemover, \
     DomainRelationsRemover
 import hypermea
-from hypermea.commands.resource import get_resource_list
+from hypermea.commands._resource import _get_resource_list
 
 
 class LinkManager:
@@ -87,13 +89,11 @@ class LinkManager:
         with open('__init__.py', 'r') as f:
             lines = f.readlines()
 
-        resources = get_resource_list()
-        relations = {}
         dict_string = ''
         listening = False
         for line in lines:
             if line.startswith('DOMAIN_RELATIONS'):
-                line = re.sub('DOMAIN_RELATIONS.*?=', '', line)
+                line = re.sub(r'DOMAIN_RELATIONS.*?=', '', line)
                 listening = True
 
             if not listening:
@@ -105,7 +105,8 @@ class LinkManager:
 
             dict_string += line
 
-        dict_string = re.sub('["\']schema["\'].*?\,', '', dict_string, flags=re.DOTALL)
+        dict_string = re.sub(r'["\']schema["\'].*?,', '', dict_string, flags=re.DOTALL)
+
         keep_trying = True
         result = ''
         while keep_trying:  # TODO: this is icky but works 99.9% of the time
@@ -116,13 +117,15 @@ class LinkManager:
                 variable_name = f'{ex}'.split("'")[1]
                 dict_string = re.sub(variable_name, '0', dict_string, flags=re.DOTALL)
 
+        resources = _get_resource_list()
+        relations = {}
         for relation in result:
             child = result[relation]['resource_title']
             parent = relation.replace(f"_{child}", "")
             parent, parents = hypermea.get_singular_plural(parent)
             child, children = hypermea.get_singular_plural(child)
 
-            if parent not in resources:
+            if parents not in resources:
                 continue
 
             if parents not in relations:
@@ -202,7 +205,7 @@ class LinkManager:
         )
 
         if self.remote_parent:
-            hypermea.commands.api._add_addins({'add_validation': 'n/a'}, silent=True)
+            hypermea.commands._api._add_addins({'add_validation': 'n/a'}, silent=True)
 
         # update parent code
         if not self.remote_parent:

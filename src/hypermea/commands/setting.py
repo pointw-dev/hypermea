@@ -6,6 +6,7 @@ from .command_help_order import CommandHelpOrder
              help='Manage the configuration/settings of the service and its addins.',
              cls=CommandHelpOrder)
 def commands():
+    # This method is empty as it is a group in which the following commands are inserted
     pass
 
 
@@ -13,18 +14,21 @@ def commands():
                   help='(not yet implemented)',
                   help_priority=1)
 def create():
-    click.echo(f'create')
+    from ._setting import _create
+    return _create()
 
 
 @commands.command(name='list',
                   help='(not yet implemented)',
                   help_priority=2)
 def list_settings():
-    click.echo('list')
+    from ._setting import _list_setting
+    return _list_setting()
 
 
 @commands.command(name='remove',
                   help='(not yet implemented)',
                   help_priority=3)
 def remove():
-    click.echo('remove')
+    from ._setting import _remove
+    return _remove()
