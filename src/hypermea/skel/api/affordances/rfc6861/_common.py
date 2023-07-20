@@ -1,6 +1,6 @@
-def generate_hal_forms_template(method, schema, self_ref='unspecified'):
+def generate_hal_forms_template(method, schema, self_ref, resource=None):
     template = {'_links': {'self': {'href': self_ref}}}
-    properties = {}
+    properties = []
 
     for field, field_info in schema.items():
         if field.startswith('_'):
@@ -9,13 +9,21 @@ def generate_hal_forms_template(method, schema, self_ref='unspecified'):
         field_type = field_info.get('type')
         hal_field = {
             'name': field,
+            'prompt': f'Enter {field}',
             'type': field_type,
             'required': field_info.get('required', False),
-            'value': '',
+            'value': resource[field] if resource else '',
         }
 
         if 'allowed' in field_info:
-            hal_field['enum'] = field_info['allowed']
+            hal_field['options'] = {
+                'inline': field_info['allowed'],
+                'maxItems': 1
+            }
+            if 'default' in field_info:
+                hal_field['options']['selectedValues'] = [field_info['default']]
+            if field in resource:
+                hal_field['options']['selectedValues'] = [resource[field]]
 
         if 'min' in field_info:
             hal_field['min'] = field_info['min']
@@ -35,11 +43,12 @@ def generate_hal_forms_template(method, schema, self_ref='unspecified'):
         if field_type == 'datetime':
             hal_field['format'] = 'date-time'
 
-        properties[field] = hal_field
+        properties.append(hal_field)
 
     template['_templates'] = {
         'default': {
             'method': method,
+            'title': 'Soon is coming',
             'contentType': 'application/json',
             'properties': properties,
         }

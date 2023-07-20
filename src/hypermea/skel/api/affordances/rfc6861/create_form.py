@@ -30,7 +30,7 @@ def add_link(collection, collection_name, self_href=''):
     base_url = get_my_base_url()
 
     collection['_links']['create-form'] = {
-        'href': f'{base_url}{self_href}/create-form',
+        'href': f'{base_url}/{self_href}/create-form',
         'title': f'GET to fetch create-form to add to {collection_name}'
     }
 

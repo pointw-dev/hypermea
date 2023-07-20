@@ -4,7 +4,8 @@ This module defines functions to add affordances.rfc6861.edit-form.
 import logging
 import json
 from flask import make_response, current_app, request
-from utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url
+from bson.objectid import ObjectId
+from utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url, get_db
 from ._common import generate_hal_forms_template
 
 LOG = logging.getLogger("affordances.rfc6861.edit-form")
@@ -36,7 +37,11 @@ def _do_get_edit_form(collection_name, resource_id):
     base_url = get_my_base_url()
     self_href = f'{base_url}/{collection_name}/{resource_id}'
 
-    template = generate_hal_forms_template('PUT', schema, self_href)  # TODO: PATCH?  one template for each PUT|PATCH?
+    id_field = get_id_field(collection_name)
+    search_for = ObjectId(resource_id) if id_field == '_id' else resource_id
+    resource = get_db()[collection_name].find_one({id_field: search_for})
+
+    template = generate_hal_forms_template('PUT', schema, self_href, resource)  # TODO: PATCH?  one template for each PUT|PATCH?
 
     data = json.dumps(template, indent=4 if 'pretty' in request.args else None)
     response = make_response(data, 200)

@@ -42,7 +42,7 @@ OPTIMIZE_PAGINATION_FOR_SPEED = False
 
 SCHEMA_ENDPOINT = '_schema'
 RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
-ITEM_METHODS = ['GET', 'PATCH', 'DELETE']
+ITEM_METHODS = ['GET', 'PATCH', 'DELETE', 'PUT']
 
 X_DOMAINS = '*'
 X_EXPOSE_HEADERS = ['Origin', 'X-Requested-With', 'Content-Type', 'Accept']
