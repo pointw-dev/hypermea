@@ -1,6 +1,7 @@
 import importlib
 import json
 import os
+import re
 from distutils.dir_util import copy_tree
 from shutil import copyfile
 
@@ -8,6 +9,24 @@ import click
 
 import hypermea
 from hypermea import addins
+
+
+def _sanitize_for_mongo_db_name(name: str) -> str:
+    if not name:
+        raise ValueError("Name cannot be empty")
+
+    # Replace any of the invalid Windows characters with hyphens
+    invalid_chars = r'[\/."$*<>:|?]|[\s]+'
+    sanitized = re.sub(invalid_chars, '-', name)
+
+    # Eliminate any instances of double hyphens
+    sanitized = re.sub(r'-+', '-', sanitized)
+
+    # Ensure the database name starts with a letter or underscore
+    if not sanitized[0].isalpha() and sanitized[0] != "_":
+        sanitized = "_" + sanitized
+
+    return sanitized
 
 
 def _api_already_exist():
@@ -20,12 +39,13 @@ def _api_already_exist():
 
 
 def _create_api(project_name):
-    # TODO: ensure folder is empty? or at least warn if not?
     current_dir = os.getcwd()
     if project_name == '.':
         project_name = os.path.basename(os.getcwd())
     if _api_already_exist():
         return hypermea.escape('Please run in a folder that does not already contain an hypermea service', 2)
+
+    project_name = _sanitize_for_mongo_db_name(project_name)
 
     if len(os.listdir(current_dir)) > 0 and not click.confirm(
             'This folder is not empty.  Do you still wish to create your API here?',
