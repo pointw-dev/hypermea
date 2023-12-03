@@ -220,7 +220,7 @@ class SettingsManager:
             callback(f"== {prefix}: {self.prefix_descriptions[prefix]}")
         for setting_name in sorted(self.settings[prefix]):
             value = self.settings[prefix][setting_name]
-            if ('PASSWORD' in setting_name) or ('SECRET' in setting_name):
+            if ('PASSWORD' in setting_name) or ('SECRET' in setting_name) or ('PRIVATE' in setting_name):
                 value = '***'
             callback(f'{prefix}_{setting_name}: {value}')
 

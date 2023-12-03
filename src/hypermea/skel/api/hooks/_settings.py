@@ -43,6 +43,8 @@ def _fetch_settings(response):
             'settings': {}
         }
         for setting in SETTINGS.settings[prefix]:
-            if ("PASSWORD" not in setting) and ("SECRET" not in setting):
-                section['settings'][f'{prefix}_{setting}'] = SETTINGS.settings[prefix][setting]
+            value = SETTINGS.settings[prefix][setting]
+            if ('PASSWORD' in setting) or ('SECRET' in setting) or ('PRIVATE' in setting):
+                value = '***'
+            section['settings'][f'{prefix}_{setting}'] = value
         response['settings'].append(section)
