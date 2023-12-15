@@ -5,7 +5,7 @@ This module defines functions to log requests, and to manage log verbosity.
 import logging
 import json
 from flask import abort, make_response, jsonify, request as flask_request
-from hypermea.loggings import trace
+from hypermea.logging import trace
 from hypermea.utils import make_error_response
 
 LOG = logging.getLogger('hooks.logging')
