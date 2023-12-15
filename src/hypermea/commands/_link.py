@@ -4,14 +4,15 @@ import sys
 import click
 
 import hypermea
+import hypermea.operations
 from hypermea.commands.link_manager import LinkManager, LinkManagerException
 
 
 def _create(parent, child, as_parent_ref):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     try:
         LinkManager(parent, child, as_parent_ref).add()
@@ -19,14 +20,14 @@ def _create(parent, child, as_parent_ref):
         click.echo(err)
         sys.exit(err.exit_code)
     finally:
-        hypermea.jump_back_to(starting_folder)
+        hypermea.operations.jump_back_to(starting_folder)
 
 
 def _list_rels(output):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}/domain')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     rels = LinkManager.get_relations()
 
@@ -40,7 +41,7 @@ def _list_rels(output):
     #     _print_python_dict(rels)
     # elif output == 'plant_uml':  # TODO: wonky/needs help
     #     _print_plant_uml(rels)
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
 
 
 def _print_plant_uml(rels):
@@ -108,9 +109,9 @@ def _print_english(rels):
 
 def _remove(parent, child):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     try:
         LinkManager(parent, child).remove()
@@ -118,4 +119,4 @@ def _remove(parent, child):
         click.echo(err)
         sys.exit(err.exit_code)
     finally:
-        hypermea.jump_back_to(starting_folder)
+        hypermea.operations.jump_back_to(starting_folder)

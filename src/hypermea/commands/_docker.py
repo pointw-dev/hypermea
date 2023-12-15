@@ -4,17 +4,18 @@ import platform
 import click
 
 import hypermea
+import hypermea.operations
 from hypermea.commands.docker_manager import DockerManager
 
 
 def _prepare_for_docker_command():
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     if 'docker' not in settings.get('addins', {}):
-        return hypermea.escape('This api does not have the docker addin installed.\n'
+        return hypermea.operations.escape('This api does not have the docker addin installed.\n'
                                '- You can install docker with: hypermea api addin --add-docker', 2001)
 
     # DO NOT hypermea.jump_back_to(starting_folder)  - part of the preparation is to jump here
@@ -26,7 +27,7 @@ def _build(version, repository):
     image_name = settings['project_name']
 
     if not version:
-        version = hypermea.get_api_version()
+        version = hypermea.operations.get_api_version()
 
     docker_manager = DockerManager(image_name)
     docker_manager.build(version, repository)
@@ -64,7 +65,7 @@ def _cycle(suffix):
     settings = _prepare_for_docker_command()
     image_name = settings['project_name']
     docker_manager = DockerManager(image_name)
-    version = hypermea.get_api_version()
+    version = hypermea.operations.get_api_version()
     file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
 
     click.echo(f"-- docker down {'' if suffix == 'none' else suffix + ' ' }--")

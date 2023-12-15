@@ -14,7 +14,7 @@ services:
       HY_CACHE_CONTROL: no-cache, no-store, must-revalidate
       HY_CACHE_EXPIRES: 30
     volumes:
-    - ./logs:/var/log/{$project_name}
+    - ./logging:/var/log/{$project_name}
     depends_on:
       - {$project_name}-mongo
 

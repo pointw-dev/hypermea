@@ -4,7 +4,7 @@ The auth module used for HY.
 from bson.objectid import ObjectId
 from eve_negotiable_auth import NegotiableAuth, AUTH_PARSER
 
-from utils import get_db
+from hypermea.utils import get_db
 from . import SETTINGS
 from .auth_handlers import basic, bearer, bearer_challenge
 

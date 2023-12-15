@@ -3,6 +3,7 @@ import glob
 import re
 
 import hypermea.commands._api
+import hypermea.operations
 from hypermea.code_gen import \
     ChildLinksInserter, \
     ParentLinksInserter, \
@@ -30,8 +31,8 @@ class LinkManager:
             child = child[len(LinkManager.REMOTE_PREFIX):]
             self.remote_child = True
 
-        self.parent, self.parents = hypermea.get_singular_plural(parent)  # TODO: validate, safe name, etc.
-        self.child, self.children = hypermea.get_singular_plural(child)  # TODO: validate, safe name, etc.
+        self.parent, self.parents = hypermea.operations.get_singular_plural(parent)  # TODO: validate, safe name, etc.
+        self.child, self.children = hypermea.operations.get_singular_plural(child)  # TODO: validate, safe name, etc.
         self.parent_ref = '_parent_ref' if as_parent_ref else f'_{parent}_ref'
 
     def _link_already_exists(self):
@@ -51,9 +52,9 @@ class LinkManager:
 
     def _list_missing_resources(self):
         try:
-            starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
+            starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}/domain')
         except RuntimeError:
-            return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+            return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
         rtn = ''
         if not self.remote_parent and not os.path.exists(f'./{self.parents}.py'):
@@ -65,7 +66,7 @@ class LinkManager:
 
             rtn += self.children
 
-        hypermea.jump_back_to(starting_folder)
+        hypermea.operations.jump_back_to(starting_folder)
         return rtn
 
     def _validate(self):
@@ -82,9 +83,9 @@ class LinkManager:
     @staticmethod
     def get_relations():
         try:
-            starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
+            starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}/domain')
         except RuntimeError:
-            return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+            return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
         with open('__init__.py', 'r') as f:
             lines = f.readlines()
@@ -122,8 +123,8 @@ class LinkManager:
         for relation in result:
             child = result[relation]['resource_title']
             parent = relation.replace(f"_{child}", "")
-            parent, parents = hypermea.get_singular_plural(parent)
-            child, children = hypermea.get_singular_plural(child)
+            parent, parents = hypermea.operations.get_singular_plural(parent)
+            child, children = hypermea.operations.get_singular_plural(child)
 
             if parents not in resources:
                 continue
@@ -142,15 +143,15 @@ class LinkManager:
 
         LinkManager._add_remote_relations(relations)
 
-        hypermea.jump_back_to(starting_folder)
+        hypermea.operations.jump_back_to(starting_folder)
         return relations
 
     @staticmethod
     def _add_remote_relations(rels):
         try:
-            starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/hooks')
+            starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}/hooks')
         except RuntimeError:
-            return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+            return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
         files = [file for file in glob.glob('*.py') if not file.startswith('_')]
 
@@ -174,10 +175,10 @@ class LinkManager:
 
                 if my_relationship and '_links' in line:
                     remote = line.split("'")[3]
-                    singular, plural = hypermea.get_singular_plural(remote)
+                    singular, plural = hypermea.operations.get_singular_plural(remote)
                     remote = 'remote:' + (singular if my_relationship == 'parents' else plural)
                     remotes = 'remote:' + plural
-                    singular, plural = hypermea.get_singular_plural(resource)
+                    singular, plural = hypermea.operations.get_singular_plural(resource)
                     if resource not in rels:
                         rels[resource] = {}
                     if my_relationship not in rels[resource]:
@@ -190,13 +191,13 @@ class LinkManager:
                         rels[remotes][its_relationship] = set()
                     rels[remotes][its_relationship].add(singular if its_relationship == 'parents' else plural)
 
-        hypermea.jump_back_to(starting_folder)
+        hypermea.operations.jump_back_to(starting_folder)
 
     def add(self):
         try:
-            starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+            starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
         except RuntimeError:
-            return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+            return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
         self._validate()
         print(
@@ -217,13 +218,13 @@ class LinkManager:
             DomainChildrenDefinitionInserter(self).transform(f'domain/{self.children}.py')
             ChildLinksInserter(self).transform(f'hooks/{self.children}.py')
 
-        hypermea.jump_back_to(starting_folder)
+        hypermea.operations.jump_back_to(starting_folder)
 
     def remove(self):
         try:
-            starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+            starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
         except RuntimeError:
-            return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+            return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
         if not self._link_already_exists():
             raise LinkManagerException(804, f'There is no link from {self.parent} to {self.children}')
@@ -239,7 +240,7 @@ class LinkManager:
             ParentReferenceRemover(self.parents).transform(f'domain/{self.children}.py')
             ChildLinksRemover(self.parents).transform(f'hooks/{self.children}.py')
 
-        hypermea.jump_back_to(starting_folder)
+        hypermea.operations.jump_back_to(starting_folder)
 
 
 class LinkManagerException(Exception):

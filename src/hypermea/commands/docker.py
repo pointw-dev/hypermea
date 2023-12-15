@@ -91,8 +91,8 @@ def cycle(suffix):
     return _cycle(suffix)
 
 
-@commands.command(name='logs',
-                  short_help=f'Shows docker logs for the running api.',
+@commands.command(name='logging',
+                  short_help=f'Shows docker logging for the running api.',
                   help_priority=7)
 @click.option('--follow', '-f',
               is_flag=True, help='Follow log output')

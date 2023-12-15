@@ -1,6 +1,6 @@
 import logging
 from flask import Flask, render_template
-from log_trace.decorators import trace
+from hypermea.logging import trace
 from flask_socketio import send, emit
 
 

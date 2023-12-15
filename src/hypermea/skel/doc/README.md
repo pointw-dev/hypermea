@@ -40,11 +40,10 @@ Note: when using query strings that have curly brackets against an instance of t
 - **resource** - similar to an entity, it's the thing you GET.  It's the R in URL.  The set of resources comprise the domain the API is responsible for managing.  There are two basic kinds of resources:
   - **collection** - a special resource, which is a set of individual resources, e.g. if you GET a members collection you get a list of members
   - **item** - a resource that stands by itself, i.e. is not a collection
-- **hypermedia** - a representation of a resource that contains link relations as part of its definition.  
-  - For example, HTML is a hypermedia type because an application can discover links by following <a> and <link> tags.  
-  - JSON is not hypermedia - although it *can* contain links, there is no defined standard an application can know in advance.  
-  - [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language) is an extension of JSON which provides a standard definition for link discovery.
-
+- **hypermedia** - a media type used to create representations of a resource, whose type definition contains link relations.  
+  - For example, HTML is a hypermedia type because the [spec defines links](https://html.spec.whatwg.org/multipage/links.html#linkTypes) (e.g. `<a>`, `<form>`, and `<link>` tags and the `rel` attribute).
+  - JSON is not a hypermedia type - although it *can* contain links, there is no defined standard an application can know in advance.
+  - [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language) is an extension of JSON which provides a standard definition for links and rels, so therefore is a hypermedia type.  
 - **link relation** - or **rel** for short:  provides the semantic meaning of a link.  
   - There are [standardized](https://www.iana.org/assignments/link-relations/link-relations.xhtml) rels.  An API may define its rels either in compliance with a standard like IANA's or in its own scope.  
   - Once the rels are published, a new hypermedia type is effectively created (and can be registered with IANA, if general purpose enough).  

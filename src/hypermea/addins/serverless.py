@@ -37,6 +37,7 @@ import os
 import click
 from subprocess import Popen, PIPE
 import hypermea
+import hypermea.operations
 
 
 def confirmed_after_warning(silent=False):
@@ -159,34 +160,34 @@ def add(silent=False):
         return 666
 
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1, silent)
 
     if os.path.exists('./serverless.py'):
-        return hypermea.escape('serverless has already been added', 601, silent)
+        return hypermea.operations.escape('serverless has already been added', 601, silent)
 
-    hypermea.copy_skel(settings['project_name'], 'serverless', '.', silent=silent)
-    hypermea.replace_project_name(settings['project_name'], '.')
+    hypermea.operations.copy_skel(settings['project_name'], 'serverless', '.', silent=silent)
+    hypermea.operations.replace_project_name(settings['project_name'], '.')
 
     if not is_node_installed(silent):
-        hypermea.jump_back_to(starting_folder)
-        return hypermea.escape('', 602, silent)
+        hypermea.operations.jump_back_to(starting_folder)
+        return hypermea.operations.escape('', 602, silent)
 
     if not ensure_serverless_is_installed(silent):
-        hypermea.jump_back_to(starting_folder)
-        return hypermea.escape('', 603, silent)
+        hypermea.operations.jump_back_to(starting_folder)
+        return hypermea.operations.escape('', 603, silent)
 
     os.chdir(f"./{settings['project_name']}")
-    hypermea.install_packages(['dnspython'], 'add-serverless')
+    hypermea.operations.install_packages(['dnspython'], 'add-serverless')
 
     if not ensure_node_initialized(silent):
-        hypermea.jump_back_to(starting_folder)
-        return hypermea.escape('', 604, silent)
+        hypermea.operations.jump_back_to(starting_folder)
+        return hypermea.operations.escape('', 604, silent)
 
     if not ensure_serverless_plugins_installed(silent):
-        hypermea.jump_back_to(starting_folder)
-        return hypermea.escape('', 605, silent)
+        hypermea.operations.jump_back_to(starting_folder)
+        return hypermea.operations.escape('', 605, silent)
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
     return 0

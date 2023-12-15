@@ -8,6 +8,7 @@ from shutil import copyfile
 import click
 
 import hypermea
+import hypermea.operations
 from hypermea import addins
 
 
@@ -31,8 +32,8 @@ def _sanitize_for_mongo_db_name(name: str) -> str:
 
 def _api_already_exist():
     try:
-        starting_folder, settings = hypermea.jump_to_folder()
-        hypermea.jump_back_to(starting_folder)
+        starting_folder, settings = hypermea.operations.jump_to_folder()
+        hypermea.operations.jump_back_to(starting_folder)
         return True
     except RuntimeError:
         return False
@@ -43,7 +44,7 @@ def _create_api(project_name):
     if project_name == '.':
         project_name = os.path.basename(os.getcwd())
     if _api_already_exist():
-        return hypermea.escape('Please run in a folder that does not already contain an hypermea service', 2)
+        return hypermea.operations.escape('Please run in a folder that does not already contain an hypermea service', 2)
 
     project_name = _sanitize_for_mongo_db_name(project_name)
 
@@ -51,7 +52,7 @@ def _create_api(project_name):
             'This folder is not empty.  Do you still wish to create your API here?',
             show_default=True
     ):
-        return hypermea.escape('Canceling api creation', 3)
+        return hypermea.operations.escape('Canceling api creation', 3)
 
     os.chdir(current_dir)
     click.echo(f'Creating {project_name} api')
@@ -80,35 +81,33 @@ def _create_api(project_name):
     copy_tree(api_folder, project_name)
 
     # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
-    hypermea.remove_folder_if_exists(os.path.join('scripts', '__pycache__'))
-    hypermea.remove_folder_if_exists(os.path.join(project_name, '__pycache__'))
-    hypermea.remove_folder_if_exists(os.path.join(project_name, 'configuration', '__pycache__'))
-    hypermea.remove_folder_if_exists(os.path.join(project_name, 'domain', '__pycache__'))
-    hypermea.remove_folder_if_exists(os.path.join(project_name, 'hooks', '__pycache__'))
-    hypermea.remove_folder_if_exists(os.path.join(project_name, 'log_trace', '__pycache__'))
-    hypermea.remove_folder_if_exists(os.path.join(project_name, 'utils', '__pycache__'))
+    hypermea.operations.remove_folder_if_exists(os.path.join('scripts', '__pycache__'))
+    hypermea.operations.remove_folder_if_exists(os.path.join(project_name, '__pycache__'))
+    hypermea.operations.remove_folder_if_exists(os.path.join(project_name, 'configuration', '__pycache__'))
+    hypermea.operations.remove_folder_if_exists(os.path.join(project_name, 'domain', '__pycache__'))
+    hypermea.operations.remove_folder_if_exists(os.path.join(project_name, 'hooks', '__pycache__'))
 
     os.chdir('..')
-    hypermea.replace_project_name(project_name, '.')
+    hypermea.operations.replace_project_name(project_name, '.')
 
 
 def _add_addins(which_addins, silent=False):
     try:
-        starting_folder, settings = hypermea.jump_to_folder()
+        starting_folder, settings = hypermea.operations.jump_to_folder()
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1, silent)
 
     for keyword in [kw for kw in which_addins.keys() if which_addins[kw]]:
         addin_name = keyword[4:]  # remove "add-"
         settings_addins = settings.get('addins', {})
         if addin_name in settings_addins:
             if not silent: print(f'{addin_name} is already added.')
-            hypermea.jump_back_to(starting_folder)
+            hypermea.operations.jump_back_to(starting_folder)
             return
 
         if addin_name == 'git':
             settings_addins[addin_name] = {}
-            settings = hypermea.add_to_settings('addins', settings_addins)
+            settings = hypermea.operations.add_to_settings('addins', settings_addins)
             continue
 
         addin_module = importlib.import_module(f'hypermea.addins.{addin_name}')
@@ -122,19 +121,19 @@ def _add_addins(which_addins, silent=False):
         added = error_level == 0
         if added:
             settings_addins[addin_name] = {}
-            settings = hypermea.add_to_settings('addins', settings_addins)
+            settings = hypermea.operations.add_to_settings('addins', settings_addins)
 
     if which_addins.get('add_git', False):
         addins.git.add(which_addins['add_git'], silent)
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
 
 
 def _show_or_set_version(new_version):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/configuration')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}/configuration')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     filename = '__init__.py'
     with open(filename, 'r') as f:
@@ -157,4 +156,4 @@ def _show_or_set_version(new_version):
     else:
         print('- unchanged\n')
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)

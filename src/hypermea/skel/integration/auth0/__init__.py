@@ -5,7 +5,7 @@ https://auth0.com/docs/api/management/v2
 import logging
 import json
 import requests
-from log_trace.decorators import trace
+from hypermea.logging import trace
 from configuration import SETTINGS
 
 LOG = logging.getLogger('{$integration}')

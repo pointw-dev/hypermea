@@ -32,6 +32,8 @@ License:
 """
 
 import os
+
+import hypermea.operations
 from hypermea.code_gen import AuthorizationInserter
 import hypermea
 
@@ -45,19 +47,19 @@ def wire_up_service():
 
 def add(silent=False):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1, silent)
 
     if os.path.exists('./auth'):
-        hypermea.escape('auth has already been added', 201, silent)
+        hypermea.operations.escape('auth has already been added', 201, silent)
 
-    hypermea.copy_skel(settings['project_name'], 'auth', silent=silent)
-    hypermea.install_packages(['eve-negotiable-auth', 'PyJWT', 'cryptography', 'requests'], 'add-auth')
+    hypermea.operations.copy_skel(settings['project_name'], 'auth', silent=silent)
+    hypermea.operations.install_packages(['eve-negotiable-auth', 'PyJWT', 'cryptography', 'requests'], 'add-auth')
     # eve_negotiable_auth also installs authparser and pyparsing    
     # cryptography also installs cffi, pycparser
     # requests also installs certifi, chardet, idna, urllib3
     wire_up_service()
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
     return 0

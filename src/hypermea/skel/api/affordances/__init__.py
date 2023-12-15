@@ -1,1 +1,1 @@
-from . import rfc6861
+from hypermea.affordances import rfc6861

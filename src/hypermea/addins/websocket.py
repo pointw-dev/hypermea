@@ -33,6 +33,7 @@ License:
 
 import os
 import hypermea
+import hypermea.operations
 
 
 def modify_hypermea_service():
@@ -57,16 +58,16 @@ def modify_hypermea_service():
 
 def add(silent=False):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1, silent)
 
     if os.path.exists('./websocket'):
-        hypermea.jump_back_to(starting_folder)
-        return hypermea.escape('websocket has already been added', 501, silent)
+        hypermea.operations.jump_back_to(starting_folder)
+        return hypermea.operations.escape('websocket has already been added', 501, silent)
 
     modify_hypermea_service()
-    hypermea.copy_skel(settings['project_name'], 'websocket', '.', silent=silent)
-    hypermea.install_packages(['Flask-SocketIO'], 'add-websocket')
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.copy_skel(settings['project_name'], 'websocket', '.', silent=silent)
+    hypermea.operations.install_packages(['Flask-SocketIO'], 'add-websocket')
+    hypermea.operations.jump_back_to(starting_folder)
     return 0

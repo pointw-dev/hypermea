@@ -5,6 +5,7 @@ import re
 import click
 
 import hypermea
+import hypermea.operations
 from hypermea.code_gen import AffordanceLinkInserter, AffordanceRouteRemover, AffordanceRemover, \
     AffordanceImportRemover, AffordanceRouteInserter
 from hypermea.commands.affordance import NA
@@ -23,7 +24,7 @@ HANDLER_TEMPLATE = """def _do_{affordance_identifier}_{singular}({singular}_id):
 
 
 def _write_affordance_file(affordance, resource_name):
-    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = hypermea.operations.get_singular_plural(resource_name)  # TODO: DRY
     route = ROUTE_TEMPLATE.format(
         affordance_name=affordance.name,
         affordance_identifier=affordance.identifier,
@@ -42,7 +43,7 @@ This module defines functions to add affordances.{affordance.full_name}.
 """
 import logging
 from flask import make_response
-from utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url
+from hypermea.utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url
 
 LOG = logging.getLogger("affordances.{affordance.full_name}")
 
@@ -71,7 +72,7 @@ def _affordance_is_already_attached(affordance, resource_name):
         return False
     affordances = _get_affordances()
 
-    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = hypermea.operations.get_singular_plural(resource_name)  # TODO: DRY
 
     return plural in affordances.get(affordance.name, [])
 
@@ -80,13 +81,13 @@ def _resource_exists(resource_name):
     if resource_name == NA:
         return True
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
-    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = hypermea.operations.get_singular_plural(resource_name)  # TODO: DRY
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
     return os.path.exists(f'hooks/{plural}.py')
 
 
@@ -104,9 +105,9 @@ def _append_import_if_needed(filename, import_statement):
 
 def _get_affordances():
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     rtn = {}
     if os.path.exists('affordances'):
@@ -120,17 +121,17 @@ def _get_affordances():
                 attaches = re.findall(r'@app\.route\(\"\/(.*?)\/', contents)
                 rtn[affordance] = attaches
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
     return rtn
 
 
 def _add_affordance_resource(affordance, resource):
-    singular, plural = hypermea.get_singular_plural(resource)  # TODO: DRY
+    singular, plural = hypermea.operations.get_singular_plural(resource)  # TODO: DRY
     AffordanceLinkInserter(affordance, singular, plural).transform(f'hooks/{plural}.py')
 
 
 def _detach_affordance(affordance, resource_name):
-    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = hypermea.operations.get_singular_plural(resource_name)  # TODO: DRY
     click.echo(f'Detaching affordances.{affordance.full_name} from {resource_name}')
     AffordanceRouteRemover(affordance, singular).transform(affordance.filename)
     AffordanceRemover(affordance, singular).transform(f'hooks/__init__.py')
@@ -150,7 +151,7 @@ def _remove_affordance(affordance):
     for filename in [file for file in glob.glob('hooks/*.py') if
                      not (file.startswith('hooks/_') or file.startswith('hooks\\_'))]:
         resource_name = filename[6:-3]
-        singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+        singular, plural = hypermea.operations.get_singular_plural(resource_name)  # TODO: DRY
         AffordanceRemover(affordance, singular).transform(filename)
     AffordanceImportRemover(affordance.identifier).transform(
         f'affordances/{affordance.folder + "/" if affordance.folder else ""}__init__.py')
@@ -189,9 +190,9 @@ class Affordance:
 
 def _create(affordance_name, resource_name):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     # TODO: SLAP!
     # TODO: Use LinkManager pattern
@@ -201,10 +202,10 @@ def _create(affordance_name, resource_name):
         creating += f' and attaching to {resource_name}'
 
     if os.path.exists(affordance.filename):
-        return hypermea.escape(f'affordances.{affordance.full_name} already exists', 1001)
+        return hypermea.operations.escape(f'affordances.{affordance.full_name} already exists', 1001)
 
     if not _resource_exists(resource_name):
-        return hypermea.escape(f'cannot attach {affordance.full_name}: {resource_name} does not exist', 1003)
+        return hypermea.operations.escape(f'cannot attach {affordance.full_name}: {resource_name} does not exist', 1003)
 
     click.echo(creating)
 
@@ -228,7 +229,7 @@ def _create(affordance_name, resource_name):
     AffordanceRouteInserter(affordance).transform(f'hooks/__init__.py')
     if resource_name != NA:
         _add_affordance_resource(affordance, resource_name)
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
 
 
 def _list_affordances():
@@ -243,46 +244,46 @@ def _list_affordances():
 
 def _remove(affordance_name, resource_name):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     affordance = Affordance(affordance_name)
     if not os.path.exists(affordance.filename):
-        hypermea.jump_back_to(starting_folder)
-        return hypermea.escape(f'affordances.{affordance.full_name} does not exist', 1002)
+        hypermea.operations.jump_back_to(starting_folder)
+        return hypermea.operations.escape(f'affordances.{affordance.full_name} does not exist', 1002)
 
     if resource_name == NA:
         _detach_all_resources(affordance)
         _remove_affordance(affordance)
     else:
         _detach_affordance(affordance, resource_name)
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
 
 
 def _attach(affordance_name, resource_name):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     # TODO: SLAP!
     # TODO: Use LinkManager pattern
     affordance = Affordance(affordance_name)
     attaching = f'Attaching {affordance.name} to {resource_name}'
     if not os.path.exists(affordance.filename):
-        hypermea.jump_back_to(starting_folder)
-        return hypermea.escape(f'affordances.{affordance.full_name} does not exist', 1002)
+        hypermea.operations.jump_back_to(starting_folder)
+        return hypermea.operations.escape(f'affordances.{affordance.full_name} does not exist', 1002)
 
     if not _resource_exists(resource_name):
-        return hypermea.escape(f'cannot attach {affordance.full_name}: {resource_name} does not exist', 1003)
+        return hypermea.operations.escape(f'cannot attach {affordance.full_name}: {resource_name} does not exist', 1003)
 
     if _affordance_is_already_attached(affordance, resource_name):
-        return hypermea.escape(f'{affordance.full_name} is already attached to {resource_name}', 1004)
+        return hypermea.operations.escape(f'{affordance.full_name} is already attached to {resource_name}', 1004)
 
     click.echo(attaching)
 
-    singular, plural = hypermea.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = hypermea.operations.get_singular_plural(resource_name)  # TODO: DRY
     route = ROUTE_TEMPLATE.format(
         affordance_name=affordance.name,
         affordance_identifier=affordance.identifier,
@@ -311,4 +312,4 @@ def _attach(affordance_name, resource_name):
         f.write(handler)
 
     _add_affordance_resource(affordance, resource_name)
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)

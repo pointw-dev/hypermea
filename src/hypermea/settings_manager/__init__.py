@@ -45,44 +45,44 @@ class SettingsManager:
     """
     A collection of grouped name/value pairs that act as setting/configuration items.
     Groups are identified by a prefix.
-    
+
     This class is a singleton and can only be used via its instance() method.
-    
+
     These name/value pairs must first be created.  They can be set in three ways:
     - through this class's methods
     - overridden by environment variables
     - overridden by the contents of an optional file named `_env.conf`
-        Each line in the _env.conf is in the format "name=value".  
+        Each line in the _env.conf is in the format "name=value".
         Blank/whitespace lines and lines staring with # are ignored.
-    
+
     Methods:
-      create                  Adds a group and a name to the collection, with an 
-                              optional default_value.  Set `is_optional` to True 
-                              and this setting will not be visible when its value 
+      create                  Adds a group and a name to the collection, with an
+                              optional default_value.  Set `is_optional` to True
+                              and this setting will not be visible when its value
                               is None
-                  
+
       set_prefix_description  Provide a textual description for a prefix which will
                               be displayed when dumping
-                              
+
       get                     Used to look up the value of a setting.  If the setting name
                               you want to look up has the prefix in it, leave `prefix` None
                               and the method will parse
-                              e.g. 
-                                  prefix == None, setting_name == HY_INSTANCE_NAME 
-                                     becomes 
+                              e.g.
+                                  prefix == None, setting_name == HY_INSTANCE_NAME
+                                     becomes
                                   prefix == HY, setting_name == INSTANCE_NAME
-                                  
+
       has_enabled             A value is considered "enabled" if it begins with Y, T, or E
                               i.e. the following means a setting (if it exists) is enabled:
                               - 'Yes' or 'yes' or 'Y' or 'y'
                               - 'True' or 'true' or 'T' or 't'
                               - 'Enabled' or 'enabled' or 'E' or 'e'
-  
+
       dump                    output all settings by group/prefix.
                               If you do not supply a callback, the method will use print()
-                              This gives you the ability to pass callback=LOG.info to 
+                              This gives you the ability to pass callback=LOG.info to
                               redirect the dump output to your logger
-                              
+
       []                      You can use square brackets to access (and change) settings
                               whose name has the begins with the prefix
                               e.g.
@@ -117,7 +117,7 @@ class SettingsManager:
             self.settings[prefix] = {}
         if is_optional and prefix not in self.optional_settings:
             self.optional_settings[prefix] = {}
-        
+
         if type(setting_name) is dict:  # is_optional is ignored
             settings = setting_name
             for setting_name in settings:
@@ -125,7 +125,7 @@ class SettingsManager:
                     raise ValueError(f'settings[{prefix}][{setting_name.upper()}] already exists')
                 self.settings[prefix][setting_name.upper()] = settings[setting_name]
         else:
-            setting_name = setting_name.upper()            
+            setting_name = setting_name.upper()
             if setting_name in self.settings[prefix]:
                 raise ValueError(f'settings[{prefix}][{setting_name}] already exists')
             if is_optional:
@@ -191,9 +191,10 @@ class SettingsManager:
                     try:
                         new_value = type(old_value)(new_value)
                     except ValueError:
-                        raise TypeError(f'attempt to set {prefix}_{setting_name} to a different type than its default value (should be {type(old_value)}).')
+                        raise TypeError(
+                            f'attempt to set {prefix}_{setting_name} to a different type than its default value (should be {type(old_value)}).')
                 self.settings[prefix][setting_name] = new_value
-                
+
         for prefix in self.optional_settings:
             for setting_name in self.optional_settings[prefix]:
                 old_value = self.optional_settings[prefix][setting_name]  # TODO: refactor with non-optional above
@@ -203,7 +204,8 @@ class SettingsManager:
                         try:
                             new_value = type(old_value)(new_value)
                         except ValueError:
-                            raise TypeError(f'attempt to set {prefix}_{setting_name} to a different type than its default value (should be {type(old_value)}).')
+                            raise TypeError(
+                                f'attempt to set {prefix}_{setting_name} to a different type than its default value (should be {type(old_value)}).')
 
                     if new_value:
                         self.settings[prefix][setting_name] = new_value
@@ -212,7 +214,7 @@ class SettingsManager:
     def _parse_setting_name(setting_name):
         first_underscore = setting_name.index('_')
         prefix = setting_name[:first_underscore]
-        setting_name = setting_name[first_underscore+1:]
+        setting_name = setting_name[first_underscore + 1:]
         return prefix, setting_name
 
     def _dump_prefix(self, prefix, callback):

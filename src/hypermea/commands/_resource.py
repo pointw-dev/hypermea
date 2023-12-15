@@ -4,32 +4,33 @@ import os
 import click
 
 import hypermea
+import hypermea.operations
 from hypermea.code_gen import DomainDefinitionInserter, HooksInserter, DomainResourceRemover, HooksRemover, \
     ParentReferenceRemover, ChildLinksRemover
 
 
 def _create(resource_name, no_common):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
-    singular, plural = hypermea.get_singular_plural(resource_name)
+    singular, plural = hypermea.operations.get_singular_plural(resource_name)
     if _is_resource_name_is_invalid(singular, plural):
-        return hypermea.escape(f'The resource name ({resource_name}) is invalid', 701)
+        return hypermea.operations.escape(f'The resource name ({resource_name}) is invalid', 701)
 
     add_common = not no_common
 
     print(f'Creating {plural} resource')
     if _resource_already_exists(plural):
-        hypermea.escape('This resource already exist', 702)
+        hypermea.operations.escape('This resource already exist', 702)
     else:
         _create_resource_domain_file(plural, add_common)
         _insert_domain_definition(plural)
         _create_resource_hook_file(singular, plural)
         _insert_hooks(plural)
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
 
 
 def _list_resources():
@@ -40,27 +41,27 @@ def _list_resources():
 
 def _remove(resource_name):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
-    singular, plural = hypermea.get_singular_plural(resource_name)
+    singular, plural = hypermea.operations.get_singular_plural(resource_name)
     if _is_resource_name_is_invalid(singular, plural):
-        return hypermea.escape(f'The resource name ({resource_name}) is invalid', 701)
+        return hypermea.operations.escape(f'The resource name ({resource_name}) is invalid', 701)
 
     if not _resource_already_exists(plural):
-        hypermea.escape('This resource does not exist', 703)
+        hypermea.operations.escape('This resource does not exist', 703)
 
     _remove_domain_definition(plural)
     _remove_hooks(plural)
     _delete_resource_files(plural)
     _remove_references_from_children(plural)
     _remove_child_links(plural)
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
 
 
 def _check(resource_name):
-    singular, plural = hypermea.get_singular_plural(resource_name)
+    singular, plural = hypermea.operations.get_singular_plural(resource_name)
     click.echo(f'You entered {resource_name}')
     click.echo(f'- singular: {singular}')
     click.echo(f'- plural:   {plural}')
@@ -81,9 +82,9 @@ def _is_resource_name_is_invalid(singular, plural):
 
 def _get_resource_list():
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}/domain')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}/domain')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1)
 
     with open('__init__.py', 'r') as f:
         lines = f.readlines()
@@ -110,7 +111,7 @@ def _get_resource_list():
 
         resources.add(resource)
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
     return sorted(resources)
 
 
@@ -163,10 +164,10 @@ This module defines functions to add link relations to {plural}.
 import logging
 import json
 from flask import current_app
-from log_trace.decorators import trace
+from hypermea.logging import trace
 from configuration import SETTINGS
-from utils import get_resource_id, get_id_field, get_my_base_url
-from utils.gateway import get_href_from_gateway
+from hypermea.utils import get_resource_id, get_id_field, get_my_base_url
+from hypermea.gateway import get_href_from_gateway
 import affordances
 
 LOG = logging.getLogger('hooks.{plural}')
@@ -268,8 +269,8 @@ def _delete_resource_files(resource):
     domain_filename = f'domain/{resource}.py'
     hooks_filename = f'hooks/{resource}.py'
 
-    hypermea.remove_file_if_exists(domain_filename)
-    hypermea.remove_file_if_exists(hooks_filename)
+    hypermea.operations.remove_file_if_exists(domain_filename)
+    hypermea.operations.remove_file_if_exists(hooks_filename)
 
     domain_file_exists = os.path.exists(domain_filename)
     hooks_file_exists = os.path.exists(hooks_filename)
@@ -280,7 +281,7 @@ def _delete_resource_files(resource):
         if hooks_file_exists:
             which += ', ' if which else ''
             which += hooks_filename
-        hypermea.escape(f'Could not delete resource files: {which}', 704)
+        hypermea.operations.escape(f'Could not delete resource files: {which}', 704)
 
 
 def _remove_references_from_children(resource):

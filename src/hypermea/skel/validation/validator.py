@@ -9,9 +9,10 @@ from eve.utils import config
 from eve.io.mongo import Validator
 from bson.objectid import ObjectId
 
-from utils import get_db
-from log_trace.decorators import trace
+from hypermea.utils import get_db
+from hypermea.logging import trace
 
+import hypermea.operations
 
 LOG = logging.getLogger('validator')
 
@@ -30,7 +31,7 @@ class HypermeaValidator(Validator):
         query = {}
         if unique_ignorecase:
             query = {
-                field: re.compile('^' + re.escape(value) + '$', re.IGNORECASE)
+                field: re.compile('^' + hypermea.operations.escape(value) + '$', re.IGNORECASE)
             }
 
             resource_config = config.DOMAIN[self.resource]
@@ -87,7 +88,7 @@ class HypermeaValidator(Validator):
 
         collection = get_db()[resource]
         query = {
-            field: re.compile('^' + re.escape(value) + '$', re.IGNORECASE),
+            field: re.compile('^' + hypermea.operations.escape(value) + '$', re.IGNORECASE),
             parent_ref_field: ObjectId(parent_ref) if parent_ref else None
         }
 

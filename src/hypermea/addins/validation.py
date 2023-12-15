@@ -41,6 +41,8 @@ License:
 """
 
 import os
+
+import hypermea.operations
 from hypermea.code_gen import ValidationInserter
 import hypermea
 
@@ -51,16 +53,16 @@ def wire_up_service():
 
 def add(silent=False):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src/{project_name}')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1, silent)
 
     if os.path.exists('./validation'):
-        return hypermea.escape('validation has already been added', 301, silent)
+        return hypermea.operations.escape('validation has already been added', 301, silent)
 
-    hypermea.copy_skel(settings['project_name'], 'validation', silent=silent)
-    hypermea.install_packages(['isodate'], 'add-validation')
+    hypermea.operations.copy_skel(settings['project_name'], 'validation', silent=silent)
+    hypermea.operations.install_packages(['isodate'], 'add-validation')
     wire_up_service()
 
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
     return 0

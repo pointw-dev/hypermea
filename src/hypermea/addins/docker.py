@@ -33,18 +33,19 @@ License:
 
 import os
 import hypermea
+import hypermea.operations
 
 
 def add(silent=False):
     try:
-        starting_folder, settings = hypermea.jump_to_folder('src')
+        starting_folder, settings = hypermea.operations.jump_to_folder('src')
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1, silent)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1, silent)
 
     if os.path.exists('./Dockerfile'):
-        return hypermea.escape('docker has already been added', 401, silent)
+        return hypermea.operations.escape('docker has already been added', 401, silent)
 
-    hypermea.copy_skel(settings['project_name'], 'docker', '.', silent=silent)
-    hypermea.replace_project_name(settings['project_name'], '.')
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.copy_skel(settings['project_name'], 'docker', '.', silent=silent)
+    hypermea.operations.replace_project_name(settings['project_name'], '.')
+    hypermea.operations.jump_back_to(starting_folder)
     return 0

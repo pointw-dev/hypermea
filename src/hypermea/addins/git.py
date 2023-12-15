@@ -38,21 +38,22 @@ import os
 import platform
 from shutil import copyfile
 import hypermea
+import hypermea.operations
 
 
 def add(remote, silence=False):
     try:
-        starting_folder, settings = hypermea.jump_to_folder()
+        starting_folder, settings = hypermea.operations.jump_to_folder()
     except RuntimeError:
-        return hypermea.escape('This command must be run in a hypermea folder structure', 1, silence)
+        return hypermea.operations.escape('This command must be run in a hypermea folder structure', 1, silence)
 
     if os.path.isdir('./.git'):
-        return hypermea.escape('git has already been added', 101, silence)
+        return hypermea.operations.escape('git has already been added', 101, silence)
 
     skel = os.path.join(os.path.dirname(hypermea.__file__), 'skel')
     gitignore_filename = os.path.join(skel, 'git/.gitignore')
     copyfile(gitignore_filename, './.gitignore')
-    hypermea.replace_project_name(settings['project_name'], '.')
+    hypermea.operations.replace_project_name(settings['project_name'], '.')
     
     silence = ' > /dev/null 2> /dev/null'
     if platform.system() == 'Windows':
@@ -68,5 +69,5 @@ def add(remote, silence=False):
         os.system(f'git remote add origin {remote}')
         os.system('git push -u origin main')
     
-    hypermea.jump_back_to(starting_folder)
+    hypermea.operations.jump_back_to(starting_folder)
     return 0
