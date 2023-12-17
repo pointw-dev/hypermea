@@ -3,7 +3,7 @@ import json
 import requests
 from requests.exceptions import ConnectionError
 from flask import current_app
-from hypermea.logging import trace
+from hypermea.core.logging import trace
 from configuration import SETTINGS
 
 LOG = logging.getLogger('gateway')

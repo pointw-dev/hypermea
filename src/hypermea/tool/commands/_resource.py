@@ -163,10 +163,10 @@ This module defines functions to add link relations to {plural}.
 import logging
 import json
 from flask import current_app
-from hypermea.logging import trace
+from hypermea.core.logging import trace
 from configuration import SETTINGS
-from hypermea.utils import get_resource_id, get_id_field, get_my_base_url
-from hypermea.gateway import get_href_from_gateway
+from hypermea.core.utils import get_resource_id, get_id_field, get_my_base_url
+from hypermea.core.gateway import get_href_from_gateway
 import affordances
 
 LOG = logging.getLogger('hooks.{plural}')

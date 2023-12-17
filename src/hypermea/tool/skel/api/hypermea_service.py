@@ -1,6 +1,6 @@
 import logging
-import hypermea.logging.setup      # do not remove this import
-from hypermea.gateway import register
+import hypermea.core.logging.setup    # do not remove this import
+from hypermea.core.gateway import register
 from configuration import SETTINGS
 from eve import Eve
 from flask_cors import CORS

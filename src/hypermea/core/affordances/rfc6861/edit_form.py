@@ -5,7 +5,7 @@ import logging
 import json
 from flask import make_response, current_app, request
 from bson.objectid import ObjectId
-from hypermea.utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url, get_db
+from hypermea.core.utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url, get_db
 from ._common import generate_hal_forms_template
 
 LOG = logging.getLogger("affordances.rfc6861.edit-form")

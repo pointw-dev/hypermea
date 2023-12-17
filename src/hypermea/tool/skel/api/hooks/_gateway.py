@@ -3,8 +3,8 @@ hooks._gateway
 This module defines hooks the request chain to the appropriate gateway utils
 """
 import logging
-from hypermea.logging import trace
-from hypermea.gateway import handle_post_from_remote, embed_remote_parent_resource
+from hypermea.core.logging import trace
+from hypermea.core.gateway import handle_post_from_remote, embed_remote_parent_resource
 
 LOG = logging.getLogger('hooks.gateway')
 

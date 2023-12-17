@@ -4,7 +4,7 @@ This module defines functions to add affordances.rfc6861.create-form.
 import logging
 import json
 from flask import make_response, current_app, request
-from hypermea.utils import make_error_response, unauthorized_message, get_my_base_url
+from hypermea.core.utils import make_error_response, unauthorized_message, get_my_base_url
 from ._common import generate_hal_forms_template
 
 LOG = logging.getLogger("affordances.rfc6861.create-form")

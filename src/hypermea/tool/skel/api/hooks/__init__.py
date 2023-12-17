@@ -1,11 +1,11 @@
 import logging
-from hypermea.hooks import fix_links, tidy_post_links
-from hypermea.utils import echo_message
+from hypermea.core.hooks import fix_links, tidy_post_links
+from hypermea.core.utils import echo_message
 import hooks._gateway
 import hooks._error_handlers
 import hooks._settings
 import hooks._logs
-from hypermea.logging import trace
+from hypermea.core.logging import trace
 from configuration import SETTINGS
 import affordances
 

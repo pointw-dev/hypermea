@@ -1,8 +1,8 @@
 import logging
 import json
 import re
-from hypermea.utils import get_my_base_url
-from hypermea.logging import trace
+from hypermea.core.utils import get_my_base_url
+from hypermea.core.logging import trace
 
 
 @trace

@@ -9,8 +9,8 @@ from eve.utils import config
 from eve.io.mongo import Validator
 from bson.objectid import ObjectId
 
-from hypermea.utils import get_db
-from hypermea.logging import trace
+from hypermea.core.utils import get_db
+from hypermea.core.logging import trace
 
 import hypermea.tool
 

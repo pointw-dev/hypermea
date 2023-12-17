@@ -42,7 +42,7 @@ This module defines functions to add affordances.{affordance.full_name}.
 """
 import logging
 from flask import make_response
-from hypermea.utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url
+from hypermea.core.utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url
 
 LOG = logging.getLogger("affordances.{affordance.full_name}")
 

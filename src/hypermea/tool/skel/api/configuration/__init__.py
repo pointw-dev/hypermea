@@ -1,4 +1,4 @@
-from hypermea.settings_manager import SettingsManager
+from hypermea.core.settings_manager import SettingsManager
 import configuration.hypermea_settings
 import configuration.api_settings
 

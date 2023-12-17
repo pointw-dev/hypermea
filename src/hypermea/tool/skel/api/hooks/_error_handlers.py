@@ -1,5 +1,5 @@
 from pymongo.errors import ServerSelectionTimeoutError
-from hypermea.utils import make_error_response
+from hypermea.core.utils import make_error_response
 
 
 def add_hooks(app):

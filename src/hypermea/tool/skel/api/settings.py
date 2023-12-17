@@ -28,7 +28,7 @@ if "HY_CACHE_EXPIRES" in SETTINGS:
 # the default BLACKLIST is ['$where', '$regex'] - the following line turns on regex
 MONGO_QUERY_BLACKLIST = ['$where']
 
-RENDERERS = ['hypermea.render.HALRenderer']
+RENDERERS = ['hypermea.core.render.HALRenderer']
 
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%S'
 PAGINATION_LIMIT = SETTINGS.get('HY_PAGINATION_LIMIT')
