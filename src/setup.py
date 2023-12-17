@@ -34,8 +34,8 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        hy=hypermea.commands:initialize
-        hypermea=hypermea.commands:initialize
+        hy=hypermea.tool.commands:initialize
+        hypermea=hypermea.tool.commands:initialize
     ''',
     zip_safe=False
 )
