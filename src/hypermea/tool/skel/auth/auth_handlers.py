@@ -16,7 +16,8 @@ def basic(token, **kwargs):
         role = 'admin' if is_root else ''
         rtn = {
             'user': username,
-            'role': role
+            'role': role,
+            'permissions': ['all']
         }
     except:
         rtn = {}

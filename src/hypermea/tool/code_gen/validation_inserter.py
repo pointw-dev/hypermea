@@ -9,7 +9,7 @@ class ValidationInserter(FileTransformer):
 
     def leave_Module(self, original_node, updated_node):
         """ Adds to the top of hypermea_service.py the following:
-                from validation.validator import HypermeaValidator
+                from validation.validator import CustomHypermeaValidator
         """
         addition = SimpleStatementLine(
             body=[
@@ -21,7 +21,7 @@ class ValidationInserter(FileTransformer):
                     ),
                     names=[
                         ImportAlias(
-                            name=Name('HypermeaValidator')
+                            name=Name('CustomHypermeaValidator')
                         ),
                     ],
                     whitespace_after_from=SimpleWhitespace(' '),
@@ -41,11 +41,11 @@ class ValidationInserter(FileTransformer):
 
     def leave_Assign(self, original_node, updated_node):
         """ Adds the following kwarg to hypermea_service.py:HypermeaService:__init__() self._app = Eve(...) assignment:
-                validator=HypermeaValidator
+                validator=CustomHypermeaValidator
         """
 
         addition = Arg(
-            value=Name('HypermeaValidator'),
+            value=Name('CustomHypermeaValidator'),
             equal=AssignEqual(
                 whitespace_before=SimpleWhitespace(''),
                 whitespace_after=SimpleWhitespace('')

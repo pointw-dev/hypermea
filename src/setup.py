@@ -30,7 +30,7 @@ setup(
         'inflect==4.1.0',
         'click',
         'requests',
-        'halchemy'
+        'hypermea-core'
     ],
     entry_points='''
         [console_scripts]

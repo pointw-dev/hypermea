@@ -2,7 +2,6 @@ import os
 import argparse
 import signal
 from hypermea_service import HypermeaService
-from hypermea.core.utils import is_mongo_running
 
 
 def stop_api(signum, frame):  # pylint: disable=unused-argument
