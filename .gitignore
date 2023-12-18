@@ -10,7 +10,7 @@ build/
 *.egg-info
 *.egg
 
-!/src/hypermea/skel/.idea
-/src/hypermea/skel/.idea/*
-!/src/hypermea/skel/.idea/icon.png
-!/src/hypermea/skel/.idea/icon_dark.png
+!/src/hypermea/tool/skel/.idea
+/src/hypermea/tool/skel/.idea/*
+!/src/hypermea/tool/skel/.idea/icon.png
+!/src/hypermea/tool/skel/.idea/icon_dark.png

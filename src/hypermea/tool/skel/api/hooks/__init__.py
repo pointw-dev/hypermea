@@ -1,13 +1,13 @@
 import logging
 from hypermea.core.hooks import fix_links, tidy_post_links
 from hypermea.core.utils import echo_message
+from hypermea.core.logging import trace
 import hooks._gateway
 import hooks._error_handlers
 import hooks._settings
 import hooks._logs
-from hypermea.core.logging import trace
-from configuration import SETTINGS
 import affordances
+from configuration import SETTINGS
 
 LOG = logging.getLogger('hooks')
 
