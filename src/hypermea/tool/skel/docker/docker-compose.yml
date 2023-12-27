@@ -5,6 +5,7 @@ services:
   {$project_name}:
     image: {$project_name}
     container_name: {$project_name}
+    build: .
     ports:
       - "2112:80"
     environment:
