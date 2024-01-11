@@ -36,11 +36,13 @@ Install hypermea with pip.
 
 ## Getting Started
 
+> This guide focusses on using the hypermea command line.  For details on methods you can use in your code, please see [hypermea-core](https://github.com/pointw-dev/hypermea-core)
+
 All utilities are accessed through the `hypermea` command.  You can also use `hy` for short.
 
 ### Get help
 
-To see what you can do these tools:
+To see what you can do these ools:
 
 `hypermea --help`
 
