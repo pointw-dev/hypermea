@@ -5,14 +5,14 @@ from hypermea.core.settings_manager import SettingsManager
 SETTINGS = SettingsManager.instance()
 SETTINGS.set_prefix_description('HY', 'HypermeaService base configuration')
 SETTINGS.create('HY', {
-    'API_NAME': 'fake-vin-scenarios-api',
+    'API_NAME': '{$project_name}',
     'API_PORT': 2112,
     'INSTANCE_NAME': socket.gethostname(),
 
     'MONGO_ATLAS': 'Disabled',
     'MONGO_HOST': 'localhost',
     'MONGO_PORT': 27017,
-    'MONGO_DBNAME': 'fake-vin-scenarios-api',
+    'MONGO_DBNAME': '{$project_name}',
 
     'TRACE_LOGGING': 'Enabled',
     'PAGINATION_LIMIT': 3000,
