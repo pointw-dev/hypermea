@@ -49,9 +49,31 @@ def wipe():
     return _wipe()
 
 
+@commands.command(name='start',
+                  short_help=f'Starts the api container, leaving other containers running.',
+                  help_priority=4)
+def start_container():
+    """
+    Deletes all docker images build from this api.
+    """
+    from ._docker import _start
+    return _start()
+
+
+@commands.command(name='stop',
+                  short_help=f'Stops the api container, leaving other containers running.',
+                  help_priority=5)
+def stop_container():
+    """
+    Deletes all docker images build from this api.
+    """
+    from ._docker import _stop
+    return _stop()
+
+
 @commands.command(name='up',
                   short_help=f'Runs `docker compose up -d`',
-                  help_priority=4)
+                  help_priority=6)
 @click.argument('suffix', metavar='[suffix]', default='none')
 def up(suffix):
     """
@@ -65,7 +87,7 @@ def up(suffix):
 
 @commands.command(name='down',
                   short_help=f'Runs `docker compose down`',
-                  help_priority=5)
+                  help_priority=7)
 @click.argument('suffix', metavar='[suffix]', default='none')
 def down(suffix):
     """
@@ -79,7 +101,7 @@ def down(suffix):
 
 @commands.command(name='cycle',
                   short_help=f'The same as down, wipe, build, up',
-                  help_priority=6)
+                  help_priority=8)
 @click.argument('suffix', metavar='[suffix]', default='none')
 def cycle(suffix):
     """
@@ -91,9 +113,9 @@ def cycle(suffix):
     return _cycle(suffix)
 
 
-@commands.command(name='logging',
-                  short_help=f'Shows docker logging for the running api.',
-                  help_priority=7)
+@commands.command(name='logs',
+                  short_help=f'Shows docker logs for the running api.',
+                  help_priority=9)
 @click.option('--follow', '-f',
               is_flag=True, help='Follow log output')
 @click.option('--popup', '-p',

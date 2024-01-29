@@ -1,6 +1,6 @@
 import logging
 from hypermea.core.hooks import fix_links, tidy_post_links
-from hypermea.core.utils import echo_message
+from hypermea.core.utils import echo_message, is_mongo_running, make_error_response
 from hypermea.core.logging import trace
 import hooks._gateway
 import hooks._error_handlers
@@ -17,6 +17,11 @@ def add_hooks(app):
     app.on_post_GET += fix_links
     app.on_post_PATCH += fix_links
     app.on_post_POST += tidy_post_links
+    
+    @app.before_request
+    def before_request():
+        if not is_mongo_running():
+            return make_error_response('MongoDB is not running or is not properly configured', 503)
 
     affordances.rfc6861.create_form.add_affordance(app)
     affordances.rfc6861.edit_form.add_affordance(app)

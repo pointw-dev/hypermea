@@ -48,6 +48,18 @@ def _wipe():
     docker_manager.wipe()
 
 
+def _start():
+    settings = _prepare_for_docker_command()
+    container_name = settings['project_name']
+    os.system(f'docker start {container_name}')
+
+
+def _stop():
+    settings = _prepare_for_docker_command()
+    container_name = settings['project_name']
+    os.system(f'docker stop {container_name}')
+
+
 def _up(suffix):
     _prepare_for_docker_command()
     file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
