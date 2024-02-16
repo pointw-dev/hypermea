@@ -1,5 +1,4 @@
 import socket
-
 from hypermea.core.settings_manager import SettingsManager
 
 SETTINGS = SettingsManager.instance()
@@ -23,6 +22,7 @@ SETTINGS.create('HY', {
 })
 
 # optional settings...
+SETTINGS.create('HY', 'DISABLE_RFC6861', is_optional=True)
 SETTINGS.create('HY', 'USE_ABSOLUTE_URLS', is_optional=True)
 SETTINGS.create('HY', 'BASE_PATH', is_optional=True)
 SETTINGS.create('HY', 'BASE_URL', is_optional=True)

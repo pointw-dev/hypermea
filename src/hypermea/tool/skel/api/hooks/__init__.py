@@ -21,6 +21,7 @@ def add_hooks(app):
     @app.before_request
     def before_request():
         if not is_mongo_running():
+            LOG.error('MongoDB is not accessible with current settings.')
             return make_error_response('MongoDB is not running or is not properly configured', 503)
 
     affordances.rfc6861.create_form.add_affordance(app)

@@ -12,10 +12,14 @@ from . import run
 from . import docker
 
 from .command_help_order import CommandHelpOrder
+try:
+    from hypermea.core import VERSION as core_version
+except ImportError:
+    core_version = 'unknown (earlier than 0.9.27)'
 
 
 @click.group()
-@click.version_option(package_name='hypermea')
+@click.version_option(package_name='hypermea', message=f'hypermea      %(version)s\nhypemea-core  {core_version}')
 def main():
     pass
 
