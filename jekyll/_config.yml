@@ -1,0 +1,18 @@
+# https://just-the-docs.com/
+
+title: Hypermea
+email: michael@pointw.com
+logo: /assets/img/hypermea.png
+# favicon_ico: 
+description: >- 
+  The fastest way to build production-ready Hypermedia APIs.
+
+port: 4001
+
+theme: just-the-docs
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-tabs
+
+color_scheme: dark

@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="130.55mm"
+   width="149.73825mm"
    height="34.14912mm"
-   viewBox="0 0 130.55 34.14912"
+   viewBox="0 0 149.73825 34.14912"
    version="1.1"
    id="svg5"
    xml:space="preserve"
-   inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
    sodipodi:docname="hypermea-letterhead.svg"
    inkscape:export-filename="hypermea-letterhead.png"
    inkscape:export-xdpi="111.5695"
@@ -28,14 +28,19 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.4142136"
-     inkscape:cx="172.53405"
-     inkscape:cy="117.37972"
+     inkscape:cx="172.1805"
+     inkscape:cy="117.02617"
      inkscape:window-width="1920"
-     inkscape:window-height="1009"
-     inkscape:window-x="2552"
+     inkscape:window-height="1129"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" /><defs
+     inkscape:current-layer="layer1"
+     inkscape:pageshadow="2"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" /><defs
      id="defs2"><rect
        x="185.74886"
        y="246.06937"
@@ -51,8 +56,8 @@
        id="text1091"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.0593px;font-family:Italiana;-inkscape-font-specification:'Italiana, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect1093);display:inline;fill:#308c88;fill-opacity:1;stroke:#808080;stroke-width:0;stroke-dasharray:none"><tspan
          x="185.74805"
-         y="257.07775"
-         id="tspan3088">hypermea</tspan></text><text
+         y="257.07238"
+         id="tspan863">hypermea</tspan></text><text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.76356px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#308c88;fill-opacity:1;stroke:#808080;stroke-width:0"
        x="50.661243"
