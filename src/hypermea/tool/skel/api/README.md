@@ -90,7 +90,7 @@ Optional environment variables
 | HY_URL_PREFIX        | If the API will be deployed behind a URL with a path, use this variable to set that path.  For example, if you deploy the API behind https://example.com/api/my_service, then set HY_URL_PREFIX to "api/my_service" |
 | HY_CACHE_CONTROL     | Sets the Cache-Control header (e.g. `no-cache, no-store, must-revalidate`) |
 | HY_CACHE_EXPIRES     | Sets the Cache-Expires header (value is in secods)           |
-| HY_ADD_ECHO          | If enabled, an undocumented endpoint will be created off of the root resource: `_echo`.  PUT {"message": {}, "status_code: int"} to this endpoint and it will be echoed back to you and logged (`.info` if < 400, `.warning` if < 500, else `.error`).  Useful to test the behaviour of error codes (e.g. with logging configurations) |
+| HY_ADD_ECHO          | If enabled, an undocumented endpoint will be created whose relative path is `/_echo`.  PUT {"message": {}, "status_code: int"} to this endpoint and it will be echoed back to you and logged (`.info` if < 400, `.warning` if < 500, else `.error`).  Useful to test the behaviour of error codes (e.g. with logging configurations) |
 
 
 If using auth (e.g. `hypermea api create {$project_name} --add-auth` )
