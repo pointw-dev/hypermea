@@ -631,4 +631,4 @@ HAL media type
   name
   description
   
-* HALchemy
+* halchemy

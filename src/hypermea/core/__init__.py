@@ -1,1 +1,2 @@
-VERSION = '0.9.28'
+# do not change version manually
+VERSION = '0.9.29'
