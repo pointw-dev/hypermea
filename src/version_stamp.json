@@ -1,0 +1,25 @@
+{
+    "version": "0.9.30",
+    "files": [
+        {
+            "path": "./version.py",
+            "pattern": "VERSION = '{version}'"
+        },
+        {
+            "path": "./hypermea/core/__init__.py",
+            "pattern": "VERSION = '{version}'"
+        },
+        {
+            "path": "./hypermea/tool/commands/__init__.py",
+            "pattern": "VERSION = '{version}'"
+        },
+        {
+            "path": "./hypermea/tool/skel/api/requirements.txt",
+            "pattern": "^hypermea-core=={version}$"
+        },
+        {
+            "path": "../jekyll/_includes/nav_footer_custom.html",
+            "pattern": "<p class=\"version-number\">Version {version}</p>"
+        }
+    ]
+}

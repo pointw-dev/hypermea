@@ -185,32 +185,37 @@ def _post_{plural}(request, payload):
     if payload.status_code == 201:
         j = json.loads(payload.data)
         if '_items' in j:
-            for {singular} in j['_items']:
-                _add_links_to_{singular}({singular})
+            _add_links_to_{plural}_collection(j, request.url)
         else:
             _add_links_to_{singular}(j)
         payload.data = json.dumps(j)
 
 
 @trace
-def _add_links_to_{plural}_collection({plural}_collection):
+def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
     for {singular} in {plural}_collection['_items']:
         _add_links_to_{singular}({singular})
-        
-    if '_links' in {plural}_collection:
-        base_url = get_my_base_url()
 
-        id_field = get_id_field('{plural}')
-        if id_field.startswith('_'):
-            id_field = id_field[1:]        
-                
-        {plural}_collection['_links']['item'] = {{
-            'href': f'{{base_url}}/{plural}/{{{{{{id_field}}}}}}',
-            'title': '{singular}',
-            'templated': True
+    if '_links' not in {plural}_collection:
+        {plural}_collection['_links'] = {{
+            'self': {{
+                'href': self_href
+            }}
         }}
-        self_href = {plural}_collection['_links']['self']['href']
-        affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', self_href)                
+
+    base_url = get_my_base_url()
+
+    id_field = get_id_field('{plural}')
+    if id_field.startswith('_'):
+        id_field = id_field[1:]
+
+    {plural}_collection['_links']['item'] = {{
+        'href': f'{{base_url}}/{plural}/{{{{{{id_field}}}}}}',
+        'title': '{singular}',
+        'templated': True
+    }}
+    self_href = {plural}_collection['_links']['self']['href']
+    affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', self_href)
 
 
 @trace
@@ -226,25 +231,25 @@ def _add_links_to_{singular}({singular}):
         'title': '{singular}'
     }}
     affordances.rfc6861.edit_form.add_link({singular}, '{plural}')
-    
 
-    
+
+
 @trace
 def _add_remote_children_links({singular}):
     if not SETTINGS['HY_GATEWAY_URL']:
         return
     {singular}_id = get_resource_id({singular}, '{plural}')
 
-    # == do not edit this method above this line ==    
+    # == do not edit this method above this line ==
 
-    
+
 @trace
 def _add_remote_parent_links({singular}):
     if not SETTINGS['HY_GATEWAY_URL']:
         return
     {singular}_id = get_resource_id({singular}, '{plural}')
 
-    # == do not edit this method above this line ==    
+    # == do not edit this method above this line ==
 ''')
 
 

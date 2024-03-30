@@ -19,6 +19,7 @@ SETTINGS.create('HY', {
     'ADD_ECHO': 'Disabled',
     'LOG_TO_FOLDER': 'Disabled',
     'SEND_ERROR_EMAILS': 'Disabled',
+    'LOG_MAX_BODY_SIZE': 256,
 })
 
 # optional settings...

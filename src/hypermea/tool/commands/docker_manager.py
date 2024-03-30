@@ -14,7 +14,10 @@ class DockerManager:
     def build(self, version, repository):
         old_image_id = subprocess.getoutput(f'docker images {self.image_name}:{version} --quiet') if version else None
 
-        os.system(f'docker build -t {self.image_name}:latest .')
+        errorlevel = os.system(f'docker build -t {self.image_name}:latest .')
+        if errorlevel:
+            click.echo('hypermea: error encountered building docker image.')
+            quit(errorlevel)
         new_image_id = subprocess.getoutput(f'docker images {self.image_name}:latest --quiet')
         git_branch = subprocess.getoutput(f'git rev-parse --abbrev-ref HEAD 2>{self.silence}')
 

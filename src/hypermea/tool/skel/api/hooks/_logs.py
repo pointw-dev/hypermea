@@ -4,9 +4,10 @@ This module defines functions to log requests, and to manage log verbosity.
 """
 import logging
 import json
-from flask import abort, make_response, jsonify, request as flask_request
-from hypermea.core.logging import trace
+from flask import make_response, jsonify, request as flask_request
+from hypermea.core.logging import trace, log_request, log_response
 from hypermea.core.utils import make_error_response
+from configuration import SETTINGS
 
 LOG = logging.getLogger('hooks.logging')
 
@@ -14,11 +15,17 @@ LOG = logging.getLogger('hooks.logging')
 @trace
 def add_hooks(app):
     """Wire up the events for logging"""
-    app.on_post_GET += _log_request
-    app.on_post_POST += _log_request
-    app.on_post_PATCH += _log_request
-    app.on_post_PUT += _log_request
-    app.on_post_DELETE += _log_request
+    app.on_pre_GET += _log_request
+    app.on_pre_POST += _log_request
+    app.on_pre_PATCH += _log_request
+    app.on_pre_PUT += _log_request
+    app.on_pre_DELETE += _log_request
+
+    app.on_post_GET += _log_response
+    app.on_post_POST += _log_response
+    app.on_post_PATCH += _log_response
+    app.on_post_PUT += _log_response
+    app.on_post_DELETE += _log_response
 
     @app.route('/_logging', methods=['GET'])
     def get_logging_config():
@@ -38,20 +45,13 @@ def add_hooks(app):
 
 
 @trace
-def _log_request(resource, request, payload):
-    """Event hook to log all requests."""
-    requested = resource if resource else 'root'
-    LOG.info(f'Request for {requested}: {request} [{payload.status_code}]')
-    request_headers = f'{request.headers}'.replace('\n','\n  ').rstrip()
-    request_data = json.dumps(json.loads(request.data if request.data else "\"\""))
-    response_headers = f'{payload.headers}'.replace('\n','\n  ').rstrip()
-    response_data = json.dumps(json.loads(payload.data if payload.data else "\"\""))
-    LOG.debug(f'\n-request.values:\n  {request.values.to_dict()}\n'
-              f'-request.headers:\n  {request_headers}\n'
-              f'-request.data:\n  {request_data}\n'
-              f'-response.headers:\n  {response_headers}\n'
-              f'-payload.data:\n  {response_data}\n')
+def _log_request(resource, request, lookup):
+    log_request(LOG, resource, request, lookup, SETTINGS['HY_LOG_MAX_BODY_SIZE'])
 
+
+@trace
+def _log_response(resource, request, payload):
+    log_response(LOG, resource, request, payload, SETTINGS['HY_LOG_MAX_BODY_SIZE'])
 
 @trace
 def _get_logging_config():

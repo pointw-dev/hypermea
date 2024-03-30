@@ -1,4 +1,5 @@
 import logging
+import json
 from datetime import datetime
 from copy import deepcopy
 import hashlib
@@ -143,8 +144,8 @@ def update_etag_and_updated(resource):
     resource.pop('_etag', None)
     resource.pop('_updated', None)
     
-    to_hash = json.dumps(resource, sor_keys=True)
-    resource['_etag'] = hashlib.md5(to_hash('utf-8')).hexdigest()
+    to_hash = json.dumps(resource, sort_keys=True, default=str)
+    resource['_etag'] = hashlib.md5(to_hash.encode('utf-8')).hexdigest()
     resource['_updated'] = datetime.now()
 
 
