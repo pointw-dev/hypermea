@@ -16,7 +16,7 @@ LOG = logging.getLogger('hooks.logging')
 def add_hooks(app):
     """Wire up the events for logging"""
     app.on_pre_GET += _log_request
-    app.on_pre_POST += _log_request
+    app.on_pre_POST += _log_post_request
     app.on_pre_PATCH += _log_request
     app.on_pre_PUT += _log_request
     app.on_pre_DELETE += _log_request
@@ -45,13 +45,17 @@ def add_hooks(app):
 
 
 @trace
-def _log_request(resource, request, lookup):
-    log_request(LOG, resource, request, lookup, SETTINGS['HY_LOG_MAX_BODY_SIZE'])
+def _log_post_request(resource, request):
+    log_request(LOG, resource, request, None)
 
+@trace
+def _log_request(resource, request, lookup):
+    log_request(LOG, resource, request, lookup)
 
 @trace
 def _log_response(resource, request, payload):
-    log_response(LOG, resource, request, payload, SETTINGS['HY_LOG_MAX_BODY_SIZE'])
+    log_response(LOG, resource, request, payload)
+
 
 @trace
 def _get_logging_config():

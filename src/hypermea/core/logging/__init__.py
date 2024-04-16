@@ -2,6 +2,9 @@ import logging
 import json
 from .trace.trace_level import TRACE_LEVEL
 from .trace.decorators import trace
+from configuration import SETTINGS
+
+TRUNCATED = '...\n  [Body truncated. Set logging to TRACE for full body, or increase HY_LOG_MAX_BODY_SIZE.]'
 
 
 def _get_console_handler_level():
@@ -12,7 +15,7 @@ def _get_console_handler_level():
     return None
 
 
-def log_request(log, resource, request, lookup, max_body_size):
+def log_request(log, resource, request, lookup):
     requested = resource if resource else 'root'
 
     current_console_level = _get_console_handler_level()
@@ -22,42 +25,45 @@ def log_request(log, resource, request, lookup, max_body_size):
 
     request_headers = f'{request.headers}'.replace('\n', '\n  ').rstrip()
     if request.is_json:
-        request_data = json.dumps(request.json) if request.data else "\"\""
+        request_body = json.dumps(request.json) if request.data else "\"\""
     else:
-        request_data = request.data if request.data else "\"\""
+        request_body = request.data if request.data else "\"\""
 
-    if current_console_level >= logging.DEBUG and len(request_data) > max_body_size:
-        request_data = request_data[:max_body_size] + '... [TRACE for full body]'
+    max_body_size = SETTINGS['HY_LOG_MAX_BODY_SIZE']
+    if current_console_level >= logging.DEBUG and len(request_body) > max_body_size:
+        request_body = request_body[:max_body_size] + TRUNCATED
 
     log.debug(f'\n{request}\n'
-              f'-lookup: {lookup}\n'
-              f'-request.values:\n  {request.values.to_dict()}\n'
+              f'-lookup: {lookup if lookup else "n/a"}\n'
+              f'-request.parameters:\n  {request.values.to_dict()}\n'
               f'-request.headers:\n  {request_headers}\n'
-              f'-request.data:\n  {request_data}\n')
+              f'-request.body:\n  {request_body}\n')
 
 
 @trace
-def log_response(log, resource, request, payload, max_body_size):
+def log_response(log, resource, request, payload):
     requested = resource if resource else 'root'
 
     current_console_level = _get_console_handler_level()
-    if current_console_level is None or current_console_level >= 20:
+    if current_console_level is None or current_console_level >= logging.INFO:
         log.info(f'Response sent for {request} {requested} [{payload.status_code}]')
         return
 
     response_headers = f'{payload.headers}'.replace('\n', '\n  ').rstrip()
     if payload.is_json:
-        response_data = json.dumps(payload.json) if payload.data else "\"\""
+        response_body = json.dumps(payload.json) if payload.data else "\"\""
     else:
-        response_data = payload.data
+        response_body = payload.data
 
-    if current_console_level >= 10 and len(response_data) > max_body_size:
-        response_data = response_data[:max_body_size] + '... [TRACE for full body]'
+    max_body_size = SETTINGS['HY_LOG_MAX_BODY_SIZE']
+    if current_console_level >= 10 and len(response_body) > max_body_size:
+        response_body = response_body[:max_body_size] + TRUNCATED
         if payload.is_json and '_items' in payload.json:
-            response_data += f' {len(payload.json["_items"])} items'
+            num_items = len(payload.json["_items"])
+            response_body += f'\n  Collection has {num_items} {"item" if num_items == 1 else "items"}'
 
     log.debug(f'Response sent for {request} {requested} [{payload.status_code}]\n'
               f'-response.headers:\n  {response_headers}\n'
-              f'-payload.data:\n  {response_data}\n')
+              f'-response.body:\n  {response_body}\n')
 
 

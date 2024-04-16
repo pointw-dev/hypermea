@@ -214,6 +214,7 @@ def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
         'title': '{singular}',
         'templated': True
     }}
+    
     self_href = {plural}_collection['_links']['self']['href']
     affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', self_href)
 
