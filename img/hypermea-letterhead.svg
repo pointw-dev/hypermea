@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="149.73825mm"
+   width="127.37454mm"
    height="34.14912mm"
-   viewBox="0 0 149.73825 34.14912"
+   viewBox="0 0 127.37454 34.14912"
    version="1.1"
    id="svg5"
    xml:space="preserve"
@@ -28,7 +28,7 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.4142136"
-     inkscape:cx="67.528696"
+     inkscape:cx="184.90842"
      inkscape:cy="117.37972"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -52,21 +52,21 @@
      id="layer1"
      transform="translate(-11.224639,-17.834926)"><text
        xml:space="preserve"
-       transform="matrix(1.8722339,0,0,1.8722339,-298.4002,-443.65009)"
+       transform="matrix(1.8722339,0,0,1.8722339,-301.57566,-443.65009)"
        id="text1091"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.0593px;font-family:Italiana;-inkscape-font-specification:'Italiana, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect1093);display:inline;fill:#308c88;fill-opacity:1;stroke:#808080;stroke-width:0;stroke-dasharray:none"><tspan
          x="185.74805"
          y="257.07775"
-         id="tspan354">hypermea</tspan></text><text
+         id="tspan404">hypermea</tspan></text><text
        xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.35px;font-family:Calibri;-inkscape-font-specification:'Calibri, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#308c88;fill-opacity:1;stroke:#808080;stroke-width:0"
-       x="54.990334"
-       y="48.401226"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.29167px;font-family:'JetBrains Mono';-inkscape-font-specification:'JetBrains Mono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#308c88;fill-opacity:1;stroke:#808080;stroke-width:0"
+       x="46.941727"
+       y="48.775402"
        id="text419"><tspan
          sodipodi:role="line"
          id="tspan329"
-         x="54.990334"
-         y="48.401226">Simple Commands, Serious APIs</tspan></text><g
+         x="46.941727"
+         y="48.775402">Simple Commands, Serious APIs</tspan></text><g
        inkscape:label="Layer 1"
        id="layer1-2"
        transform="matrix(0.49532444,0,0,0.49532444,-10.3006,-2.6228037)"><g
