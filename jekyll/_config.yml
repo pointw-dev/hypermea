@@ -1,11 +1,11 @@
 # https://just-the-docs.com/
 
-title: Hypermea
+title: hypermea
 email: michael@pointw.com
 logo: /assets/img/hypermea.png
 # favicon_ico: 
 description: >- 
-  The fastest way to build production-ready Hypermedia APIs.
+  Simple Commands, Serious APIs.
 
 port: 4001
 

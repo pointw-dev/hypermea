@@ -1,0 +1,4 @@
+Main:       #CF7377
+Back:       #DD9DA0
+Letters:    #FFFFFF
+

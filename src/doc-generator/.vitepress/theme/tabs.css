@@ -1,0 +1,46 @@
+.tabs-component {
+  margin: 32px 0;
+  background-color: var(--vp-code-block-bg);  
+}
+.tabs-component .tabs-component-tabs {
+  display: inline-flex;
+  margin-top: 0;
+  margin-bottom: -1px;
+  padding: 0;
+  border: 1px solid var(--vp-c-divider);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+}
+.tabs-component .tabs-component-tabs .tabs-component-tab {
+  margin: 0;
+  color: var(--vp-c-brand);
+  font-size: 14px;
+  font-weight: 600;
+  list-style: none;
+  border-left: 1px solid var(--vp-c-divider);
+  border-bottom: 2px solid transparent;
+}
+.tabs-component .tabs-component-tabs .tabs-component-tab:first-child {
+  border-left: none;
+}
+.tabs-component .tabs-component-tabs .tabs-component-tab.is-active {
+  border-bottom: 2px solid var(--vp-pointw-primary)
+}
+.tabs-component .tabs-component-tabs .tabs-component-tab .tabs-component-tab-a {
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  text-decoration: none;
+}
+.tabs-component .tabs-component-panels {
+  padding: 0;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 0 8px 8px 8px;
+}
+.tabs-component-panel {
+  margin-top: -15px;
+  margin-bottom: -15px;
+}
+.tabs-component-tabs .is-disabled {
+  color: #444;
+}

@@ -2,9 +2,7 @@
 ![](https://github.com/pointw-dev/hypermea/blob/main/img/hypermea-letterhead.png?raw=True)
 
 
-
 > **Please note**:  although we currently use this toolkit to create production-ready APIs, the toolkit is still under development.  Use at your own risk.  This doc is under a heavy rewrite.  Information here is mostly correct, but there are gaps and it's messy.
-
 
 
 ## Introduction

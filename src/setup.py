@@ -5,7 +5,7 @@ from version import VERSION
 setup(
     name='hypermea',
     version=VERSION,
-    description='The fastest way to build production-ready Hypermedia APIs.',
+    description='Simple Commands, Serious APIs.',
     long_description=open('../README.md').read(),
     long_description_content_type='text/markdown',
     license='MIT',

@@ -1,6 +1,6 @@
 # {$project_name}
 
-An Eve-based API, created with **[hypermea](https://pointw.com/rapid-api-creation-with-hypermea/)**.
+Created with **[hypermea](https://pointw.com/rapid-api-creation-with-hypermea/)**.
 
 ## Getting Started
 
