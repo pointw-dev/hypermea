@@ -3,7 +3,7 @@ import sys
 import subprocess
 import inflect
 import json
-from distutils.dir_util import copy_tree, remove_tree
+from shutil import copytree, rmtree
 
 
 def jump_to_folder(path=None):
@@ -108,7 +108,7 @@ def copy_skel(project_name, skel_folder, target_folder=None, replace=None, silen
     if not target_folder:
         if not os.path.isdir(skel_folder):
             os.mkdir(skel_folder)  # TODO: ensure doesn't already exist, etc
-    copy_tree(source, destination)
+    copytree(source, destination, dirs_exist_ok=True)
 
     # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
     remove_folder_if_exists(os.path.join(destination, '__pycache__'))
@@ -167,7 +167,7 @@ def remove_file_if_exists(filename):
 
 def remove_folder_if_exists(folder):
     if os.path.exists(folder):
-        remove_tree(folder)
+        rmtree(folder)
 
 
 def escape(message, code, silent=False):

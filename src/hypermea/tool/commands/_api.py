@@ -2,8 +2,7 @@ import importlib
 import json
 import os
 import re
-from distutils.dir_util import copy_tree
-from shutil import copyfile
+from shutil import copyfile, copytree
 
 import click
 
@@ -72,12 +71,12 @@ def _create_api(project_name):
     os.chdir('src')
     os.mkdir('scripts')
     scripts_folder = os.path.join(skel, 'scripts')
-    copy_tree(scripts_folder, 'scripts')
+    copytree(scripts_folder, 'scripts', dirs_exist_ok=True)
 
     api_folder = os.path.join(skel, 'api')
 
     os.mkdir(project_name)
-    copy_tree(api_folder, project_name)
+    copytree(api_folder, project_name, dirs_exist_ok=True)
 
     # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
     hypermea.tool.remove_folder_if_exists(os.path.join('scripts', '__pycache__'))
