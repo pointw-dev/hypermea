@@ -19,7 +19,7 @@ except ImportError:
 
 
 @click.group()
-@click.version_option(package_name='hypermea', message=f'hypermea      %(version)s\nhypemea-core  {core_version}')
+@click.version_option(package_name='hypermea', message=f'hypermea      %(version)s\nhypermea-core  {core_version}')
 def main():
     pass
 

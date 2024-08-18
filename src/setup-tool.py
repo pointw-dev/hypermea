@@ -1,5 +1,10 @@
+import os
 from setuptools import setup
 from version import VERSION
+
+
+# inside_tox = 'TOX_ENV_NAME' in os.environ
+# core_dependency = f'hypermea-core=={VERSION}' if not inside_tox else 'hypermea-core'
 
 
 setup(
@@ -30,6 +35,7 @@ setup(
         'inflect==4.1.0',
         'click',
         'requests',
+#        core_dependency
         f'hypermea-core=={VERSION}'
     ],
     entry_points='''

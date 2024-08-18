@@ -1,11 +1,27 @@
 # https://chatgpt.com/share/c2e7ee0e-fd99-48c7-a44b-76d388383377
 
-from fluenttest import FluentTest
 import os
+import subprocess
+import sys
 
-class CustomFluentTest(FluentTest):
-    def console_output(self, output):
-        self.output = output
+
+def printe(message):
+    sys.stderr.write('-=-=-=-=-=-=- ' + message + '\n')
+
+
+class TerminalHarness():
+    def __init__(self):
+        self.result = None
+        self.output = ''
+
+    def run(self, command):
+        self.result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        printe(str(self.result))
+        return self
+
+    @property
+    def console(self):
+        self.output = self.result.stdout
         return self
 
     def displays(self, expected_output):
