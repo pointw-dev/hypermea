@@ -8,6 +8,7 @@ from __tests__.tool.terminal_harness import TerminalHarness
 def test_view_the_version_numbers():
     pass
 
+
 @given('I am at a terminal', target_fixture='context')
 def context():
     context.terminal = TerminalHarness()
@@ -17,10 +18,10 @@ def context():
 @when('I request the hypermea version')
 def request_hypermea_version(context):
     context.terminal.run('hy --version')
-#    context.terminal.run('echo hypermea-core')
 
 
 @then('the console displays the version number for both core and tool')
 def check_console(context):
+    context.terminal.console.displays('hypermea ')
     context.terminal.console.displays('hypermea-core')
 

@@ -1,1 +1,1 @@
-FEATURE = 'spike/developer_info.feature'
+FEATURE = 'tool/developer_info.feature'
