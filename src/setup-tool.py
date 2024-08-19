@@ -1,10 +1,6 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 from version import VERSION
-
-
-# inside_tox = 'TOX_ENV_NAME' in os.environ
-# core_dependency = f'hypermea-core=={VERSION}' if not inside_tox else 'hypermea-core'
 
 
 setup(
@@ -28,14 +24,16 @@ setup(
     url='https://github.com/pointw-dev/hypermea',
     author='Michael Ottoson',
     author_email='michael@pointw.com',
-    packages=['hypermea'],
+    packages=find_packages(
+        where='./hypermea/tool',
+        include=['hypermea.tool.*']
+    ),
     include_package_data=True,
     install_requires=[
         'libcst',
         'inflect==4.1.0',
         'click',
         'requests',
-#        core_dependency
         f'hypermea-core=={VERSION}'
     ],
     entry_points='''
