@@ -1,6 +1,6 @@
 from pytest_bdd import scenario, given, when, then, parsers
+from __tests__.terminal_harness import TerminalHarness
 from __tests__.tool import FEATURE
-from __tests__.tool.terminal_harness import TerminalHarness
 
 
 @scenario(FEATURE, 'Get help for commands')

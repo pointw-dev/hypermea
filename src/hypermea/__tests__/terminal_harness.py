@@ -5,18 +5,14 @@ import subprocess
 import sys
 
 
-def printe(message):
-    sys.stderr.write('-=-=-=-=-=-=- ' + message + '\n')
-
-
 class TerminalHarness():
     def __init__(self):
         self.result = None
         self.output = ''
 
+
     def run(self, command):
         self.result = subprocess.run(command, shell=True, capture_output=True, text=True)
-        printe(str(self.result))
         return self
 
     @property

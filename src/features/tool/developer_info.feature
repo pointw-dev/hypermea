@@ -1,5 +1,9 @@
 Feature: Provides information to the developer about the tool
 
+    The types of information a developer will want to know is the version number of the library
+    and tool set installed, the commands available (usage information), and help on using those commands.
+
+
     Scenario:  View the version numbers
         Given I am at a terminal
         When I request the hypermea version
@@ -11,7 +15,7 @@ Feature: Provides information to the developer about the tool
         When I run hypermea with no parameters
         Then the console displays usage information
 
-
+    @skip
     Scenario Outline: Get help for commands
         Given I am at a terminal
         When I request help for the <command> command

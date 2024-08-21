@@ -2,6 +2,8 @@ import click
 
 
 def _create():
+    with open('schnizzel.txt', 'w') as f:
+        f.write('Hello, world!\n')
     click.echo('create')
 
 

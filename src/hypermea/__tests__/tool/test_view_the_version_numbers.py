@@ -1,7 +1,6 @@
-from pytest_bdd import scenario, given, when, then, parsers
-from assertpy import assert_that  # https://github.com/assertpy/assertpy
+from pytest_bdd import scenario, given, when, then
+from __tests__.terminal_harness import TerminalHarness
 from __tests__.tool import FEATURE
-from __tests__.tool.terminal_harness import TerminalHarness
 
 
 @scenario(FEATURE, 'View the version numbers')
