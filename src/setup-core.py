@@ -24,10 +24,7 @@ setup(
     author='Michael Ottoson',
     author_email='michael@pointw.com',
     package_dir={'hypermea.core':'hypermea/core'},
-    packages=find_packages(
-        where='./hypermea/core',
-        include=['hypermea.core.*']
-    ),
+    packages=['hypermea.core'],
     include_package_data=True,
     zip_safe=False
 )

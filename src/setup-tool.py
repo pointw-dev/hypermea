@@ -24,14 +24,11 @@ setup(
     url='https://github.com/pointw-dev/hypermea',
     author='Michael Ottoson',
     author_email='michael@pointw.com',
-    packages=find_packages(
-        where='./hypermea/tool',
-        include=['hypermea.tool.*']
-    ),
+    packages=['hypermea'],
     include_package_data=True,
     install_requires=[
         'libcst',
-        'inflect==4.1.0',
+        'inflect==4.1.0',   # 4.1.0   7.5.0 runs verrrrry slowly ?!??!
         'click',
         'requests',
         f'hypermea-core=={VERSION}'
