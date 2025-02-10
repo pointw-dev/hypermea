@@ -32,4 +32,4 @@ features:
     link: /guide/introduction/quickstart
     
 ---
-Transform your development workflow with hypermea, the toolkit that lets you rapidly create production-ready hypermedia-driven APIs. Equipped with advanced features, sophisticated error handling, expressive logging and much more, hypermea ensures your APIs are built to last, whether for small projects or enterprise-scale solutions. Discover the power of hypermedia APIs and how **hypermea makes it easy**.
+Transform your development workflow with **hypermea**, the toolkit that lets you rapidly create production-ready hypermedia-driven APIs. Equipped with advanced features, sophisticated error handling, expressive logging and much more, hypermea ensures your APIs are built to last, whether for small projects or enterprise-scale solutions. Discover the power of hypermedia APIs and how **hypermea makes it easy**.
