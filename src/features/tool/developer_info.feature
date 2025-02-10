@@ -15,7 +15,6 @@ Feature: Provides information to the developer about the tool
         When I run hypermea with no parameters
         Then the console displays usage information
 
-    @skip
     Scenario Outline: Get help for commands
         Given I am at a terminal
         When I request help for the <command> command

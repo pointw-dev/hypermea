@@ -63,9 +63,10 @@ def _create_api(project_name):
     skel = os.path.join(os.path.dirname(hypermea.tool.__file__), 'skel')
     readme_filename = os.path.join(skel, 'doc/README.md')
     copyfile(readme_filename, './README.md')
-    os.mkdir('doc')
-    readme_filename = os.path.join(skel, 'doc/Setup-Dev-Environment.md')
-    copyfile(readme_filename, './doc/Setup-Dev-Environment.md')
+    # TODO: write good docs and put them here...
+    # os.mkdir('doc')
+    # readme_filename = os.path.join(skel, 'doc/Setup-Dev-Environment.md')
+    # copyfile(readme_filename, './doc/Setup-Dev-Environment.md')
 
     os.mkdir('src')
     os.chdir('src')

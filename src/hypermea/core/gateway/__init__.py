@@ -18,7 +18,7 @@ def register(app):
         LOG.warning('HY_GATEWAY_URL is set, but cannot register because HY_BASE_URL is not set - cancelling')
         return
 
-    url = get_href_from_gateway('registrations')
+    url = get_href_from_gateway('gateway_registrations')
     name = SETTINGS['HY_API_NAME'] if not SETTINGS['HY_NAME_ON_GATEWAY'] else SETTINGS['HY_NAME_ON_GATEWAY']
     base_url = SETTINGS['HY_BASE_URL']
     LOG.info(f'Registering with gateway as {name} at {base_url} to {url}')

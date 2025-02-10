@@ -5,36 +5,6 @@ The audience of this README is the **client developer**, i.e. someone who will *
 If you are an **API developer** who will make changes to `{$project_name}` itself, please see [`src/{$project_name}/README.md`](./src/{$project_name}/README.md).
 
 
-
-## Getting Started
-
-If you are running a local instance using all of the defaults, the API is served here http://localhost:2112. 
-
-Wherever your instance of the API is, this doc will refer to its location as `{BASE_API_URL}`.
-
-
-
-## Authorization
-
-If your API is equipped with auth, there are two ways a client can authenticate.
-
-1. OAuth2 (Bearer token)
-2. If the instance of the API you are using was configured with HY_ADD_BASIC, there are four "backdoor" users you can use
-
-See the [Authorization doc](./doc/Authorization.md) for more details.
-
-**IMPORTANT**:  If you use a user with the multitenant permission (e.g. root:password) when you POST resources you must add a `_tenant` field with the region code of a valid region.  If you do not, only other multitenant users will see that resource.  <u>It will be invisible to single tenant users.</u>   If it happens (perhaps on purpose) you can always PATCH the `_tenant` field later.
-
-By default the `_tenant` field does not appear when you GET resources.  You can view the field with the [projection query string](https://docs.python-eve.org/en/stable/features.html#projections).
-
-e.g.
-
-`GET {resource_href}?projection={"_tenant":1,"name":1}`
-
-Note: when using query strings that have curly brackets against an instance of the API behind AWS API Gateway, the curly brackets must be urlencoded.
-
-
-
 ## General terms
 
 - **resource** - similar to an entity, it's the thing you GET.  It's the R in URL.  The set of resources comprise the domain the API is responsible for managing.  There are two basic kinds of resources:
@@ -180,7 +150,7 @@ for each brand in brands.body._items...
 
 ## Using the API
 
-`{$project_name}` is built with [Eve](https://docs.python-eve.org/en/stable/) and enhanced by [hypermea](https://github.com/pointw-dev/hypermea).  What follows is a list of some of the features provided by Eve.  You can learn more from its [feature documentation](https://docs.python-eve.org/en/stable/features.html).  There are more info and resources in this project [confluence page](https://cri.atlassian.net/wiki/spaces/I/pages/348291073/Introduction+to+Python+Eve+Cerberus+hypermea).
+`{$project_name}` is built with [Eve](https://docs.python-eve.org/en/stable/) and enhanced by [hypermea](https://github.com/pointw-dev/hypermea).  What follows is a list of some of the features provided by Eve.  You can learn more from its [feature documentation](https://docs.python-eve.org/en/stable/features.html).
 
 ### Pagination
 

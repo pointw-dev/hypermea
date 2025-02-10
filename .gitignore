@@ -1,3 +1,6 @@
+node_modules/
+__toxtest__/
+
 ## Python
 ##
 
