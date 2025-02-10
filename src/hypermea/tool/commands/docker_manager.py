@@ -9,7 +9,7 @@ class DockerManager:
     def __init__(self, image_name, version=None, repository=None):
         self.image_name = image_name
         self.is_windows = platform.system() == 'Windows'
-        self.silence = 'nul' if self.is_windows else 'null'
+        self.silence = 'nul' if self.is_windows else '/dev/null'
 
     def build(self, version, repository):
         old_image_id = subprocess.getoutput(f'docker images {self.image_name}:{version} --quiet') if version else None
