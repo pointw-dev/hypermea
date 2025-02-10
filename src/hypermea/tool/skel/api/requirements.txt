@@ -1,4 +1,4 @@
 Eve==2.2.0
 Flask-Cors==5.0.0
 requests==2.32.3
-hypermea-core==0.9.33
+hypermea-core==0.9.34
