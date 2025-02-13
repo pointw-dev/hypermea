@@ -2,7 +2,7 @@ import logging
 import json
 import requests
 from requests.exceptions import ConnectionError
-from flask import current_app
+from flask import current_app, request
 from hypermea.core.logging import trace
 from configuration import SETTINGS
 
@@ -143,7 +143,10 @@ def _get_embedded_resource(remote_id, rel):
         return
 
     url = f'{get_href_from_gateway(rel)}/{remote_id}'
-    response = requests.get(url)
+    auth_header = {
+        'Authoirzation': request.headers.get('Authorization')
+    }
+    response = requests.get(url, headers={'Authorization': auth_header})
     # ASSERT: ok
 
     return {
