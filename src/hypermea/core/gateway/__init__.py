@@ -122,7 +122,9 @@ def embed_remote_parent_resource(resource, request, payload):
     embeddable = json.loads(request.args[embed_key])
     for field in embeddable:
         if embeddable[field] and field.find('.') < 0:
-            definition = current_app.config['DOMAIN'][resource]['schema'][field]
+            definition = current_app.config['DOMAIN'][resource]['schema'].get(field)
+            if not definition:
+                return
             remote_relation = definition.get('remote_relation', {})
             rel = remote_relation.get('rel')
             if rel and remote_relation.get('embeddable', False):
@@ -143,10 +145,13 @@ def _get_embedded_resource(remote_id, rel):
         return
 
     url = f'{get_href_from_gateway(rel)}/{remote_id}'
-    auth_header = {
-        'Authoirzation': request.headers.get('Authorization')
-    }
-    response = requests.get(url, headers={'Authorization': auth_header})
+    auth = request.headers.get('Authorization')
+    auth_header = {}
+    if auth:
+        auth_header = {
+            'Authorization': auth
+        }
+    response = requests.get(url, headers=auth_header)
     # ASSERT: ok
 
     return {
