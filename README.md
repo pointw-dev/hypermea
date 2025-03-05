@@ -1,8 +1,11 @@
 # hypermea
-![](https://github.com/pointw-dev/hypermea/blob/main/img/hypermea-letterhead.png?raw=True)
+![](./img/hypermea-letterhead.svg)
 
 
-> **Please note**:  although we currently use this toolkit to create production-ready APIs, the toolkit is still under development.  Use at your own risk.  This doc is under a heavy rewrite.  Information here is mostly correct, but there are gaps and it's messy.
+> **Please note**:  We have been using hypermea internally for years to create real-life production microservice clusters. We are in the process of shrink-wrapping the package and polishing the documentation.
+> This doc is under a heavy rewrite.  Information here is mostly correct, but there are gaps and it's messy.
+> Version 1.0.0 is coming soon. Until its release, proceed with caution.
+> ![](./docs/img/work-in-progress.png)
 
 
 ## Introduction
@@ -36,7 +39,7 @@ All utilities are accessed through the `hypermea` command.  You can also use `hy
 
 ### Get help
 
-To see what you can do these ools:
+To see what you can do these tools:
 
 `hypermea --help`
 

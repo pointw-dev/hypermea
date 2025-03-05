@@ -5,7 +5,7 @@
 <template>
   <div class="VPFooter">
     <p class="license">Released under the <a target="_blank" class="link" href="https://raw.githubusercontent.com/pointw-dev/hypermea/refs/heads/main/LICENSE">MIT License</a>.</p>
-    <p class="copyright">Copyright © 2025 Michael Ottoson (pointw.com)</p>
+    <p class="copyright">Copyright © 2019-2025 Michael Ottoson (pointw.com)</p>
   </div>
 </template>
 
