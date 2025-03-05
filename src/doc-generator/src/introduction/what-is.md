@@ -2,6 +2,14 @@
 
 Hypermea (hy-PER-me-a) is a toolkit that lets you rapidly create production ready, hypermedia driven, microservice compatible APIs.
 
+:::tip Note
+We have been using hypermea internally for years to create real-life production microservice clusters. We are in the process of shrink-wrapping the package and polishing the documentation.  
+
+Version 1.0.0 is coming soon.  Until its release, proceed with caution.
+
+<centered-image src="/img/work-in-progress.png" />
+:::
+
 ## Production Ready
 When you build your API service with hypermea, out of the box your service has:
 * a managed settings configuration system, organized along integration lines 
@@ -18,10 +26,12 @@ To learn more about what hypermea does for you, check out [[TODO]].
 ## Hypermedia-Driven
 Hypermedia means using links to navigate and operate an API.  Clients do not need to know how your services are architected.  Client code is truly decoupled from your services.  This lets the back-end team change things server-side without requiring clients to change along.
 
-How is this possible?  The idea is simple - so simple that it's hard to believe it works.  To learn more check out [[TODO]].
+How is this possible?  The idea is simple - so simple that it's hard to believe it works.
+
+[Learn more about hypermedia](https://pointw-dev.github.io/hypermedia-docs).
 
 ## Microservice Compatible
-A good microservice is a small, independently deployable service that does one thing well.  A developer can hold the entire service in her head.  Because they are so small, you will need many of them to drive your business. This solves many problems, but it also creates new ones.  
+A good microservice is a small, independently deployable service, and does one thing well.  A developer can hold the entire microservice in her head.  Because they are so small, you will need many of them to drive your business. This solves many problems, but it also creates new ones.  
 * How do you manage such a large number of services?  
   * Hypermea adopts the [API Gateway pattern](https://microservices.io/patterns/apigateway.html) which guides clients to the resources they use without having to know anything in advance about your service architecture.
 * What happens if a microservice starts out small then grows over time and needs to split into smaller microservices?  
@@ -35,23 +45,30 @@ Hypermea is a package that consists of:
 ## Command-line tools
 Use simple commands to create your services.  For example, let's start with this resource model:
 
-![Simple resource model](/img/simple-resource-model.png)
+<centered-image src="/img/simple-resource-model.png" rounded />
 
-To implement this in a single service, you would run these commands:
+To implement this in a single service, first create the API:
 
 ```bash
 hypermea api create order-processing
-hypermea resource create customers
-hypermea resource create orders
-hypermea link create customers orders
+````
+
+:::tip Note
+The `hypermea` is aliased to `hy`. You can use whichever you prefer.
+:::
+
+And now to build the resource model above:
+```bash
+hy resource create customers
+hy resource create orders
+hy link create customers orders
 ```
 
-Each command has multi-level help:
+To learn about the commands, command has multi-level help:
 ```bash
-hypermea --help
-hypermea api --help
-hypermea api create --help
-
+hy --help
+hy api --help
+hy api create --help
 ```
 
 To learn more, check out [[TODO]]. 

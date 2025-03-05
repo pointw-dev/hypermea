@@ -1,32 +1,16 @@
 # Getting Started
 
-<tabs>
-<tab name="Python">
+Install hypermea into your Python virtual environment:
 
-```python
-api = Api()
-api.add_headers({
-    'Cache-control': 'no-cache',
-    'Accept-language': 'en-CA, en;q=0.9, fr-CA;q=0.8, fr;q=0.7',
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoyfQ.nMoAK-oiZTdVT0CcGhgS5yCscaNSf49BYFR3DiGT3tM'
-})
+```bash
+pip install hypermea
 ```
-</tab>
 
-<tab name="JavaScript">
+Create your API.  For example, to create a service named `order-processing`:
 
-```javascript
-const api = new Api()
-api.addHeaders({
-    'Cache-control': 'no-cache',
-    'Accept-language': 'en-CA, en;q=0.9, fr-CA;q=0.8, fr;q=0.7',
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoyfQ.nMoAK-oiZTdVT0CcGhgS5yCscaNSf49BYFR3DiGT3tM'
-})
+```bash
+hy api create order-processing
 ```
-</tab>
-
-</tabs>
-
 
 This creates the following project folders and files:
 
