@@ -54,8 +54,8 @@ def add(silent=False):
         hypermea.tool.escape('auth has already been added', 201, silent)
 
     hypermea.tool.copy_skel(settings['project_name'], 'auth', silent=silent)
-    hypermea.tool.install_packages(['eve-negotiable-auth', 'PyJWT', 'cryptography'], 'add-auth')
-    # eve_negotiable_auth also installs authparser and pyparsing    
+    hypermea.tool.install_packages(['hypermea-negotiable-auth', 'PyJWT', 'cryptography'], 'add-auth')
+    # hypermea_negotiable_auth also installs authparser and pyparsing    
     # cryptography also installs cffi, pycparser
     # requests also installs certifi, chardet, idna, urllib3
     wire_up_service()

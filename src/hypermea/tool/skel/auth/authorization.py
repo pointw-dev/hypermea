@@ -2,7 +2,7 @@
 The auth module used for HY.
 """
 from bson.objectid import ObjectId
-from eve_negotiable_auth import NegotiableAuth, AUTH_PARSER
+from hypermea_negotiable_auth import NegotiableAuth, AUTH_PARSER
 
 from hypermea.core.utils import get_db
 from . import SETTINGS
