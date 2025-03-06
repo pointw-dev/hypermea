@@ -8,6 +8,7 @@ Transform your development workflow with hypermea, the toolkit that lets you rap
 > **Please note**:  We have been using hypermea internally for years to create real-life production microservice clusters. We are in the process of shrink-wrapping the package and polishing the documentation.
 > This doc is under a heavy rewrite.  Information here is mostly correct, but there are gaps and it's messy.
 > Version 1.0.0 is coming soon. Until its release, proceed with caution.
+>
 > ![](./docs/img/work-in-progress.png)
 
 
