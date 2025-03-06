@@ -1,6 +1,9 @@
 # hypermea
 ![](./img/hypermea-letterhead.svg)
 
+## Create production-ready hypermedia APIs - *fast*
+
+Transform your development workflow with hypermea, the toolkit that lets you rapidly create production-ready hypermedia-driven APIs. Equipped with advanced features, sophisticated error handling, expressive logging and much more, hypermea ensures your APIs are built to last, whether for small projects or enterprise-scale solutions. Discover the power of hypermedia APIs and how **hypermea makes it easy**.
 
 > **Please note**:  We have been using hypermea internally for years to create real-life production microservice clusters. We are in the process of shrink-wrapping the package and polishing the documentation.
 > This doc is under a heavy rewrite.  Information here is mostly correct, but there are gaps and it's messy.
@@ -8,7 +11,27 @@
 > ![](./docs/img/work-in-progress.png)
 
 
-## Introduction
+## New to hypermedia?
+Hypermedia is a simple idea with powerful results.  If you are new to hypermedia, [start here](https://pointw-dev.github.io/hypermedia-docs/).
+
+## Scaffolding tools
+
+With simple commands you generate a fully functional, hypermedia-driven API code base in minutes. No tedious setup.
+
+Before opening your IDE you can add resources, links, affordances. Configure authentication, Git, Docker, and more.
+
+Start with a solid foundation and focus on what matters: your business logic.
+
+
+## Runtime Libraries
+The APIs you create leverage <b><u><a href="https://flask.palletsprojects.com/en/stable/">Flask</a></u></b>, are powered by <b><u><a href="https://www.mongodb.com/">MongoDB</a></u></b>, and are enriched by <b><u><a href="https://docs.python-eve.org/en/stable/index.html">Eve</a></u></b>.  You get the benefits of those libraries without needing to learn them first.
+
+With the <b><u><a href="https://pypi.org/project/hypermea-core/">hypermea-core</a></u></b> library your API is hypermedia-based using <b><u><a href="https://dev.to/nevnet99/wtf-is-hal-hypertext-application-language-2fo6">HAL</a></u></b> to represent your resources.
+
+Out of the box your APIs are feature rich, including sorting, pagination, filtering, validation, bulk inserts, and much more.
+
+
+## Getting started
 
 [Eve](https://docs.python-eve.org/en/stable/) is amazing.  The full power of Flask/Python, optimized for an API over mongodb.  Nice.
 
@@ -27,7 +50,9 @@ app.run()
 
 Install hypermea with pip.
 
-`pip install hypermea`
+```bash
+pip install hypermea
+```
 
 
 
