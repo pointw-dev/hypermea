@@ -35,7 +35,7 @@ A good microservice is a small, independently deployable service, and does one t
 * How do you manage such a large number of services?  
   * Hypermea adopts the [API Gateway pattern](https://microservices.io/patterns/apigateway.html) which guides clients to the resources they use without having to know anything in advance about your service architecture.
 * What happens if a microservice starts out small then grows over time and needs to split into smaller microservices?  
-  * Because your services are hypermedia-driven, you can refactor, rearchitect, and rearrange at any time without breaking your clients.
+  * Because your services are hypermedia-driven, you can refactor, re-architect, and rearrange at any time without breaking your clients.
 
 # Okay, but what *is* hypermea?
 Hypermea is a package that consists of:
@@ -74,4 +74,4 @@ hy api create --help
 To learn more, check out [[TODO]]. 
 
 ## Core library
-Hypermea's core library is an independently distributable package.  It is separate from the command-line tools so your shippables are as lean as possible.  The core library's purpose is primarily to power the functionality of your `hypermea_service`.  It also provides an expanding set of methods to make your customizations easier: for example, access the database, standardize error messages, customize resource representations, and more.  To learn more, check out [[TODO]].
+Hypermea's core library is an independently distributable package.  It is separate from the command-line tools so your shippable packages are as lean as possible.  The core library's purpose is primarily to power the functionality of your `hypermea_service`.  It also provides an expanding set of methods to make your customizations easier: for example, access the database, standardize error messages, customize resource representations, and more.  To learn more, check out [[TODO]].
