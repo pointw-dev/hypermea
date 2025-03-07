@@ -184,3 +184,9 @@
 .item > .text {
   font-size: 13pt;
 }
+
+@media only screen and (max-width: 959px)  {
+  .magic-image {
+    margin: 0 auto;
+  }
+}
