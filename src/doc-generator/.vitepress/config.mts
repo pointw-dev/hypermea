@@ -6,11 +6,14 @@ import { fileURLToPath, URL } from 'node:url'
 const hostname = 'https://pointw-dev.github.io'
 const basePath = 'hypermea'
 const seoLogo = 'https://pointw-dev.github.io/hypermea/img/hypermea-card.png'
+const title = 'hypermea'
 const tagline = 'Simple Commands, Serious APIs'
+
+const siteUrl = hostname + (basePath? `/${basePath}/` : '')
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'hypermea',
+  title: title,
   description: tagline,
   
   themeConfig: {
@@ -47,11 +50,16 @@ export default defineConfig({
 
     // test with https://www.opengraph.xyz/url/
     ['meta', {property: 'og:image', content: seoLogo}],
+    ['meta', {property: "og:url", content: siteUrl}],
     ['meta', {property: "og:description", content: tagline}],
     ['meta', {property: 'og:type', content: 'website'}],
 
-    ['meta', {name: 'twitter:image', value: seoLogo}],
-    ['meta', {name: 'twitter:card', value: 'summary'}]
+    ['meta', {name: "twitter:card", content: "summary_large_image"}],
+    ['meta', {name: 'twitter:image', content: seoLogo}],
+    ['meta', {property: "twitter:domain", content: "pointw.com"}],
+    ['meta', {property: "twitter:url", content: siteUrl}],
+    ['meta', {name: "twitter:title", content: title}],
+    ['meta', {name: "twitter:description", content: tagline}]
   ],
   srcDir: 'src',
   vite: {
@@ -65,7 +73,7 @@ export default defineConfig({
     }
   },
   sitemap: {
-    hostname: hostname + (basePath? `/${basePath}/` : '')
+    hostname: siteUrl
   }
 })
 
