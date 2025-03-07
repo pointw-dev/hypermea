@@ -5,12 +5,13 @@ import { fileURLToPath, URL } from 'node:url'
 
 const hostname = 'https://pointw-dev.github.io'
 const basePath = 'hypermea'
-const seoLogo = 'https://pointw-dev.github.io/hypermea/img/hero.svg'
+const seoLogo = 'https://pointw-dev.github.io/hypermea/img/hypermea-card.png'
+const tagline = 'Simple Commands, Serious APIs'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: 'hypermea',
-  description: 'Simple Commands, Serious APIs',
+  description: tagline,
   
   themeConfig: {
     siteTitle: 'hypermea',
@@ -46,6 +47,7 @@ export default defineConfig({
 
     // test with https://www.opengraph.xyz/url/
     ['meta', {property: 'og:image', content: seoLogo}],
+    ['meta', {property: "og:description", content: tagline}],
     ['meta', {property: 'og:type', content: 'website'}],
 
     ['meta', {name: 'twitter:image', value: seoLogo}],
