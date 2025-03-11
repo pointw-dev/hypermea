@@ -1,5 +1,6 @@
 import logging
 import json
+import socket
 from datetime import datetime
 from copy import deepcopy
 import hashlib
@@ -19,6 +20,14 @@ unauthorized_message = {
     "_error": {
         "message": "Please provide proper credentials",
         "code": 401
+    }
+}
+
+not_found_message = {
+    "_status": "ERR",
+    "_error": {
+        "message": "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.",
+        "code": 404
     }
 }
 
@@ -91,11 +100,13 @@ def get_api():
 
 
 def is_mongo_running():
+    host = SETTINGS['HY_MONGO_HOST']
+    port = SETTINGS['HY_MONGO_PORT']
+    # TODO: ensure this works with atlas, or other permutations
     try:
-        get_db().command('ping')
-        return True
-    except Exception as ex:
-        print(ex)
+        with socket.create_connection((host, port), timeout=0.5):  # TODO: configurable???
+            return True
+    except OSError:
         return False
 
 

@@ -38,6 +38,13 @@ SETTINGS.create('HY', 'MONGO_AUTH_SOURCE', is_optional=True)
 SETTINGS.create('HY', 'MEDIA_BASE_URL', is_optional=True)
 SETTINGS.create('HY', 'PUBLIC_RESOURCES', is_optional=True)
 
+SETTINGS.create('HY', 'RATE_LIMIT', is_optional=True)
+SETTINGS.create('HY', 'RATE_LIMIT_GET', is_optional=True)
+SETTINGS.create('HY', 'RATE_LIMIT_POST', is_optional=True)
+SETTINGS.create('HY', 'RATE_LIMIT_PATCH', is_optional=True)
+SETTINGS.create('HY', 'RATE_LIMIT_DELETE', is_optional=True)
+
+
 if SETTINGS.has_enabled('HY_SEND_ERROR_EMAILS'):
     SETTINGS.create('HY', 'SMTP_PORT', default_value=25)
     SETTINGS.create('HY', 'SMTP_HOST', is_optional=True)

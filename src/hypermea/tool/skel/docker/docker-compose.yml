@@ -13,8 +13,6 @@ services:
       HY_API_PORT: 80
       HY_CACHE_CONTROL: no-cache, no-store, must-revalidate
       HY_CACHE_EXPIRES: 30
-    volumes:
-    - ./logging:/var/log/{$project_name}
     depends_on:
       - {$project_name}-mongo
 

@@ -46,7 +46,12 @@ def _create_api(project_name):
 
     project_name = _sanitize_for_mongo_db_name(project_name)
 
-    if len(os.listdir(current_dir)) > 0 and not click.confirm(
+    cur_dir_contents = os.listdir(current_dir)
+    folder_is_empty = len(cur_dir_contents) == 0
+    if len(cur_dir_contents) == 1 and '.python-version' in cur_dir_contents:
+        folder_is_empty = True
+
+    if (not folder_is_empty) and not click.confirm(
             'This folder is not empty.  Do you still wish to create your API here?',
             show_default=True
     ):

@@ -1,6 +1,6 @@
 # {$project_name}
 
-Created with **[hypermea](https://pointw.com/rapid-api-creation-with-hypermea/)**.
+Created with **[hypermea](https://pointw-dev.github.io/hypermea/)**.
 
 ## Getting Started
 

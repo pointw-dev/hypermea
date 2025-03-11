@@ -17,7 +17,7 @@ def add_hooks(app):
     app.on_post_GET += fix_links
     app.on_post_PATCH += fix_links
     app.on_post_POST += tidy_post_links
-    
+
     @app.before_request
     def before_request():
         if not is_mongo_running():

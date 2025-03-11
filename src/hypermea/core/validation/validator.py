@@ -102,7 +102,7 @@ class HypermeaValidator(Validator):
     def _validate_remote_relation(self, remote_relation, field, value):
         """
         The rule's arguments are validated against this schema:
-        {'type': 'dict', 'schema': {'rel': {'type': 'string'}, 'embeddable': 'boolean'}
+        {'type': 'dict', 'schema': { 'rel': {'type': 'string'}, 'embeddable': 'boolean' } }
         """
         if not remote_relation:
             return
