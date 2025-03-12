@@ -165,9 +165,14 @@ def remove_file_if_exists(filename):
         os.remove(filename)
 
 
-def remove_folder_if_exists(folder):
-    if os.path.exists(folder):
-        rmtree(folder)
+def remove_folder_if_exists(root_folder, folder_to_delete, recursive=False):
+    if recursive:
+        for dir_name, _, _ in os.walk(root_folder):
+            remove_folder_if_exists(dir_name, folder_to_delete)
+    else:
+        path_to_delete = os.path.join(root_folder, folder_to_delete)
+        if os.path.exists(path_to_delete):
+            rmtree(path_to_delete)
 
 
 def escape(message, code, silent=False):

@@ -1,3 +1,4 @@
+import os
 import logging
 import hypermea.core.logging.setup    # do not remove this import
 from hypermea.core import HypermeaEve
@@ -14,9 +15,24 @@ class HypermeaService:
     def __init__(self, **kwargs):
         self._grab_kwargs(kwargs)
         self._name = SETTINGS.get('HY_API_NAME', default_value='{$project_name}')
-        self._app = HypermeaEve(import_name=self._name)
+        settings = os.path.join(os.path.dirname(__file__), 'settings.py')
+        if 'settings' in kwargs:
+            settings = kwargs['settings']
+        self._app = HypermeaEve(import_name=self._name, settings=settings)
         CORS(self._app)
         hooks.add_hooks(self._app)
+        self.border = '-' * (23 + len(self._name))
+
+    def dump_settings(self):
+        LOG.info(self.border)
+        LOG.info(f'****** STARTING {self._name} ******')
+        LOG.info(self.border)
+        SETTINGS.dump(callback=LOG.info)
+
+    def finalize(self):
+        LOG.info(self.border)
+        LOG.info(f'****** STOPPING {self._name} ******')
+        LOG.info(self.border)
 
     def _grab_kwargs(self, kwargs):
         self.host = kwargs['host'] if 'host' in kwargs else '0.0.0.0'
@@ -33,20 +49,14 @@ class HypermeaService:
         pass
 
     def start(self):
-        border = '-' * (23 + len(self._name))
-        LOG.info(border)
-        LOG.info(f'****** STARTING {self._name} ******')
-        LOG.info(border)
-        SETTINGS.dump(callback=LOG.info)
+        self.dump_settings()
         try:
             register(self._app)
             self._app.run(host=self.host, port=SETTINGS.get('HY_API_PORT'), threaded=self.threaded, debug=self.debug)
         except Exception as ex:  # pylint: disable=broad-except
             LOG.exception(ex)
         finally:
-            LOG.info(border)
-            LOG.info(f'****** STOPPING {self._name} ******')
-            LOG.info(border)
+            self.finalize()
 
     def stop(self):
         self._app.do_teardown_appcontext()

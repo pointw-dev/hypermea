@@ -68,6 +68,7 @@ def _create_api(project_name):
     skel = os.path.join(os.path.dirname(hypermea.tool.__file__), 'skel')
     readme_filename = os.path.join(skel, 'doc/README.md')
     copyfile(readme_filename, './README.md')
+
     # TODO: write good docs and put them here...
     # os.mkdir('doc')
     # readme_filename = os.path.join(skel, 'doc/Setup-Dev-Environment.md')
@@ -75,21 +76,28 @@ def _create_api(project_name):
 
     os.mkdir('src')
     os.chdir('src')
+
+    # TODO: not very DRY here...
     os.mkdir('scripts')
     scripts_folder = os.path.join(skel, 'scripts')
     copytree(scripts_folder, 'scripts', dirs_exist_ok=True)
 
-    api_folder = os.path.join(skel, 'api')
+    os.mkdir('features')
+    features_folder = os.path.join(skel, 'features')
+    copytree(features_folder, 'features', dirs_exist_ok=True)
 
     os.mkdir(project_name)
+    api_folder = os.path.join(skel, 'api')
     copytree(api_folder, project_name, dirs_exist_ok=True)
 
+    idea_folder = os.path.join(skel, 'idea')
+    idea_target_folder = os.path.join(project_name, '.idea')
+    os.mkdir(idea_target_folder)
+    copytree(idea_folder, idea_target_folder, dirs_exist_ok=True)
+
     # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
-    hypermea.tool.remove_folder_if_exists(os.path.join('scripts', '__pycache__'))
-    hypermea.tool.remove_folder_if_exists(os.path.join(project_name, '__pycache__'))
-    hypermea.tool.remove_folder_if_exists(os.path.join(project_name, 'configuration', '__pycache__'))
-    hypermea.tool.remove_folder_if_exists(os.path.join(project_name, 'domain', '__pycache__'))
-    hypermea.tool.remove_folder_if_exists(os.path.join(project_name, 'hooks', '__pycache__'))
+    hypermea.tool.remove_folder_if_exists(project_name, '__pycache__', recursive=True)
+    hypermea.tool.remove_folder_if_exists('scripts', '__pycache__', recursive=True)
 
     os.chdir('..')
     hypermea.tool.replace_project_name(project_name, '.')
