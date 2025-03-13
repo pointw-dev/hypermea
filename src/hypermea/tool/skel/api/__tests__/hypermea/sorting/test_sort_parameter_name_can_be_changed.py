@@ -1,6 +1,5 @@
 import pytest
 from pytest_bdd import scenario, given, when, then
-
 from __tests__.hypermea.sorting import *
 
 
@@ -9,18 +8,23 @@ def context():
     return {}
 
 
-@scenario(FEATURE_PATH, 'Client can sort collections using the sort query string parameter')
-def test_client_supplies_sort_parameters():
+@scenario(FEATURE_PATH, 'Service can be configured with a different sort query string parameter')
+def test_sort_parameter_name_can_be_changed():
     pass
 
-# Given a resource collection exists
+
+@given('the service is configured with a different sort query string parameter')
+def step_impl(eve_settings):
+    eve_settings['QUERY_SORT'] = 'reorder_by'
+
+# And a resource collection exists
 
 # And a resource has multiple items in its collection
 
-@when("a client requests this collection with a sort query string")
+@when("a client requests this collection using the new sort parameter")
 def step_impl(api, context):
     response = api.get(
-        '/people?sort=name',
+        '/people?reorder_by=name',
         headers={'content-type': 'application/json'}
     )
     assert_that(response.status_code).is_equal_to(200)

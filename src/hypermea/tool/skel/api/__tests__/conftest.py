@@ -2,11 +2,10 @@ import types
 from typing import Any
 import logging
 import pytest
-import json
 from pymongo import MongoClient
-from hypermea_service import HypermeaService  # your existing class
+from hypermea_service import HypermeaService
 
-import os
+import os, sys
 
 LOG = logging.getLogger('pytest')
 logger = logging.getLogger()
@@ -24,18 +23,12 @@ def load_settings_from_file(filename):
 @pytest.fixture
 def hypermea_settings() -> dict[str, str]:
     return {
-         'HY_API_PORT': '2113',
+        'HY_API_PORT': '2113',
+        'HY_MONGO_DBNAME': 'pytest',
+        'HY_TRACE_LOGGING': 'Disabled',
+        'HY_CACHE_CONTROL': 'no-cache, no-store, must-revalidate',
+        'HY_CACHE_EXPIRES': '30',
     }
-    # return {
-    #     'REDIS_DB': '1',
-    #     'HY_MONGO_DBNAME': 'pytest',
-    #     'HY_TRACE_LOGGING': 'Disabled',
-    #     'HY_CACHE_CONTROL': 'no-cache, no-store, must-revalidate',
-    #     'HY_CACHE_EXPIRES': '30',
-    #     'HY_DISABLE_RFC6861': 'Yes',
-    #     'HY_DISABLE_HYPERMEDIA': 'Yes',
-    #     'HY_RATE_LIMIT': '(10, 15)'
-    # }
 
 
 @pytest.fixture

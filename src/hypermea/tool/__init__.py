@@ -111,7 +111,7 @@ def copy_skel(project_name, skel_folder, target_folder=None, replace=None, silen
     copytree(source, destination, dirs_exist_ok=True)
 
     # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
-    remove_folder_if_exists(os.path.join(destination, '__pycache__'))
+    remove_folder_if_exists(destination, '__pycache__')
 
     if replace is None:
         replace = {}
