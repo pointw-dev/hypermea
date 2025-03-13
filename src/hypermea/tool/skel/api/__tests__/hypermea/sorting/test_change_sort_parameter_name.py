@@ -1,7 +1,7 @@
 import pytest
 from assertpy import assert_that
 from pytest_bdd import scenario, given, when, then
-from __tests__.hypermea_out_of_the_box.sorting import *
+from __tests__.hypermea.sorting import *
 
 
 @pytest.fixture(scope='module')

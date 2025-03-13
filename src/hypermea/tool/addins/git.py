@@ -13,7 +13,7 @@ Examples:
 License:
     MIT License
 
-    Copyright (c) 2021 Michael Ottoson
+    Copyright (c) 2019-2025 Michael Ottoson (pointw.com)
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,11 @@ def add(remote, silence=False):
     gitignore_filename = os.path.join(skel, 'git/.gitignore')
     copyfile(gitignore_filename, './.gitignore')
     hypermea.tool.replace_project_name(settings['project_name'], '.')
-    
+
+    vcs_filename = os.path.join(skel, 'git/vcs.xml')
+    if os.path.exists(f'./src/{settings["project_name"]}/.idea'):
+        copyfile(vcs_filename, f'./src/{settings["project_name"]}/.idea/vcs.xml')
+
     silence = ' > /dev/null 2> /dev/null'
     if platform.system() == 'Windows':
         silence = ' > nul 2> nul'

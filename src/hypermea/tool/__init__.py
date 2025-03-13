@@ -147,7 +147,7 @@ def replace_project_name(project_name, folder=None):
               continue
             if '__pycache__' in dname:
               continue
-            if '.idea' in dname:
+            if '.idea' in dname and 'icon' in fname:
               continue
             fpath = os.path.join(dname, fname)
             try:
