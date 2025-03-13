@@ -31,3 +31,17 @@ Feature: Clients can request that collection resources be sorted
         And a resource has multiple items in its collection
         When a client requests this collection using the new sort parameter
         Then the collection in the response is sorted accordingly
+
+    Scenario: Sorting can be disabled globally
+        Given sorting is disabled globally
+        And a resource collection exists
+        And a resource has multiple items in its collection
+        When a client requests this collection with a sort query string
+        Then the collection in the response is not sorted
+
+    Scenario: Sorting can be specified at per resource
+        Given sorting is disabled globally
+        And a resource configured to sort collection exists
+        And a resource has multiple items in its collection
+        When a client requests this collection with a sort query string
+        Then the collection in the response is sorted accordingly

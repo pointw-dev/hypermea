@@ -5,10 +5,17 @@ from pytest_bdd import scenario, given, when, then
 
 FEATURE_PATH = 'hypermea/sorting.feature'
 
+
+# shared Given step definitions
 @given("a resource collection exists")
 def step_impl(eve_settings):
-    eve_settings['DOMAIN'] = {'people': {'schema': {'name': {'type': 'string'}}}}
-
+    eve_settings['DOMAIN'] = {
+        'people': {
+            'schema': {
+                'name': {'type': 'string'}
+            }
+        }
+    }
 
 @given("a resource has multiple items in its collection")
 def step_impl(api):
@@ -22,7 +29,23 @@ def step_impl(api):
     )
     assert_that(response.status_code).is_equal_to(201)
 
+@given('sorting is disabled globally')
+def step_impl(eve_settings):
+    eve_settings['SORTING'] = False
 
+
+# shared When step definitions
+@when("a client requests this collection with a sort query string")
+def step_impl(api, context):
+    response = api.get(
+        '/people?sort=name',
+        headers={'content-type': 'application/json'}
+    )
+    assert_that(response.status_code).is_equal_to(200)
+    context['people'] = response.json['_items']
+
+
+# shared Then step definitions
 @then("the collection in the response is sorted accordingly")
 def step_impl(context):
     names = [i['name'] for i in context['people']]
