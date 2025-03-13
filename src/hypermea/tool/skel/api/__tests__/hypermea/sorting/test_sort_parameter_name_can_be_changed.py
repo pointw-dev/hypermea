@@ -17,14 +17,13 @@ def test_sort_parameter_name_can_be_changed():
 def step_impl(eve_settings):
     eve_settings['QUERY_SORT'] = 'reorder_by'
 
-# And a resource collection exists
-# And a resource has multiple items in its collection
+# And a resource is configured
+# And that resource has multiple items in its collection
 
-@when("a client requests this collection using the new sort parameter")
+@when('a client requests this collection using the new sort parameter')
 def step_impl(api, context):
     response = api.get(
-        '/people?reorder_by=name',
-        headers={'content-type': 'application/json'}
+        '/people?reorder_by=name'
     )
     assert_that(response.status_code).is_equal_to(200)
     context['people'] = response.json['_items']

@@ -15,8 +15,8 @@ def test_collection_can_be_sorted_by_request():
 
 
 # Given sorting is disabled globally
-# And a resource collection exists
-# And a resource has multiple items in its collection
+# And a resource is configured
+# And that resource has multiple items in its collection
 # When a client requests this collection with a sort query string
 
 @then('the collection in the response is not sorted')

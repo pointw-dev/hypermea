@@ -7,7 +7,7 @@ FEATURE_PATH = 'hypermea/sorting.feature'
 
 
 # shared Given step definitions
-@given("a resource collection exists")
+@given('a resource is configured')
 def step_impl(eve_settings):
     eve_settings['DOMAIN'] = {
         'people': {
@@ -17,7 +17,7 @@ def step_impl(eve_settings):
         }
     }
 
-@given("a resource has multiple items in its collection")
+@given('that resource has multiple items in its collection')
 def step_impl(api):
     people = []
     for name in ['Robert', 'James', 'Cheryl', 'Jessica', 'Cory', 'Michael', 'Catherine', 'Mark', 'Jacqueline', 'Marissa']:
@@ -35,18 +35,17 @@ def step_impl(eve_settings):
 
 
 # shared When step definitions
-@when("a client requests this collection with a sort query string")
+@when('a client requests this collection with a sort query string')
 def step_impl(api, context):
     response = api.get(
-        '/people?sort=name',
-        headers={'content-type': 'application/json'}
+        '/people?sort=name'
     )
     assert_that(response.status_code).is_equal_to(200)
     context['people'] = response.json['_items']
 
 
 # shared Then step definitions
-@then("the collection in the response is sorted accordingly")
+@then('the collection in the response is sorted accordingly')
 def step_impl(context):
     names = [i['name'] for i in context['people']]
     is_sorted = all([True if index == 0 else item >= names[index-1] for index, item in enumerate(names)])

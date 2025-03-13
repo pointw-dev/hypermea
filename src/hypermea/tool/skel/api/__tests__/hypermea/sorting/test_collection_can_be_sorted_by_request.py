@@ -13,14 +13,13 @@ def context():
 def test_collection_can_be_sorted_by_request():
     pass
 
-# Given a resource collection exists
-# And a resource has multiple items in its collection
+# Given a resource is configured
+# And that resource has multiple items in its collection
 
-@when("a client requests this collection with a sort query string")
+@when('a client requests this collection with a sort query string')
 def step_impl(api, context):
     response = api.get(
-        '/people?sort=name',
-        headers={'content-type': 'application/json'}
+        '/people?sort=name'
     )
     assert_that(response.status_code).is_equal_to(200)
     context['people'] = response.json['_items']
