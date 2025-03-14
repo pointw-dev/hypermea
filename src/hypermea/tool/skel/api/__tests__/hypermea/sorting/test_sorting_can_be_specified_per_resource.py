@@ -13,6 +13,7 @@ def context():
 def test_test_sorting_can_be_specified_per_resource():
     pass
 
+
 # Given sorting is disabled globally
 @given('a resource is configured to allow sorting collection exists')
 def step_impl(eve_settings):

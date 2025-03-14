@@ -1,6 +1,5 @@
 import pytest
 from pytest_bdd import scenario, given, when, then
-
 from __tests__.hypermea.sorting import *
 
 
@@ -8,9 +7,11 @@ from __tests__.hypermea.sorting import *
 def context():
     return {}
 
+
 @scenario(FEATURE_PATH, 'Resources can be configured to sort automatically')
 def test_resource_can_sort_automatically():
     pass
+
 
 @given('a resource is configured to sort automatically')
 def step_impl(eve_settings):
@@ -24,7 +25,6 @@ def step_impl(eve_settings):
             }
         }
     }
-
 
 # And that resource has multiple items in its collection
 

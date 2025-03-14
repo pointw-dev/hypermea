@@ -1,14 +1,19 @@
 # https://docs.python-eve.org/en/stable/features.html#sorting
 
-Feature: Clients can request that collection resources be sorted
-    Sorting is enabled by default and can be disabled both globally and/or at resource level.
-        Globally with `SORTING` setting
+Feature: Resource collections can be retrieved in sorted order
+    The sorting feature is enabled by default and can be disabled both globally and/or at resource level.
+        Globally with `SORTING` setting (defaults to True)
         Resource level with `sorting` field in the domain definition
 
+        SORTING (True) / sorting
+        QUERY_SORT (sort)
+        default_sort
+        JSON_SORT_KEYS
+
     If sorting is enabled, clients specify how they want collections to be sorted with the `sort`
-    query string parameter: for example
+    query string parameter: for example...
         GET /people?sort=lastname,-netWorth
-    You can also use MongoDB format, for example
+    You can also use MongoDB format, for example...
         GET /people?sort=[("lastname", -1)]
 
     You can change the parameter name from `sort` to something else with the `QUERY_SORT` setting.
