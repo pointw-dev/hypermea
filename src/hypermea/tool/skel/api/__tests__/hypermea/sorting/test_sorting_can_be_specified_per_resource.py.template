@@ -9,7 +9,7 @@ def context():
     return {}
 
 
-@scenario(FEATURE_PATH, 'Sorting can be specified at per resource')
+@annotated_scenario(FEATURE_PATH, 'Sorting can be specified at per resource')
 def test_test_sorting_can_be_specified_per_resource():
     pass
 

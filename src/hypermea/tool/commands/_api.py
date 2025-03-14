@@ -87,12 +87,18 @@ def _create_api(project_name):
     features_folder = os.path.join(skel, 'features')
     copytree(features_folder, 'features', dirs_exist_ok=True)
 
-
     os.mkdir(project_name)
     api_folder = os.path.join(skel, 'api')
     copytree(api_folder, project_name, dirs_exist_ok=True)
     move(os.path.join(project_name, f'__tests__/project_name'), os.path.join(project_name, f'__tests__/{project_name}'))
-
+    # rename all .py.template in __tests__ to .py
+    directory = os.path.realpath(os.path.join(project_name, f'__tests__'))
+    for subdir, dirs, files in os.walk(directory):
+        for filename in files:
+            if filename.find('.py.template') > 0:
+                file_path = os.path.join(subdir, filename)
+                new_file_path = file_path.replace('.py.template', '.py')
+                os.rename(file_path, new_file_path)
 
     idea_folder = os.path.join(skel, 'idea')
     idea_target_folder = os.path.join(project_name, '.idea')

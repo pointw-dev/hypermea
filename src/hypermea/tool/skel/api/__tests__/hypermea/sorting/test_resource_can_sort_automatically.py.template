@@ -8,7 +8,7 @@ def context():
     return {}
 
 
-@scenario(FEATURE_PATH, 'Resources can be configured to sort automatically')
+@annotated_scenario(FEATURE_PATH, 'Resources can be configured to sort automatically')
 def test_resource_can_sort_automatically():
     pass
 

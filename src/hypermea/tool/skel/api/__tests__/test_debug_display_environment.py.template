@@ -3,10 +3,10 @@ import os
 import pytest
 
 """
-Enable to get information that may help troubleshoot issues running tests
+Uncomment to get information that may help troubleshoot issues running tests
 """
 
-# def test_debug_env():
+# def test_debug_display_environment():
 #     print("\n\n--- DEBUG INFO ---")
 #     print("sys.path:        ", sys.path)
 #     print("executable:      ", sys.executable)

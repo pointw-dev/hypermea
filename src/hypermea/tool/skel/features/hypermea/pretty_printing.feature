@@ -15,4 +15,3 @@ Feature: Resource representations can be pretty-printed
         And that resource has an item in its collection
         When a client requests that resource without pretty printing
         Then the response is not pretty-printed
-

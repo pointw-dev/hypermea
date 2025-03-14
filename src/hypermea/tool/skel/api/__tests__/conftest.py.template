@@ -1,11 +1,11 @@
-import types
+import os
 from typing import Any
 import logging
 import pytest
 from pymongo import MongoClient
+from __tests__ import load_settings_from_file
 from hypermea_service import HypermeaService
 
-import os, sys
 
 LOG = logging.getLogger('pytest')
 logger = logging.getLogger()
@@ -13,12 +13,15 @@ handler = [x for x in logger.handlers if x.name == 'console'][0]
 handler.setLevel(getattr(logging, 'WARNING'))
 
 
-def load_settings_from_file(filename):
-    d = types.ModuleType('settings')
-    with open(filename) as f:
-        exec(f.read(), d.__dict__)
-    return {k: v for k, v in d.__dict__.items() if k.isupper()}
+import os
+import pytest
 
+@pytest.hookimpl(tryfirst=True)
+def pytest_sessionstart(session):
+    print("\n🚨 Reminder: Ensure you have the `.env` file set up.")
+
+    # if not os.getenv("MY_ENV_VAR"):
+    #     pytest.exit("❌ Required environment variable MY_ENV_VAR is missing. Aborting tests.")
 
 @pytest.fixture
 def hypermea_settings() -> dict[str, str]:
