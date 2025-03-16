@@ -75,3 +75,5 @@ To learn more, check out [[TODO]].
 
 ## Core library
 Hypermea's core library is an independently distributable package.  It is separate from the command-line tools so your shippable packages are as lean as possible.  The core library's purpose is primarily to power the functionality of your `hypermea_service`.  It also provides an expanding set of methods to make your customizations easier: for example, access the database, standardize error messages, customize resource representations, and more.  To learn more, check out [[TODO]].
+
+<!-- <comments-section repo="pointw-dev/hypermea" repoId="R_kgDOJxUXjg" category="General" categoryId="DIC_kwDOJxUXjs4CoFRU" /> -->

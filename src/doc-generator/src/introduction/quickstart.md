@@ -47,3 +47,5 @@ This creates the following project folders and files:
 ```
 
 That's 23 files and almost a thousand lines of code that you do not have to type, ready for you to customize as you require.  This is just the tip of the iceberg.  
+
+<!-- <comments-section repo="pointw-dev/hypermea" repoId="R_kgDOJxUXjg" category="General" categoryId="DIC_kwDOJxUXjs4CoFRU" /> -->
