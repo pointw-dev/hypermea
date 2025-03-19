@@ -83,9 +83,156 @@ function getSidebar() {
     return [
       {
         text: 'Introduction',
+        link: '/introduction/',
         items: [
           { text: 'What is hypermea?', link: '/introduction/what-is' },
           { text: 'Getting started', link: '/introduction/quickstart' }
+        ]
+      },
+      {
+        text: 'Features',
+        items: [
+          {
+            text: 'Scaffolding tools', link: '/features/scaffolding-tools',
+            link: '/features/scaffolding-tools/',
+            items: [
+              {
+                text: 'api',
+                link: '/features/scaffolding-tools/api',
+              },
+              {
+                text: 'resource',
+                link: '/features/scaffolding-tools/resource',
+              },
+              {
+                text: 'link',
+                link: '/features/scaffolding-tools/link',
+              },
+              {
+                text: 'affordance',
+                link: '/features/scaffolding-tools/affordance',
+              },
+              {
+                text: 'endpoint',
+                link: '/features/scaffolding-tools/endpoint',
+              },
+              {
+                text: 'docker',
+                link: '/features/scaffolding-tools/docker',
+              },
+              {
+                text: 'integration',
+                link: '/features/scaffolding-tools/integration',
+              },
+              {
+                text: 'setting',
+                link: '/features/scaffolding-tools/setting',
+              },
+              {
+                text: 'run',
+                link: '/features/scaffolding-tools/run',
+              }
+            ]
+          },
+          {
+            text: 'Runtime capabilities', link: '/features/runtime-capabilities',
+            link: '/features/runtime-capabilities/',
+            items: [
+              {
+                text: 'CRUD',
+                link: '/features/runtime-capabilities/crud',
+              },
+              {
+                text: 'Validation',
+                link: '/features/runtime-capabilities/validation',
+              },
+              {
+                text: 'Filtering',
+                link: '/features/runtime-capabilities/filtering',
+              },
+              {
+                text: 'Sorting',
+                link: '/features/runtime-capabilities/sorting',
+              },
+              {
+                text: 'Pagination',
+                link: '/features/runtime-capabilities/pagination',
+              },
+              {
+                text: 'Projections',
+                link: '/features/runtime-capabilities/projections',
+              },
+              {
+                text: 'Pretty printing',
+                link: '/features/runtime-capabilities/pretty-print',
+              },
+              {
+                text: 'Logging',
+                link: '/features/runtime-capabilities/logging',
+              },
+              {
+                text: 'Authorization and authentication',
+                link: '/features/runtime-capabilities/authentication',
+              },
+              {
+                text: 'Rate limiting',
+                link: '/features/runtime-capabilities/rate-limiting',
+              },
+              {
+                text: 'Cross-origin resource sharing',
+                link: '/features/runtime-capabilities/cors',
+              },
+              {
+                text: 'Bulk inserts',
+                link: '/features/runtime-capabilities/bulk-inserts',
+              },
+              {
+                text: 'Cache control',
+                link: '/features/runtime-capabilities/cache-control',
+              },
+              {
+                text: 'Conditional requests',
+                link: '/features/runtime-capabilities/conditional-requests',
+              },
+              {
+                text: 'Optimistic concurrency',
+                link: '/features/runtime-capabilities/optimize-concurrency',
+              },
+              {
+                text: 'Soft delete',
+                link: '/features/runtime-capabilities/soft-delete',
+              },
+              {
+                text: 'Document versioning',
+                link: '/features/runtime-capabilities/document-versioning',
+              },
+              {
+                text: 'GeoJSON',
+                link: '/features/runtime-capabilities/geo-json',
+              },
+              {
+                text: 'Custom ID fields',
+                link: '/features/runtime-capabilities/custom-id-fields',
+              },
+              {
+                text: 'File storage',
+                link: '/features/runtime-capabilities/file-storage',
+              },
+              {
+                text: 'Settings management',
+                link: '/features/runtime-capabilities/settings-management',
+              },
+              {
+                text: 'Swagger',
+                link: '/features/runtime-capabilities/swagger',
+              },
+              {
+                text: 'Allure reporting',
+                link: '/features/runtime-capabilities/allure-reporting',
+              }
+
+            ]
+          }
         ]
       }
     ]

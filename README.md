@@ -24,7 +24,7 @@ Before opening your IDE you can add resources, links, affordances. Configure aut
 Start with a solid foundation and focus on what matters: your business logic.
 
 
-## Runtime Libraries
+## Runtime Capabilities
 The APIs you create leverage <b><u><a href="https://flask.palletsprojects.com/en/stable/">Flask</a></u></b>, are powered by <b><u><a href="https://www.mongodb.com/">MongoDB</a></u></b>, and are enriched by <b><u><a href="https://docs.python-eve.org/en/stable/index.html">Eve</a></u></b>.  You get the benefits of those libraries without needing to learn them first.
 
 With the <b><u><a href="https://pypi.org/project/hypermea-core/">hypermea-core</a></u></b> library your API is hypermedia-based using <b><u><a href="https://dev.to/nevnet99/wtf-is-hal-hypertext-application-language-2fo6">HAL</a></u></b> to represent your resources.
