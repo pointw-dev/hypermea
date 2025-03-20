@@ -1,5 +1,8 @@
 # Runtime capabilities
 
-Here is what your hypermea generated API can do out of the box:
+:::warning Work in progress
+<centered-image src="/img/work-in-progress.png" />
+This warning will be removed once this page has passed testing.
+:::
 
-* details
+docs coming soon

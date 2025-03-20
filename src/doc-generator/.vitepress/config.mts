@@ -91,6 +91,7 @@ function getSidebar() {
       },
       {
         text: 'Features',
+        link: '/features/',
         items: [
           {
             text: 'Scaffolding tools', link: '/features/scaffolding-tools',
@@ -131,6 +132,14 @@ function getSidebar() {
               {
                 text: 'run',
                 link: '/features/scaffolding-tools/run',
+              },
+              {
+                text: 'Hypermea Core Library',
+                link: '/features/scaffolding-tools/hypermea-core',
+              },
+              {
+                text: 'Miscellaneous',
+                link: '/features/scaffolding-tools/misc',
               }
             ]
           },
@@ -167,11 +176,15 @@ function getSidebar() {
                 link: '/features/runtime-capabilities/pretty-print',
               },
               {
+                text: 'Forms',
+                link: '/features/runtime-capabilities/forms',
+              },
+              {
                 text: 'Logging',
                 link: '/features/runtime-capabilities/logging',
               },
               {
-                text: 'Authorization and authentication',
+                text: 'Authentication',
                 link: '/features/runtime-capabilities/authentication',
               },
               {
@@ -179,7 +192,7 @@ function getSidebar() {
                 link: '/features/runtime-capabilities/rate-limiting',
               },
               {
-                text: 'Cross-origin resource sharing',
+                text: 'CORS',
                 link: '/features/runtime-capabilities/cors',
               },
               {
@@ -196,7 +209,7 @@ function getSidebar() {
               },
               {
                 text: 'Optimistic concurrency',
-                link: '/features/runtime-capabilities/optimize-concurrency',
+                link: '/features/runtime-capabilities/optimistic-concurrency',
               },
               {
                 text: 'Soft delete',
@@ -229,6 +242,14 @@ function getSidebar() {
               {
                 text: 'Allure reporting',
                 link: '/features/runtime-capabilities/allure-reporting',
+              },
+              {
+                text: 'Echo endpoint',
+                link: '/features/runtime-capabilities/echo',
+              },
+              {
+                text: 'Gateway Registration',
+                link: '/features/runtime-capabilities/gateway-registration'
               }
 
             ]

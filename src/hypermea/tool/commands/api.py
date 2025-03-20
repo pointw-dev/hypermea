@@ -67,7 +67,7 @@ def addin(**kwargs):
 
 
 @commands.command(name='version',
-                  short_help='View or set the version number of the API, man',
+                  short_help='View or set the version number of the API',
                   help_priority=3)
 @click.argument('set_version', metavar='[version]', default=None, required=False)
 def version(set_version):
