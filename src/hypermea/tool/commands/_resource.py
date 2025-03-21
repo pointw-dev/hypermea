@@ -144,7 +144,7 @@ Defines the {resource} resource.
         file.write('''DEFINITION = {
     'schema': SCHEMA,
     'datasource': {
-        'projection': {'_tenant': 0}
+        'projection': {'_owner': 0}
     },
     'additional_lookup': {
         'url': r'regex("[\w]+")',
@@ -162,10 +162,10 @@ This module defines functions to add link relations to {plural}.
 """
 import logging
 import json
-from flask import current_app
+from flask import request
 from hypermea.core.logging import trace
 from configuration import SETTINGS
-from hypermea.core.utils import get_resource_id, get_id_field, get_my_base_url
+from hypermea.core.utils import get_resource_id, get_id_field, get_my_base_url, clean_href
 from hypermea.core.gateway import get_href_from_gateway
 import affordances
 
@@ -193,8 +193,12 @@ def _post_{plural}(request, payload):
 
 @trace
 def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
-    for {singular} in {plural}_collection['_items']:
-        _add_links_to_{singular}({singular})
+    if 'links-only' in request.args:
+        del {plural}_collection['_items']
+
+    if '_items' in {plural}_collection:
+        for {singular} in {plural}_collection['_items']:
+            _add_links_to_{singular}({singular})
 
     if '_links' not in {plural}_collection:
         {plural}_collection['_links'] = {{
@@ -202,6 +206,10 @@ def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
                 'href': self_href
             }}
         }}
+
+    for rel in ['self', 'prev', 'next', 'last']:
+        if rel in {plural}_collection['_links']:
+            {plural}_collection['_links'][rel]['href'] = clean_href({plural}_collection['_links'][rel]['href'])
 
     base_url = get_my_base_url()
 
@@ -215,8 +223,7 @@ def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
         'templated': True
     }}
     
-    self_href = {plural}_collection['_links']['self']['href']
-    affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', self_href)
+    affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', '/{plural}')
 
 
 @trace

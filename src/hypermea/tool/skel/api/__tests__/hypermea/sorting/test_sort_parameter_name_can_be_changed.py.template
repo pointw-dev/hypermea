@@ -1,5 +1,6 @@
 import pytest
 from pytest_bdd import scenario, given, when, then
+from __tests__.hypermea import *
 from __tests__.hypermea.sorting import *
 
 
@@ -15,7 +16,7 @@ def test_sort_parameter_name_can_be_changed():
 
 @given('the service is configured with a different sort query string parameter')
 def step_impl(eve_settings):
-    eve_settings['QUERY_SORT'] = 'reorder_by'
+    eve_settings['QUERY_SORT'] = 'order_by'
 
 # And a resource is configured
 # And that resource has multiple items in its collection
@@ -23,7 +24,7 @@ def step_impl(eve_settings):
 @when('a client requests this collection using the new sort parameter')
 def step_impl(api, context):
     response = api.get(
-        '/people?reorder_by=name'
+        '/people?order_by=name'
     )
     assert_that(response.status_code).is_equal_to(200)
     context['people'] = response.json['_items']

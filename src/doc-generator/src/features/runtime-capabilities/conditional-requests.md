@@ -6,3 +6,5 @@ This warning will be removed once this page has passed testing.
 :::
 
 docs coming soon
+
+(`If-Modified-Since`)

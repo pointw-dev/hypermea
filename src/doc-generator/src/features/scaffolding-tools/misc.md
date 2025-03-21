@@ -6,6 +6,8 @@ This warning will be removed once this page has passed testing.
 :::
 
 
+* WARNING when combining query string parameters with curl, surround URL in quotes (else & is parsed by bash)
+
 * Settings/configuration system
   * The `HypermeaService` ships with a sophisticated settings/configuration management system based on these principles:
     * Easy to run: An API should run right out of the box without requiring configuration
@@ -17,7 +19,10 @@ This warning will be removed once this page has passed testing.
 
   * (TODO: cancellable, optional, prefix stuff?,  `settings.has_enabled()`   [0] == 'YyTtEe')
 
-
+* test suite (BDD/pytest-bdd)
+  * separate hypermea folder from your application folder
+  * test_debug_display_environment
+  * allure
 
 * HAL media type
   * Eve's out-of-box JSON structure is very close to HAL.  With hypermea, you get even closer
@@ -25,8 +30,11 @@ This warning will be removed once this page has passed testing.
     * `_links` are tidied up, some superfluous metadata is removed
     * hierarchical navigation follows IANA conventions
     * (this is constantly improving - coming soon curies, _embedded, as well as other standard hypermedia types like Siren, Atom, Collection+JSON, etc.)
+    * https://dev.to/nevnet99/wtf-is-hal-hypertext-application-language-2fo6
 
-
+* X-Total-Count (useful with HEAD request, `curl -I --head localhost:2112`)
+* links-only
+* _query_options
 
 * Exception Handling
   * improves on Eve's out-of-box behaviour by standardizing the error response - even in the case of 5xx's
@@ -41,6 +49,20 @@ This warning will be removed once this page has passed testing.
 
 * create_form / edit_form (RFC 6861)
 
+* common fields
+
+```python
+COMMON_FIELDS = {
+    '_owner': {'type': 'string'},
+    '_tags': {
+        'type': 'list',
+        'schema': {'type': 'string'}
+    },
+    '_x': {
+        'allow_unknown': True
+    }
+}
+```
 * `utils.get_db()` to quickly access the mongodb collections
 
 * `utils.get_api()` to make http requests in your code to the API itself

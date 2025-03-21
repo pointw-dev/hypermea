@@ -6,6 +6,7 @@ from copy import deepcopy
 import hashlib
 from typing import List, Dict, Optional
 import re
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from flask import jsonify, make_response
 from flask import current_app, request
 from eve.utils import document_etag
@@ -30,6 +31,16 @@ not_found_message = {
         "code": 404
     }
 }
+
+
+def clean_href(href):
+    parsed = urlparse(href)
+    query_params = parse_qsl(parsed.query, keep_blank_values=True)
+    filtered_params = [(k, v) for k, v in query_params if k not in ('links-only', 'pretty')]
+    cleaned_query = urlencode(filtered_params, doseq=True)
+    cleaned_url = urlunparse((parsed.scheme, parsed.netloc, parsed.path,
+                              parsed.params, cleaned_query, parsed.fragment))
+    return cleaned_url
 
 
 def get_my_base_url() -> str:

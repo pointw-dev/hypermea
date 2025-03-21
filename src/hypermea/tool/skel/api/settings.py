@@ -77,6 +77,6 @@ RETURN_MEDIA_AS_URL = True
 eve_passthrough('MEDIA_BASE_URL')
 EXTENDED_MEDIA_INFO = ['content_type', 'name', 'length']
 
-AUTH_FIELD = '_tenant'
+AUTH_FIELD = '_owner'
 
 DOMAIN = domain.DOMAIN

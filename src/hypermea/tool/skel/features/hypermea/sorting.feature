@@ -1,6 +1,11 @@
+# https://pointw-dev.github.io/hypermea/features/runtime-capabilities/sorting.html
 # https://docs.python-eve.org/en/stable/features.html#sorting
 
 Feature: Resource collections can be retrieved in sorted order
+    As a client of the service
+    I want the ability to ask that collections of resources I fetch be sorted
+    So that I don't have to, and can just display or work with the sorted collection when I need it
+
     The sorting feature is enabled by default and can be disabled both globally and/or at resource level.
         Globally with `SORTING` setting (defaults to True)
         Resource level with `sorting` field in the domain definition
@@ -45,7 +50,7 @@ Feature: Resource collections can be retrieved in sorted order
         When a client requests this collection with a sort query string
         Then the collection in the response is not sorted
 
-    Scenario: Sorting can be specified at per resource
+    Scenario: Sorting can be specified per resource
         Given sorting is disabled globally
         And a resource is configured to allow sorting collection exists
         And that resource has multiple items in its collection

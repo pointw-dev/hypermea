@@ -13,12 +13,9 @@ handler = [x for x in logger.handlers if x.name == 'console'][0]
 handler.setLevel(getattr(logging, 'WARNING'))
 
 
-import os
-import pytest
-
 @pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
-    print("\n🚨 Reminder: Ensure you have the `.env` file set up.")
+    print("\n🚨 Reminder: Ensure you have a MongoDB instance running on localhost:27017.")
 
     # if not os.getenv("MY_ENV_VAR"):
     #     pytest.exit("❌ Required environment variable MY_ENV_VAR is missing. Aborting tests.")

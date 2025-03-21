@@ -139,7 +139,7 @@
 }
 
 .dark {
-  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #fee30%, var(--vp-pointw-background));
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #fee 30%, var(--vp-pointw-background));
   --vp-home-hero-image-background-image: linear-gradient(-45deg, #fee 50%, var(--vp-pointw-background) 50%);
 }
 
@@ -189,4 +189,8 @@
   .magic-image {
     margin: 0 auto;
   }
+}
+
+.command {
+    font-family: monospace;
 }

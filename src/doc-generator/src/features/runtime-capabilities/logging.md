@@ -19,6 +19,11 @@ This warning will be removed once this page has passed testing.
     * Publish to Slack on 5xx, or whatever circumstance you wish (the 500th GET to a particular resource? - only limit is your imagination)
     * See and modify `utils/log_setup.py`
 
+* request and response details when DEBUG is set
+  * [Body truncated. Set logging to TRACE for full body, or increase HY_LOG_MAX_BODY_SIZE.]
+  * Collection has 5 items
+
+
 * change logging verbosity at run-time:  
   * From the root document, follow the `logging` link relation and 
     * GET to see the current logging verbosity,

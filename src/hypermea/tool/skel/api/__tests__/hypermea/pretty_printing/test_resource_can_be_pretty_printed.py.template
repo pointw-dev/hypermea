@@ -1,17 +1,14 @@
 import pytest
-from pytest_bdd import scenario, given, when, then
+from pytest_bdd import given, when, then, parsers
+
 from __tests__.hypermea import *
 from __tests__.hypermea.pretty_printing import *
-from __tests__.annotate import allure
 
 
 @pytest.fixture(scope='module')
 def context():
     return {}
 
-# @annotated_scenario(FEATURE_PATH, 'Client can request a pretty-printed resource')
-# def test_resource_can_be_pretty_printed():
-#     pass
 
 @annotated_scenario(FEATURE_PATH, 'Client can request a pretty-printed resource')
 def test_resource_can_be_pretty_printed():
@@ -29,5 +26,3 @@ def step_impl(api, context):
 @then('the response is pretty-printed')
 def step_impl(context):
     assert_that(context.get('widget').count('\n')).is_equal_to(23)
-
-# /home/michael/.pyenv/versions/test/lib/python3.12/site-packages/hypermea/tool/skel/api/__tests__

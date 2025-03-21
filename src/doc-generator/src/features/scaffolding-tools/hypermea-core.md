@@ -46,7 +46,7 @@ validations
 
 * unique_ignorecase
 * unique_to_parent
-* unique_to_tenant (coming soon)
+* unique_to_owner (coming soon)
 * remote_relation (coming soon)
 
 types
@@ -96,5 +96,9 @@ details
 details
 
 #### render
+
+details
+
+#### clean_href()
 
 details

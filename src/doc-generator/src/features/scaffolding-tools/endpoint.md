@@ -1,4 +1,4 @@
-# endpoint
+# <span class="command">endpoint</span>
 
 :::warning Work in progress
 <centered-image src="/img/work-in-progress.png" />

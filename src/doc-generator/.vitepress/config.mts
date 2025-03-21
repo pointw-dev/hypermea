@@ -90,6 +90,10 @@ function getSidebar() {
         ]
       },
       {
+        text: 'Basic concepts',
+        link: '/concepts/',
+      },
+      {
         text: 'Features',
         link: '/features/',
         items: [
@@ -98,39 +102,39 @@ function getSidebar() {
             link: '/features/scaffolding-tools',
             items: [
               {
-                text: 'api',
+                text: '<span class="command">api</span>',
                 link: '/features/scaffolding-tools/api',
               },
               {
-                text: 'resource',
+                text: '<span class="command">resource</span>',
                 link: '/features/scaffolding-tools/resource',
               },
               {
-                text: 'link',
+                text: '<span class="command">link</span>',
                 link: '/features/scaffolding-tools/link',
               },
               {
-                text: 'affordance',
+                text: '<span class="command">affordance</span>',
                 link: '/features/scaffolding-tools/affordance',
               },
               {
-                text: 'endpoint',
+                text: '<span class="command">endpoint</span>',
                 link: '/features/scaffolding-tools/endpoint',
               },
               {
-                text: 'docker',
+                text: '<span class="command">docker</span>',
                 link: '/features/scaffolding-tools/docker',
               },
               {
-                text: 'integration',
+                text: '<span class="command">integration</span>',
                 link: '/features/scaffolding-tools/integration',
               },
               {
-                text: 'setting',
+                text: '<span class="command">setting</span>',
                 link: '/features/scaffolding-tools/setting',
               },
               {
-                text: 'run',
+                text: '<span class="command">run</span>',
                 link: '/features/scaffolding-tools/run',
               },
               {

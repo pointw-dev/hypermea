@@ -1,5 +1,8 @@
 import pytest
 from pytest_bdd import scenario, given, when, then
+
+from __tests__ import annotated_scenario
+from __tests__.hypermea import *
 from __tests__.hypermea.sorting import *
 
 
@@ -14,13 +17,5 @@ def test_collection_can_be_sorted_by_request():
 
 # Given a resource is configured
 # And that resource has multiple items in its collection
-
-@when('a client requests this collection with a sort query string')
-def step_impl(api, context):
-    response = api.get(
-        '/people?sort=name'
-    )
-    assert_that(response.status_code).is_equal_to(200)
-    context['people'] = response.json['_items']
-
+# When a client requests this collection with a sort query string
 # Then the collection in the response is sorted accordingly

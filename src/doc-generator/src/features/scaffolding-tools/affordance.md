@@ -1,4 +1,4 @@
-# affordance
+# <span class="command">affordance</span>
 
 :::warning Work in progress
 <centered-image src="/img/work-in-progress.png" />

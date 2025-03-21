@@ -1,6 +1,15 @@
+# https://pointw-dev.github.io/hypermea/features/runtime-capabilities/pagination.html
 # https://docs.python-eve.org/en/stable/features.html#pagination
 
 Feature: Resource collections can split into "pages" and retrieved one page at a time
+    As a client application
+    I want to be able to split collections of resources into "pages" of a certain size
+      and turn the pages forwards and backwards
+      and jump to the first and last page
+      and jump to any arbitrary page
+    So that I do not have to download an entire collection and yet still have access to all resources
+
+
     The pagination feature is enabled by default and can be disabled both globally and/or at resource level.
         Globally with `PAGINATION` setting
         Resource level with `pagination` field in the domain definition
@@ -33,3 +42,16 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
     OPTIMIZE_PAGINATION_FOR_SPEED
 
 
+    Scenario Outline: Client can limit the number of item in a collection
+        Given a resource is configured
+        And that resource has 100 items in its collection
+        When a client requests this collection with a limit of <limit>
+        Then the collection in the response has <limit> items
+        And the next link relation is <next_link>
+        And the value of the last page is <last_page>
+
+      Examples:
+        | limit | next_link | last_page |
+        | 20    | present   | 5         |
+        | 50    | present   | 2         |
+        | 105   | absent    | absent    |

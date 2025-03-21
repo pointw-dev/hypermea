@@ -56,9 +56,8 @@ SORTING = False
 
 All requests for sorting will be ignored.  You can turn them back on for individual collections in their file in the `domain/` folder.
 
-```python{17}
+```python{13}
 # domain/people.py
-
 SCHEMA = {
     'name': {
         'type': 'string',
@@ -66,10 +65,7 @@ SCHEMA = {
         'empty': False,
     },
     ...
-    ...
 }
-
-SCHEMA.update(COMMON_FIELDS)
 
 DEFINITION = {
     'schema': SCHEMA,
@@ -81,12 +77,11 @@ DEFINITION = {
 }
 ```
 
-### Always sort
-You can set the default sort for a resource's collection.  In that resource's file in `domain/` 
+### Default sort per resource
+You can set the default sort for a resource's collection.  In that resource's file in `domain/`, add/modify the `default_sort` in `datasource`.  Use MongoDB style only. 
 
-```python{19}
+```python{15}
 # domain/people.py
-
 SCHEMA = {
     'name': {
         'type': 'string',
@@ -94,10 +89,7 @@ SCHEMA = {
         'empty': False,
     },
     ...
-    ...
 }
-
-SCHEMA.update(COMMON_FIELDS)
 
 DEFINITION = {
     'schema': SCHEMA,

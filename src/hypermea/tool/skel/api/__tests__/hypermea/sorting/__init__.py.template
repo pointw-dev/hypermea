@@ -1,22 +1,11 @@
 import json
-from assertpy import assert_that
-from pytest_bdd import scenario, given, when, then
-from __tests__ import *
 
+from __tests__ import *
+from assertpy import assert_that
+from pytest_bdd import given, when, then
 
 FEATURE_PATH = 'hypermea/sorting.feature'
 
-
-# shared Given step definitions
-@given('a resource is configured')
-def step_impl(eve_settings):
-    eve_settings['DOMAIN'] = {
-        'people': {
-            'schema': {
-                'name': {'type': 'string'}
-            }
-        }
-    }
 
 @given('that resource has multiple items in its collection')
 def step_impl(api):
