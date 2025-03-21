@@ -1,8 +1,14 @@
 # Sorting
 
-:::warning Work in progress
-<centered-image src="/img/work-in-progress.png" />
-This warning will be removed once this page has passed testing.
-:::
+You can request that resource collections be sorted. Sorting is based on any field name (or field names), and can be ascending or descending.
 
-docs coming soon
+## Basic sorting request
+An example is worth a dozen paragraphs:
+
+```bash
+ curl -i http://localhost:2112/people?sort=city,-lastname
+ ```
+
+This sorts the people collection first by `city`, then by `lastname` descending.
+
+

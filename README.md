@@ -83,9 +83,8 @@ hypermea --help
 
 With each command, add `--help` to see more details about that command
 
-::: tip Tip
-The `hypermea` command is aliased to the shorter `hy` and you can use either interchangeably
-:::
+> [!TIP] Tip
+> The `hypermea` command is aliased to the shorter `hy` and you can use either interchangeably
 
 ```bash
 hypermea api --help

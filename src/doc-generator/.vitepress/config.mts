@@ -173,7 +173,7 @@ function getSidebar() {
               },
               {
                 text: 'Pretty printing',
-                link: '/features/runtime-capabilities/pretty-print',
+                link: '/features/runtime-capabilities/pretty-printing',
               },
               {
                 text: 'Forms',
