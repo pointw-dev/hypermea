@@ -94,8 +94,8 @@ function getSidebar() {
         link: '/features/',
         items: [
           {
-            text: 'Scaffolding tools', link: '/features/scaffolding-tools',
-            link: '/features/scaffolding-tools/',
+            text: 'Scaffolding tools',
+            link: '/features/scaffolding-tools',
             items: [
               {
                 text: 'api',
@@ -144,8 +144,8 @@ function getSidebar() {
             ]
           },
           {
-            text: 'Runtime capabilities', link: '/features/runtime-capabilities',
-            link: '/features/runtime-capabilities/',
+            text: 'Runtime capabilities',
+            link: '/features/runtime-capabilities',
             items: [
               {
                 text: 'CRUD',
