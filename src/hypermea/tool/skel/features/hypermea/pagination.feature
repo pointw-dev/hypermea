@@ -47,11 +47,29 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
         And that resource has 100 items in its collection
         When a client requests this collection with a limit of <limit>
         Then the collection in the response has <limit> items
+        And the prev link relation is <prev_link>
         And the next link relation is <next_link>
         And the value of the last page is <last_page>
 
       Examples:
-        | limit | next_link | last_page |
-        | 20    | present   | 5         |
-        | 50    | present   | 2         |
-        | 105   | absent    | absent    |
+        | limit | next_link | prev_link | last_page |
+        | 20    | present   | absent    | 5         |
+        | 50    | present   | absent    | 2         |
+        | 105   | absent    | absent    | absent    |
+
+  Scenario Outline: Client can request a page in a limited collection
+        Given a resource is configured
+        And that resource has 100 items in its collection
+        When a client requests page 2 of this collection with a limit of <limit>
+        Then the collection in the response has <limit> items
+        And the prev link relation is <prev_link>
+        And the next link relation is <next_link>
+        And the value of the last page is <last_page>
+
+      Examples:
+        | limit | next_link | prev_link | last_page |
+        | 20    | present   | present   | 5         |
+        | 50    | absent    | present   | absent    |
+        | 105   | absent    | present   | absent    |
+#         should the prev link be there in case 105?
+

@@ -1,3 +1,51 @@
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from pytest_bdd import given, when, then, parsers
 from __tests__ import *
+from __tests__.hypermea import *
+from __tests__.hypermea.pagination import *
 
 FEATURE_PATH = 'hypermea/pagination.feature'
+
+@given('that resource has 100 items in its collection')
+def step_impl(api):
+    people = []
+    for index in range(100):
+        people.append({'name': f'name{index+1}'})
+    response = api.post(
+        '/people',
+        data=json.dumps(people),
+        headers={'content-type': 'application/json'}
+    )
+    assert_that(response.status_code).is_equal_to(201)
+
+
+@then(parsers.parse('the collection in the response has {limit:d} items'))
+def step_impl(context, limit):
+    item_count = len(context['people']['_items'])
+    if limit > item_count:
+        limit = item_count
+    assert_that(item_count).is_equal_to(limit)
+
+
+@then(parsers.parse('the next link relation is {next_link}'))
+def step_impl(context, next_link):
+    actual_next_link = 'present' if 'next' in context['people']['_links'] else 'absent'
+    assert_that(actual_next_link).is_equal_to(next_link)
+
+
+@then(parsers.parse('the prev link relation is {prev_link}'))
+def step_impl(context, prev_link):
+    actual_prev_link = 'present' if 'prev' in context['people']['_links'] else 'absent'
+    assert_that(actual_prev_link).is_equal_to(prev_link)
+
+
+@then(parsers.parse('the value of the last page is {last_page}'))
+def step_impl(context, last_page):
+    last_link = 'absent' if 'last' not in context['people']['_links'] else context['people']['_links']['last']['href']
+    if last_link == 'absent':
+        actual_last_page = 'absent'
+    else:
+        parsed = urlparse(last_link)
+        query_params = parse_qsl(parsed.query, keep_blank_values=True)
+        actual_last_page = next((value for key, value in query_params if key == 'page'), 'absent')
+    assert_that(actual_last_page).is_equal_to(last_page)

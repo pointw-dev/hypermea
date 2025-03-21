@@ -23,6 +23,10 @@ This warning will be removed once this page has passed testing.
   * separate hypermea folder from your application folder
   * test_debug_display_environment
   * allure
+  * requires mongo, but runs independently 
+    * i.e. separate MongoDB db, separate Redis db
+    * can run tests even if service is also running
+
 
 * HAL media type
   * Eve's out-of-box JSON structure is very close to HAL.  With hypermea, you get even closer
