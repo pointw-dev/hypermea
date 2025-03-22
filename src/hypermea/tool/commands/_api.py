@@ -2,12 +2,27 @@ import importlib
 import json
 import os
 import re
+import keyword
 from shutil import copyfile, copytree, move
 
 import click
 
 import hypermea.tool
 from hypermea.tool import addins
+
+
+def _sanitize_for_python_module_name(name: str) -> str:
+    name = name.lower()
+    name = re.sub(r'\W+', '_', name)
+    name = name.strip('_')
+    if name and name[0].isdigit():
+        name = f'_{name}'
+    if keyword.iskeyword(name):
+        name = f'{name}_mod'
+    if not name:
+        name = 'api'
+
+    return name
 
 
 def _sanitize_for_mongo_db_name(name: str) -> str:
@@ -99,6 +114,15 @@ def _create_api(project_name):
                 file_path = os.path.join(subdir, filename)
                 new_file_path = file_path.replace('.py.template', '.py')
                 os.rename(file_path, new_file_path)
+    # rename api_settings to project_name_settings
+    module_name = _sanitize_for_python_module_name(project_name)
+    config_init = os.path.join(project_name, 'configuration/__init__.py')
+    with open(config_init, 'r', encoding='utf-8') as f:
+        content = f.read()
+    content = content.replace('api_settings', f'{module_name}_settings')
+    with open(config_init, 'w', encoding='utf-8') as f:
+        f.write(content)
+    os.rename(os.path.join(project_name, 'configuration/api_settings.py'), os.path.join(project_name, f'configuration/{module_name}_settings.py'))
 
     idea_folder = os.path.join(skel, 'idea')
     idea_target_folder = os.path.join(project_name, '.idea')
