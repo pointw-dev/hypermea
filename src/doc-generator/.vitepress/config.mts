@@ -172,6 +172,10 @@ function getSidebar() {
                 link: '/features/runtime-capabilities/pagination',
               },
               {
+                text: 'Embed related resources',
+                link: '/features/runtime-capabilities/embed',
+              },
+              {
                 text: 'Projections',
                 link: '/features/runtime-capabilities/projections',
               },

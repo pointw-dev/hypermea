@@ -8,7 +8,6 @@ class HALRenderer(JSONRenderer):
     mime = ("application/hal+json",)
 
     def render(self, data):
-        # Perform HAL embedding if ?embed=... is present
         embed_keys = request.args.getlist("embed")
 
         if not embed_keys:
@@ -49,9 +48,7 @@ class HALRenderer(JSONRenderer):
             if not href:
                 continue
 
-            href_with_query = href  # Do not include any outer query params
-
-            resp = api_client.get(href_with_query, headers={"Accept": "application/hal+json"})
+            resp = api_client.get(href, headers={"Accept": "application/hal+json"})
 
             if resp.status_code == 200:
                 try:
