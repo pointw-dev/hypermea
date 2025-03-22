@@ -15,8 +15,8 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
         Resource level with `pagination` field in the domain definition
 
         PAGINATION (True) / pagination
-        PAGINATION_LIMIT (50) / pagination_limit
-        PAGINATION_DEFAULT (25)
+        PAGINATION_LIMIT (50/HY: 3000) / pagination_limit
+        PAGINATION_DEFAULT (25/HY: 1000)
         OPTIMIZE_PAGINATION_FOR_SPEED (False)
 
     If pagination is enabled, clients specify how they want collections to be split into pages with one or
@@ -33,10 +33,8 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
       next: 4.12.4.16.1
       prev: 4.12.4.16.2
 
-    OPTIMIZE_PAGINATION_FOR_SPEED
 
-
-    Scenario Outline: Client can limit the number of item in a collection
+    Scenario Outline: Client can limit the number of items in a collection
         Given a resource is configured
         And that resource has 100 items in its collection
         When a client requests this collection with a limit of <limit>
@@ -81,3 +79,38 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
         And that resource has 100 items in its collection
         When a client requests this collection using the new page parameter
         Then the collection in the response contains the correct page
+
+  Scenario: Pagination can be disabled globally
+        Given pagination is disabled globally
+        And a resource is configured
+        And that resource has 100 items in its collection
+        When a client requests this collection with a limit of 5
+        Then the limit part of the request is ignored
+
+  Scenario Outline: Pagination can be enabled per resource
+        Given pagination is disabled globally
+        And a resource is configured to allow pagination
+        And that resource has 100 items in its collection
+        When a client requests this collection with a limit of <limit>
+        Then the collection in the response has <limit> items
+        And the prev link relation is <prev_link>
+        And the next link relation is <next_link>
+        And the value of the last page is <last_page>
+
+      Examples:
+        | limit | next_link | prev_link | last_page |
+        | 20    | present   | absent    | 5         |
+        | 50    | present   | absent    | 2         |
+        | 105   | absent    | absent    | absent    |
+
+  @wip
+  Scenario: PAGINATION_LIMIT (50/HY: 3000)
+
+  @wip
+  Scenario:  pagination_limit
+
+  @wip
+  Scenario: PAGINATION_DEFAULT (25/HY: 1000)
+
+  @wip
+  Scenario: OPTIMIZE_PAGINATION_FOR_SPEED (False/HY: True)

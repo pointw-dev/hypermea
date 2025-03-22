@@ -16,8 +16,10 @@ This warning will be removed once this page has passed testing.
       * use `_env.conf` to set these values - included when your API was created
       * This file is in `.gitignore` and `.dockerignore` so it will never accidentally be shipped anywhere but your dev environment
   * Visible:  all setting values are logged at startup and can be viewed with `GET /_settings` - no more wondering what value was set when debugging a problem at 3:00 AM
+  * yte - Yes, True, Enabled (case insensitive)
 
   * (TODO: cancellable, optional, prefix stuff?,  `settings.has_enabled()`   [0] == 'YyTtEe')
+
 
 * test suite (BDD/pytest-bdd)
   * separate hypermea folder from your application folder
@@ -26,6 +28,23 @@ This warning will be removed once this page has passed testing.
   * requires mongo, but runs independently 
     * i.e. separate MongoDB db, separate Redis db
     * can run tests even if service is also running
+
+```ini
+[pytest]
+addopts = -v -m "not skip"
+testpaths = __tests__
+bdd_features_base_dir = ../features
+
+markers =
+    slow: this feature/scenario runs slowly (deselect with '-m "not slow"')
+    skip: skip this feature/scenario
+    wip: this feature/scenario is under development (deselect with '-m "not wip"')
+    only: if you want to run only these tests select with '-m only'
+
+filterwarnings =
+    ignore::pytest.PytestDeprecationWarning
+    ignore::DeprecationWarning
+```
 
 
 * HAL media type

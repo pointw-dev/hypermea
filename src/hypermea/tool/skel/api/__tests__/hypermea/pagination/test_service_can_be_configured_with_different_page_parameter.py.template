@@ -16,8 +16,8 @@ def test_service_can_be_configured_with_different_page_parameter():
 
 
 @given("the service is configured with a different page query string parameter")
-def step_impl(eve_settings):
-    eve_settings['QUERY_PAGE'] = 'pg'
+def step_impl(settings_py):
+    settings_py['QUERY_PAGE'] = 'pg'
 
 # And a resource is configured
 # And that resource has 100 items in its collection

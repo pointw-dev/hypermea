@@ -33,12 +33,12 @@ def hypermea_settings() -> dict[str, str]:
 
 
 @pytest.fixture
-def eve_settings() -> dict[str, Any]:
+def settings_py() -> dict[str, Any]:
     return {}
 
 
 @pytest.fixture
-def api(hypermea_settings, eve_settings):
+def api(hypermea_settings, settings_py):
     # allow step definitions to change hypermea settings
     for key, value in hypermea_settings.items():
         os.environ[key.upper()] = value
@@ -46,7 +46,7 @@ def api(hypermea_settings, eve_settings):
     # allow step definitions to change eve settings
     settings_filename = os.path.join(os.path.dirname(__file__), '../settings.py')
     test_settings = load_settings_from_file(settings_filename)
-    for key, value in eve_settings.items():
+    for key, value in settings_py.items():
         test_settings[key.upper()] = value
 
     service = HypermeaService(host='0.0.0.0', debug='Enabled', settings=test_settings)

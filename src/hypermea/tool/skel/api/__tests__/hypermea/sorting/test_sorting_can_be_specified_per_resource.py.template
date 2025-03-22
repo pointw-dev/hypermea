@@ -16,8 +16,8 @@ def test_test_sorting_can_be_specified_per_resource():
 
 # Given sorting is disabled globally
 @given('a resource is configured to allow sorting collection exists')
-def step_impl(eve_settings):
-    eve_settings['DOMAIN'] = {
+def step_impl(settings_py):
+    settings_py['DOMAIN'] = {
         'people': {
             'schema': {
                 'name': {'type': 'string'}

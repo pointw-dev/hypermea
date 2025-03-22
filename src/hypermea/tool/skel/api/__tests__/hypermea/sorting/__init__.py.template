@@ -20,8 +20,8 @@ def step_impl(api):
     assert_that(response.status_code).is_equal_to(201)
 
 @given('sorting is disabled globally')
-def step_impl(eve_settings):
-    eve_settings['SORTING'] = False
+def step_impl(settings_py):
+    settings_py['SORTING'] = False
 
 
 # shared When step definitions

@@ -15,8 +15,8 @@ def test_response_keys_can_be_sorted():
 
 
 @given('key sorting is enabled')
-def step_impl(eve_settings):
-    eve_settings['JSON_SORT_KEYS'] = True
+def step_impl(settings_py):
+    settings_py['JSON_SORT_KEYS'] = True
 
 # Given a resource is configured with multiple keys
 # Given that resource has an item in its collection

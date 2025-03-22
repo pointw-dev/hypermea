@@ -15,8 +15,8 @@ def test_sort_parameter_name_can_be_changed():
 
 
 @given('the service is configured with a different sort query string parameter')
-def step_impl(eve_settings):
-    eve_settings['QUERY_SORT'] = 'order_by'
+def step_impl(settings_py):
+    settings_py['QUERY_SORT'] = 'order_by'
 
 # And a resource is configured
 # And that resource has multiple items in its collection

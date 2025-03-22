@@ -14,8 +14,8 @@ def test_resource_can_sort_automatically():
 
 
 @given('a resource is configured to sort automatically')
-def step_impl(eve_settings):
-    eve_settings['DOMAIN'] = {
+def step_impl(settings_py):
+    settings_py['DOMAIN'] = {
         'people': {
             'schema': {
                 'name': {'type': 'string'}

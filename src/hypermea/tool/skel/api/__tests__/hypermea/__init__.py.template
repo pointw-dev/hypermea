@@ -5,8 +5,8 @@ from pytest_bdd import given
 
 
 @given('a resource is configured')
-def step_impl(eve_settings):
-    eve_settings['DOMAIN'] = {
+def step_impl(settings_py):
+    settings_py['DOMAIN'] = {
         'people': {
             'schema': {
                 'name': {'type': 'string'}
@@ -16,8 +16,8 @@ def step_impl(eve_settings):
 
 
 @given('a resource is configured with multiple keys')
-def step_impl(eve_settings):
-    eve_settings['DOMAIN'] = {
+def step_impl(settings_py):
+    settings_py['DOMAIN'] = {
         'widgets': {
             'schema': {
                 'name': {'type': 'string'},

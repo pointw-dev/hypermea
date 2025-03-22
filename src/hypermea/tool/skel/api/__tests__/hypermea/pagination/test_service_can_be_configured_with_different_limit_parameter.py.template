@@ -17,8 +17,8 @@ def test_service_can_be_configured_with_different_limit_parameter():
 
 
 @given("the service is configured with a different limit query string parameter")
-def step_impl(eve_settings):
-    eve_settings['QUERY_MAX_RESULTS'] = 'limit'
+def step_impl(settings_py):
+    settings_py['QUERY_MAX_RESULTS'] = 'limit'
 
 # And a resource is configured
 # And that resource has 100 items in its collection
