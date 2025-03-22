@@ -22,6 +22,9 @@ setup(
         'Topic :: Utilities'
     ],
     url='https://github.com/pointw-dev/hypermea',
+    project_urls = {
+        'Documentation': 'https://pointw-dev.github.io/hypermea'
+    },
     author='Michael Ottoson',
     author_email='michael@pointw.com',
     packages=['hypermea'],
