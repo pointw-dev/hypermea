@@ -255,7 +255,6 @@ function getSidebar() {
                 text: 'Gateway Registration',
                 link: '/features/runtime-capabilities/gateway-registration'
               }
-
             ]
           }
         ]

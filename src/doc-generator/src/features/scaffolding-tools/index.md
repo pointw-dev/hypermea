@@ -1,3 +1,14 @@
+---
+layout: doc
+
+prev:
+  text: 'Features'
+  link: '/features/'
+
+next:
+  text: '<span class="command">api</span>'
+  link: '/features/scaffolding-tools/api'
+---
 # Scaffolding tools
 
 ## Top level commands

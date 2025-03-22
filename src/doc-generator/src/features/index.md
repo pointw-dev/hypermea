@@ -1,3 +1,14 @@
+---
+layout: doc
+
+prev:
+  text: 'What is hypermea?'
+  link: '/introduction/what-is'
+
+next:
+  text: 'Scaffolding tools'
+  link: '/features/scaffolding-tools/'
+---
 # Features
 
 :::tip Note

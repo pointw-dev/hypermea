@@ -1,3 +1,15 @@
+---
+layout: doc
+
+prev:
+  text: 'What is hypermea?'
+  link: '/introduction/what-is'
+
+next:
+  text: 'Features'
+  link: '/features/'
+---
+
 # Basic concepts
 
 ## Hypermedia

@@ -22,12 +22,16 @@ features:
   - title: Scaffolding tools
     icon: 🏗
     details: "With simple commands you generate a fully functional, hypermedia-driven API code base in minutes.  No tedious setup.<br/><br/>Before opening your IDE you can add resources, links, affordances.  Configure authentication, Git, Docker, and more.<br/><br/>Start with a solid foundation and focus on what matters: your business logic."
+    linkText: Learn more
+    link: /features/scaffolding-tools/
   - title: Runtime capabilities
     icon: ⚡
-    details: The APIs you create with hypermea are feature rich out of the box, including sorting, pagination, filtering, validation, bulk inserts, and much more.<br/><br/>Your APIs  leverage <b><u><a href="https://flask.palletsprojects.com/en/stable/">Flask</a></u></b>, are powered by <b><u><a href="https://www.mongodb.com/">MongoDB</a></u></b>, and are enriched by <b><u><a href="https://docs.python-eve.org/en/stable/index.html">Eve</a></u></b>.  You get the benefits of all that without needing to learn them first.
+    details: The APIs you create with hypermea are feature rich out of the box, including sorting, pagination, filtering, validation, bulk inserts, and much more.<br/><br/>Your APIs  leverage <b><u><a href="https://flask.palletsprojects.com/en/stable/">Flask</a></u></b>, are powered by <b><u><a href="https://www.mongodb.com/">MongoDB</a></u></b>, and are enriched by <b><u><a href="https://docs.python-eve.org/en/stable/index.html">Eve</a></u></b>.  You get the benefits of all that without needing to learn them first.<br/><br/>
+    linkText: Learn more
+    link: /features/runtime-capabilities/
   - title: New to hypermedia?
     icon: 🔗
-    details: Hypermedia is a simple idea with powerful results.  If you are new to hypermedia, start here.
+    details: Hypermedia is a simple idea with powerful results.  If you are new to hypermedia, start here.<br/><br/><br/><br/><br/><br/><br/><br/>
     linkText: Learn more
     link: https://pointw-dev.github.io/hypermedia-docs/
     
