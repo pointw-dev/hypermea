@@ -1,0 +1,38 @@
+import pytest
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from pytest_bdd import given, when, then, parsers
+from __tests__.hypermea import *
+from __tests__.hypermea.pagination import *
+
+
+@pytest.fixture(scope='module')
+def context():
+    return {}
+
+LIMIT = 5
+
+@annotated_scenario(FEATURE_PATH, 'Service can be configured with a different limit query string parameter')
+def test_service_can_be_configured_with_different_limit_parameter():
+    pass
+
+
+@given("the service is configured with a different limit query string parameter")
+def step_impl(eve_settings):
+    eve_settings['QUERY_MAX_RESULTS'] = 'limit'
+
+# And a resource is configured
+# And that resource has 100 items in its collection
+
+@when("a client requests this collection using the new limit parameter")
+def step_impl(api, context):
+    response = api.get(
+        f'/people?limit={LIMIT}',
+    )
+    assert_that(response.status_code).is_equal_to(200)
+    context['people'] = response.json
+
+
+@then("the collection in the response is limited accordingly")
+def step_impl(context):
+    item_count = len(context['people']['_items'])
+    assert_that(item_count).is_equal_to(LIMIT)

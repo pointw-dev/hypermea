@@ -29,12 +29,6 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
     You can change the parameter name from `max_results` to something else with the `QUERY_MAX_RESULTS` setting.
     You can change the parameter name from `page` to something else with the `QUERY_PAGE` setting.
 
-
-    query string parameter: for example...
-        GET /people?sort=lastname,-netWorth
-    You can also use MongoDB format, for example...
-        GET /people?sort=[("lastname", -1)]
-
     _meta [https://www.w3.org/TR/2011/WD-html5-20110405/links.html#sequential-link-types]
       next: 4.12.4.16.1
       prev: 4.12.4.16.2
@@ -73,3 +67,17 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
         | 105   | absent    | present   | absent    |
 #         should the prev link be there in case 105?
 
+
+  Scenario: Service can be configured with a different limit query string parameter
+        Given the service is configured with a different limit query string parameter
+        And a resource is configured
+        And that resource has 100 items in its collection
+        When a client requests this collection using the new limit parameter
+        Then the collection in the response is limited accordingly
+
+  Scenario: Service can be configured with a different page query string parameter
+        Given the service is configured with a different page query string parameter
+        And a resource is configured
+        And that resource has 100 items in its collection
+        When a client requests this collection using the new page parameter
+        Then the collection in the response contains the correct page

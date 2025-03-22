@@ -3,8 +3,10 @@ from typing import Any
 import logging
 import pytest
 from pymongo import MongoClient
+from hypermea.core.utils import is_mongo_running
 from __tests__ import load_settings_from_file
 from hypermea_service import HypermeaService
+
 
 
 LOG = logging.getLogger('pytest')
@@ -15,10 +17,9 @@ handler.setLevel(getattr(logging, 'WARNING'))
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
-    print("\n🚨 Reminder: Ensure you have a MongoDB instance running on localhost:27017.")
+    if not is_mongo_running():
+        pytest.exit("❌ Could not connect to MongoDB instance.  Aborting.")
 
-    # if not os.getenv("MY_ENV_VAR"):
-    #     pytest.exit("❌ Required environment variable MY_ENV_VAR is missing. Aborting tests.")
 
 @pytest.fixture
 def hypermea_settings() -> dict[str, str]:
