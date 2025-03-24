@@ -61,53 +61,51 @@ def _create_api(project_name):
 
     project_name = _sanitize_for_mongo_db_name(project_name)
 
-    cur_dir_contents = os.listdir(current_dir)
-    folder_is_empty = len(cur_dir_contents) == 0
-    if len(cur_dir_contents) == 1 and '.python-version' in cur_dir_contents:
-        folder_is_empty = True
-
-    if (not folder_is_empty) and not click.confirm(
-            'This folder is not empty.  Do you still wish to create your API here?',
-            show_default=True
-    ):
-        return hypermea.tool.escape('Canceling api creation', 3)
+    if not _is_folder_ready(current_dir):
+        hypermea.tool.escape('Canceling api creation', 3)
 
     os.chdir(current_dir)
     click.echo(f'Creating {project_name} api')
-    settings = {
-        'project_name': project_name
-    }
-    with open('.hypermea', 'w') as f:
-        json.dump(settings, f, indent=4)
-
     skel = os.path.join(os.path.dirname(hypermea.tool.__file__), 'skel')
-    readme_filename = os.path.join(skel, 'doc/README.md')
-    copyfile(readme_filename, './README.md')
 
-    # TODO: write good docs and put them here...
-    # os.mkdir('doc')
-    # readme_filename = os.path.join(skel, 'doc/Setup-Dev-Environment.md')
-    # copyfile(readme_filename, './doc/Setup-Dev-Environment.md')
+    _create_hypermea_config_file(project_name)
+    _copy_documentation(skel)
 
     os.mkdir('src')
     os.chdir('src')
 
-    # TODO: not very DRY here...
-    os.mkdir('scripts')
-    scripts_folder = os.path.join(skel, 'scripts')
-    copytree(scripts_folder, 'scripts', dirs_exist_ok=True)
+    _create_scripts_folder(skel)
+    _create_features_folder(project_name, skel)
+    _create_service_folder('service', skel)
+    _create_idea_folder(project_name, skel)
+    _remove_pycache_folders(project_name)
 
-    os.mkdir('features')
-    os.mkdir(f'features/{project_name}')
-    features_folder = os.path.join(skel, 'features')
-    copytree(features_folder, 'features', dirs_exist_ok=True)
+    os.chdir('..')
+    hypermea.tool.replace_project_name(project_name, '.')  # TODO: jinja?
 
-    os.mkdir(project_name)
+
+def _remove_pycache_folders(project_name):
+    # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
+    hypermea.tool.remove_folder_if_exists(project_name, '__pycache__', recursive=True)
+    hypermea.tool.remove_folder_if_exists('scripts', '__pycache__', recursive=True)
+
+
+def _create_idea_folder(project_name, skel):
+    idea_folder = os.path.join(skel, 'idea')
+    # idea_target_folder = os.path.join(project_name, '.idea')
+    idea_target_folder = '.idea'
+    os.mkdir(idea_target_folder)
+    copytree(idea_folder, idea_target_folder, dirs_exist_ok=True)
+    move(os.path.join(idea_target_folder, 'project_name.iml'), os.path.join(idea_target_folder, f'{project_name}.iml'))
+
+
+def _create_service_folder(folder_name, skel):
+    os.mkdir(folder_name)
     api_folder = os.path.join(skel, 'api')
-    copytree(api_folder, project_name, dirs_exist_ok=True)
-    move(os.path.join(project_name, f'__tests__/project_name'), os.path.join(project_name, f'__tests__/{project_name}'))
+    copytree(api_folder, folder_name, dirs_exist_ok=True)
+    move(os.path.join(folder_name, f'__tests__/project_name'), os.path.join(folder_name, f'__tests__/{folder_name}'))
     # rename all .py.template in __tests__ to .py
-    directory = os.path.realpath(os.path.join(project_name, f'__tests__'))
+    directory = os.path.realpath(os.path.join(folder_name, f'__tests__'))
     for subdir, dirs, files in os.walk(directory):
         for filename in files:
             if filename.find('.py.template') > 0:
@@ -115,27 +113,61 @@ def _create_api(project_name):
                 new_file_path = file_path.replace('.py.template', '.py')
                 os.rename(file_path, new_file_path)
     # rename api_settings to project_name_settings
-    module_name = _sanitize_for_python_module_name(project_name)
-    config_init = os.path.join(project_name, 'configuration/__init__.py')
+    module_name = _sanitize_for_python_module_name(folder_name)
+    config_init = os.path.join(folder_name, 'configuration/__init__.py')
     with open(config_init, 'r', encoding='utf-8') as f:
         content = f.read()
     content = content.replace('api_settings', f'{module_name}_settings')
     with open(config_init, 'w', encoding='utf-8') as f:
         f.write(content)
-    os.rename(os.path.join(project_name, 'configuration/api_settings.py'), os.path.join(project_name, f'configuration/{module_name}_settings.py'))
+    os.rename(os.path.join(folder_name, 'configuration/api_settings.py'),
+              os.path.join(folder_name, f'configuration/{module_name}_settings.py'))
 
-    idea_folder = os.path.join(skel, 'idea')
-    idea_target_folder = os.path.join(project_name, '.idea')
-    os.mkdir(idea_target_folder)
-    copytree(idea_folder, idea_target_folder, dirs_exist_ok=True)
-    move(os.path.join(idea_target_folder, 'project_name.iml'), os.path.join(idea_target_folder, f'{project_name}.iml'))
 
-    # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
-    hypermea.tool.remove_folder_if_exists(project_name, '__pycache__', recursive=True)
-    hypermea.tool.remove_folder_if_exists('scripts', '__pycache__', recursive=True)
+def _create_features_folder(project_name, skel):
+    os.mkdir('features')
+    os.mkdir(f'features/{project_name}')
+    features_folder = os.path.join(skel, 'features')
+    copytree(features_folder, 'features', dirs_exist_ok=True)
 
-    os.chdir('..')
-    hypermea.tool.replace_project_name(project_name, '.')
+
+def _create_scripts_folder(skel):
+    os.mkdir('scripts')
+    scripts_folder = os.path.join(skel, 'scripts')
+    copytree(scripts_folder, 'scripts', dirs_exist_ok=True)
+
+
+def _copy_documentation(skel):
+    readme_filename = os.path.join(skel, 'doc/README.md')
+    copyfile(readme_filename, './README.md')
+    # TODO: write good docs and put them here...
+    # os.mkdir('doc')
+    # readme_filename = os.path.join(skel, 'doc/Setup-Dev-Environment.md')
+    # copyfile(readme_filename, './doc/Setup-Dev-Environment.md')
+
+
+def _create_hypermea_config_file(project_name):
+    settings = {
+        'project_name': project_name
+    }
+    with open('.hypermea', 'w') as f:
+        json.dump(settings, f, indent=4)
+
+
+def _is_folder_ready(current_dir):
+    cur_dir_contents = os.listdir(current_dir)
+    folder_is_empty = len(cur_dir_contents) == 0
+    if len(cur_dir_contents) == 1 and '.python-version' in cur_dir_contents:
+        folder_is_empty = True
+    if folder_is_empty:
+        return True
+    else:
+        return  click.confirm(
+            'This folder is not empty.  Do you still wish to create your API here?',
+            show_default=True
+        )
+
+
 
 
 def _add_addins(which_addins, silent=False):

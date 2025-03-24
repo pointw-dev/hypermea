@@ -4,9 +4,9 @@ ENV HY_API_PORT=80
 EXPOSE $HY_API_PORT
 
 WORKDIR /api
-COPY {$project_name}/requirements.txt .
+COPY service/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY {$project_name} .
+COPY service .
 
 CMD ["python", "run.py"]
