@@ -9,7 +9,7 @@ def _schema_to_templates(schema, form_type, resource=None):
         template_name = 'patch' if method == 'PATCH' else 'default'
         templates[template_name] = {
             'method': method,
-            # 'title': 'Soon is coming',
+            # 'prompt': 'Soon is coming',
             'contentType': 'application/json',
             'properties': properties,
         }

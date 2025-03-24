@@ -44,6 +44,7 @@ def _process_item_links(links):
     _remove_unnecessary_links(links)
 
     for link in links.values():
+        _remove_title(link)
         _add_missing_slashes(link)
         _insert_base_url(link)
         _remove_regex_from_href(link)
@@ -56,6 +57,11 @@ def _remove_unnecessary_links(links):
 
     if 'related' in links:
         del links['related']
+
+
+@trace
+def _remove_title(link):
+    link.pop('title', None)
 
 
 @trace
@@ -90,8 +96,8 @@ def _rewrite_schema_links(links):
     base_url = get_my_base_url()
 
     new_links = {
-        'self': {'href': f'{base_url}/', 'title': f'{SETTINGS["HY_API_NAME"]} root'},
-        'logging': {'href': f'{base_url}/_logging', 'title': 'logging'}
+        'self': {'href': f'{base_url}/', '_note': f'Root resource for {SETTINGS["HY_API_NAME"]}'},
+        'logging': {'href': f'{base_url}/_logging'}
     }
 
     for link in old:
@@ -100,6 +106,7 @@ def _rewrite_schema_links(links):
 
         rel = link['title'][1:] if link['title'].startswith('_') else link['title']
         link['href'] = f'{base_url}/{link["href"]}'
+        link.pop('title', None)
         new_links[rel] = link
 
     return new_links
@@ -111,6 +118,5 @@ def _add_parent_link(links, resource):
         return
 
     links['parent'] = {
-        'href': links['collection']['href'],
-        'title': resource
+        'href': links['collection']['href']
     }

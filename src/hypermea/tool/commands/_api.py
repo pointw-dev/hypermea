@@ -77,7 +77,7 @@ def _create_api(project_name):
     _create_scripts_folder(skel)
     _create_features_folder(project_name, skel)
     _create_service_folder('service', skel)
-    _create_idea_folder(project_name, skel)
+    # _create_idea_folder(project_name, skel)
     _remove_pycache_folders(project_name)
 
     os.chdir('..')
@@ -91,6 +91,8 @@ def _remove_pycache_folders(project_name):
 
 
 def _create_idea_folder(project_name, skel):
+    # TODO: #114 - probably move to root first (current /src)
+    # TODO: #114 - maybe logo only at this point (no longer a need for multiple source roots)
     idea_target_folder = '.idea'
     os.mkdir(idea_target_folder)
     copytree(os.path.join(skel, 'idea'), idea_target_folder, dirs_exist_ok=True)

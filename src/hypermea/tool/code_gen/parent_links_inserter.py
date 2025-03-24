@@ -49,19 +49,16 @@ class ParentLinksInserter(FileTransformer):
     def make_children_link(self):
         """ This adds the following to hooks.parents:_add_links_to_parent()
                 parent['_links']['children'] = {
-                 'href': f'/parents/{parent["_id"]}/children',
-                 'title': 'children'
+                 'href': f'/parents/{parent["_id"]}/children'
                 }
             or this if the child is remote to hooks.parents:_add_remote_children_links()
                 parent['_links']['children'] = {
-                    'href': "{get_href_from_gateway('children')}/parents/parent['_id']/children',
-                    'title': 'children'
+                    'href': "{get_href_from_gateway('children')}/parents/parent['_id']/children'
                 }
         """
 
         return code_gen.get_link_statement_line(
             resource=self.adder.parent,
             rel=self.adder.children,
-            href=self._get_href_value(),
-            title=self.adder.children
+            href=self._get_href_value()
         )

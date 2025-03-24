@@ -37,7 +37,7 @@ def add_link(collection, collection_name, self_href=''):
 
     collection['_links']['create-form'] = {
         'href': inject_path(f'{base_url}/{self_href}', 'create-form', True),
-        'title': f'GET to fetch create-form to add to {collection_name}'
+        '_note': f'GET to fetch create-form to add to {collection_name}'
     }
 
 

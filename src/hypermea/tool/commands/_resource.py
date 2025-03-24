@@ -227,7 +227,6 @@ def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
 
     {plural}_collection['_links']['item'] = {{
         'href': f'{{base_url}}/{plural}/{{{{{{id_field}}}}}}',
-        'title': '{singular}',
         'templated': True
     }}
     
@@ -243,8 +242,7 @@ def _add_links_to_{singular}({singular}):
     _add_remote_parent_links({singular})
 
     {singular}['_links']['self'] = {{
-        'href': f"{{base_url}}/{plural}/{{{singular}_id}}",
-        'title': '{singular}'
+        'href': f"{{base_url}}/{plural}/{{{singular}_id}}"
     }}
     affordances.rfc6861.edit_form.add_link({singular}, '{plural}')
 

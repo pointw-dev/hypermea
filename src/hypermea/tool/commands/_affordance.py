@@ -57,7 +57,7 @@ def add_link(resource, collection_name):
 
     resource['_links']['{affordance.name}'] = {{
         'href': f'{{base_url}}/{{collection_name}}/{{resource_id}}/{affordance.name}',
-        'title': 'PUT to do {affordance.name}'    
+        '_note': 'PUT to do {affordance.name}'    
     }}
 
 {'' if resource_name == NA else handler }'''

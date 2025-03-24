@@ -50,11 +50,10 @@ def insert_import(original_body, addition):
     return rtn
 
 
-def get_link_statement_line(resource, rel, href, title):
+def get_link_statement_line(resource, rel, href):
     """ Creates the following
             resource['_links']['rel'] = {
-                'href': 'href',
-                'title': 'title'
+                'href': 'href'
             }
         where href is
             either a CST object that resolves to a quoted string
@@ -90,17 +89,10 @@ def get_link_statement_line(resource, rel, href, title):
         )
     )
 
-    # Create the dictionary element with the 'title' key and simple string value.
-    title_element = DictElement(
-        key=SimpleString("'title'"),
-        value=SimpleString(f"'{title}'")
-    )
-
     # Create the dictionary with the above elements and left and right braces.
     link_dict = Dict(
         elements=[
-            href_element,
-            title_element
+            href_element
         ],
         lbrace=LeftCurlyBrace(
             whitespace_after=ParenthesizedWhitespace(

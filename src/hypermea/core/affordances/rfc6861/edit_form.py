@@ -33,7 +33,7 @@ def add_link(resource, collection_name):
 
     resource['_links']['edit-form'] = {
         'href': f'{base_url}/{collection_name}/{resource_id}/edit-form',
-        'title': 'GET to fetch edit-form'
+        '_note': 'GET to fetch edit-form'
     }
 
 

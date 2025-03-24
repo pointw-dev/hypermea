@@ -89,7 +89,7 @@ class ChildLinksInserter(FileTransformer):
                 resource=self.adder.child,
                 rel=self.adder.parents,
                 href=href,
-                title=f'{self.adder.parent}_{self.adder.children}'
+                # title=f'{self.adder.parent}_{self.adder.children}'
             )
 
             return If(
@@ -144,8 +144,7 @@ class ChildLinksInserter(FileTransformer):
                                 rbracket=RightSquareBracket()
                             ),
                         )
-                    ],
-                    title=self.adder.parents
+                    ]
                 ),
                 code_gen.get_link_statement_line(
                     resource=self.adder.child,
@@ -165,8 +164,7 @@ class ChildLinksInserter(FileTransformer):
                             )
                         ),
                         FormattedStringText(f'/{self.adder.children}')
-                    ],
-                    title=f'{self.adder.parent}_{self.adder.children}'
+                    ]
                 )
             ],
             header=code_gen.TWNL
@@ -178,14 +176,12 @@ class ChildLinksInserter(FileTransformer):
                     code_gen.get_link_statement_line(
                         resource=self.adder.child,
                         rel='parent',
-                        href=[FormattedStringText('/')],
-                        title='home'
+                        href=[FormattedStringText('/')]
                     ),
                     code_gen.get_link_statement_line(
                         resource=self.adder.child,
                         rel='collection',
-                        href=[FormattedStringText(f'/{self.adder.children}')],
-                        title=self.adder.children
+                        href=[FormattedStringText(f'/{self.adder.children}')]
                     )
                 ],
                 header=code_gen.TWNL

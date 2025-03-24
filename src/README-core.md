@@ -27,17 +27,17 @@ details
 
 * get_api() -> flask.testing.FlaskClient
 * get_db() -> pymongo.database.Database
-* update_etag_and_updated(record: dict) -> dict
+* adjust_etag_and_updated_date(record: dict) -> dict
 * make_error_response(message: str, code: int, issues: Optional[List[Dict]] = None) -> flask.wrappers.Response
 * url_join(*parts: str) -> str
 
-additional, but not likely useful
+additional, but not likely useful:
 
 * get_my_base_url() -> str
 * get_id_field(collection_name: str) -> str
 * get_resource_id(resource: dict, collection_name: str) -> str
 * is_mongo_running() -> bool (coming soon)
-* echo_message()
+* echo_message() -> flask.Response
 
 Note: the `log_setup.py` under `utils` is used to set up logging and has no uses for your API
 
