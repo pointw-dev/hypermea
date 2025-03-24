@@ -51,7 +51,7 @@ class LinkManager:
 
     def _list_missing_resources(self):
         try:
-            starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}/domain')
+            starting_folder, settings = hypermea.tool.jump_to_folder('src/service/domain')
         except RuntimeError:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -82,7 +82,7 @@ class LinkManager:
     @staticmethod
     def get_relations():
         try:
-            starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}/domain')
+            starting_folder, settings = hypermea.tool.jump_to_folder('src/service/domain')
         except RuntimeError:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -148,7 +148,7 @@ class LinkManager:
     @staticmethod
     def _add_remote_relations(rels):
         try:
-            starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}/hooks')
+            starting_folder, settings = hypermea.tool.jump_to_folder('src/service/hooks')
         except RuntimeError:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -194,7 +194,7 @@ class LinkManager:
 
     def add(self):
         try:
-            starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+            starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
         except RuntimeError:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -221,7 +221,7 @@ class LinkManager:
 
     def remove(self):
         try:
-            starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+            starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
         except RuntimeError:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 

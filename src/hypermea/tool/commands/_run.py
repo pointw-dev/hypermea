@@ -6,7 +6,7 @@ import hypermea.tool
 
 def _run(host, debug, single_threaded):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 

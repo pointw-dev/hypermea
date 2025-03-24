@@ -10,7 +10,7 @@ from hypermea.tool.code_gen import DomainDefinitionInserter, HooksInserter, Doma
 
 def _create(resource_name, no_common):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -40,7 +40,7 @@ def _list_resources():
 
 def _remove(resource_name):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -81,7 +81,7 @@ def _is_resource_name_is_invalid(singular, plural):
 
 def _get_resource_list():
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}/domain')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service/domain')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -162,7 +162,7 @@ This module defines functions to add link relations to {plural}.
 """
 import logging
 import json
-from flask import request
+from flask import g, after_this_request, request as current_request
 from hypermea.core.logging import trace
 from configuration import SETTINGS
 from hypermea.core.utils import get_resource_id, get_id_field, get_my_base_url, clean_href
@@ -182,8 +182,16 @@ def add_hooks(app):
 
 @trace
 def _post_{plural}(request, payload):
-    if payload.status_code == 201:
+    if payload.status_code == 201:    
         j = json.loads(payload.data)
+        if '_etag' in j:
+            g.etag_to_inject = j['_etag']
+
+            @after_this_request
+            def inject_etag_header(response):
+                response.headers['ETag'] = g.etag_to_inject
+                return response
+        
         if '_items' in j:
             _add_links_to_{plural}_collection(j, request.url)
         else:
@@ -193,7 +201,7 @@ def _post_{plural}(request, payload):
 
 @trace
 def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
-    if 'links-only' in request.args:
+    if 'links-only' in current_request.args:
         del {plural}_collection['_items']
 
     if '_items' in {plural}_collection:

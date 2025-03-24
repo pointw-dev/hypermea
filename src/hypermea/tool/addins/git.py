@@ -55,8 +55,8 @@ def add(remote, silence=False):
     hypermea.tool.replace_project_name(settings['project_name'], '.')
 
     vcs_filename = os.path.join(skel, 'git/vcs.xml')
-    if os.path.exists(f'./src/{settings["project_name"]}/.idea'):
-        copyfile(vcs_filename, f'./src/{settings["project_name"]}/.idea/vcs.xml')
+    if os.path.exists(f'./src/.idea'):
+        copyfile(vcs_filename, f'./src/.idea/vcs.xml')
 
     silence = ' > /dev/null 2> /dev/null'
     if platform.system() == 'Windows':

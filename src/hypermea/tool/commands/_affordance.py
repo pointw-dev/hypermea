@@ -80,7 +80,7 @@ def _resource_exists(resource_name):
     if resource_name == NA:
         return True
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -104,7 +104,7 @@ def _append_import_if_needed(filename, import_statement):
 
 def _get_affordances():
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -189,7 +189,7 @@ class Affordance:
 
 def _create(affordance_name, resource_name):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -243,7 +243,7 @@ def _list_affordances():
 
 def _remove(affordance_name, resource_name):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -262,7 +262,7 @@ def _remove(affordance_name, resource_name):
 
 def _attach(affordance_name, resource_name):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 

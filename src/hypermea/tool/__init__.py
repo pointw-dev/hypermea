@@ -26,8 +26,6 @@ def jump_to_folder(path=None):
         settings = json.load(f)
 
     if path:
-        project_name = settings['project_name']
-        path = eval("f'" + f'{path}' + "'")
         os.chdir(path)
 
     return starting_folder, settings
@@ -49,7 +47,7 @@ def get_settings():
 
 def get_api_version():
     try:
-        starting_folder, settings = jump_to_folder('src/{project_name}/configuration')
+        starting_folder, settings = jump_to_folder('src/service/configuration')
     except RuntimeError:
         return escape('This command must be run in a hypermea folder structure', 1)
 
@@ -100,7 +98,7 @@ def install_packages(packages, command):
 
 
 def copy_skel(project_name, skel_folder, target_folder=None, replace=None, silent=False):
-    if not silent: print(f'Adding {skel_folder} to {project_name} API')
+    if not silent: print(f'Adding {skel_folder} to {project_name} service')
 
     source = os.path.join(os.path.dirname(__file__), f'skel/{skel_folder}')
     destination = skel_folder if not target_folder else target_folder
@@ -137,9 +135,8 @@ def copy_skel(project_name, skel_folder, target_folder=None, replace=None, silen
                         f.write(s)
 
 
-def replace_project_name(project_name, folder=None):
-    if not folder:
-        folder = f'./{project_name}'
+def replace_project_name(project_name, folder):
+    # TODO: jinja?
     for dname, dirs, files in os.walk(folder):
         for fname in files:
             # do not process if traversing nested venv folder

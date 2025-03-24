@@ -6,7 +6,7 @@ import hypermea.tool
 
 def _create(integration, name, prefix):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -48,7 +48,7 @@ def _create(integration, name, prefix):
 
 def _list_integrations():
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 

@@ -57,7 +57,7 @@ def modify_hypermea_service():
 
 def add(silent=False):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1, silent)
 

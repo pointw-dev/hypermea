@@ -109,11 +109,12 @@ If using auth (e.g. `hypermea api create {$project_name} --add-auth` )
 | AUTH0_CLIENT_ID        | When {$project_name} needs to call the Auth0 API, it uses this client id/secret to authenticate.  These are not the client id/secret of your application. | --your-client-id--                               |
 | AUTH0_CLIENT_SECRET    |                                                              | --your-client-secret--                           |
 
-## Project Structure
+
+## Service Project Structure
 
 | File                            | Description                                                                                                                                                                                                                                                         |
 |---------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| hypermea_service.py                  | Defines the HypermeaService class, the http server that powers the API.                                                                                                                                                                                             |
+| hypermea_service.py             | Defines the HypermeaService class, the http server that powers the API.                                                                                                                                                                                             |
 | run.py                          | Instantiates an HypermeaService object and starts it (with SIGTERM for docker stop).                                                                                                                                                                                |
 | settings.py                     | Where you set the values of Eve [global configuration](https://docs.python-eve.org/en/stable/config.html#global-configuration) settings.  Key values are provided by `configuration/__init__.py` which are overridable by environment variables (or by `_env.conf`) |
 | _env.conf                       | Set temporary/dev values for settings here.  Will not be added to container build.  If not using containers, be sure not to copy this to production.                                                                                                                |

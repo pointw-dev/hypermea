@@ -81,7 +81,7 @@ def _create_api(project_name):
     _remove_pycache_folders(project_name)
 
     os.chdir('..')
-    hypermea.tool.replace_project_name(project_name, '.')  # TODO: jinja?
+    hypermea.tool.replace_project_name(project_name, '.')
 
 
 def _remove_pycache_folders(project_name):
@@ -91,11 +91,9 @@ def _remove_pycache_folders(project_name):
 
 
 def _create_idea_folder(project_name, skel):
-    idea_folder = os.path.join(skel, 'idea')
-    # idea_target_folder = os.path.join(project_name, '.idea')
     idea_target_folder = '.idea'
     os.mkdir(idea_target_folder)
-    copytree(idea_folder, idea_target_folder, dirs_exist_ok=True)
+    copytree(os.path.join(skel, 'idea'), idea_target_folder, dirs_exist_ok=True)
     move(os.path.join(idea_target_folder, 'project_name.iml'), os.path.join(idea_target_folder, f'{project_name}.iml'))
 
 
@@ -210,7 +208,7 @@ def _add_addins(which_addins, silent=False):
 
 def _show_or_set_version(new_version):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}/configuration')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service/configuration')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 

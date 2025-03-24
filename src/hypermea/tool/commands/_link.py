@@ -9,7 +9,7 @@ from hypermea.tool.commands.link_manager import LinkManager, LinkManagerExceptio
 
 def _create(parent, child, as_parent_ref):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -24,7 +24,7 @@ def _create(parent, child, as_parent_ref):
 
 def _list_rels(output):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}/domain')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service/domain')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
@@ -108,7 +108,7 @@ def _print_english(rels):
 
 def _remove(parent, child):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/{project_name}')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
