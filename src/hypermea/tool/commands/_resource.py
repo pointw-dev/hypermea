@@ -165,7 +165,7 @@ import json
 from flask import g, after_this_request, request as current_request
 from hypermea.core.logging import trace
 from configuration import SETTINGS
-from hypermea.core.utils import get_resource_id, get_id_field, get_my_base_url, clean_href
+from hypermea.core.utils import get_resource_id, get_id_field, get_my_base_url, clean_href, add_search_link
 from hypermea.core.gateway import get_href_from_gateway
 import affordances
 
@@ -225,11 +225,14 @@ def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
     if id_field.startswith('_'):
         id_field = id_field[1:]
 
-    {plural}_collection['_links']['item'] = {{
-        'href': f'{{base_url}}/{plural}/{{{{{{id_field}}}}}}',
-        'templated': True
-    }}
-    
+    self_href = f'{{base_url}}/{plural}'
+    {plural}_collection['_links'].update({{
+           'item': {{
+                'href': f'{{self_href}}/{{{{{{id_field}}}}}}',
+                'templated': True
+           }},
+           'search': add_search_link(self_href),
+    }})    
     affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', '/{plural}')
 
 
@@ -245,7 +248,6 @@ def _add_links_to_{singular}({singular}):
         'href': f"{{base_url}}/{plural}/{{{singular}_id}}"
     }}
     affordances.rfc6861.edit_form.add_link({singular}, '{plural}')
-
 
 
 @trace

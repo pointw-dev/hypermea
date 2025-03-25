@@ -104,8 +104,17 @@ def _rewrite_schema_links(links):
         if '<' in link['href'] or link['title'] == '_schema':
             continue
 
-        rel = link['title'][1:] if link['title'].startswith('_') else link['title']
+        add_links_only = False
+        if link['title'].startswith('_'):
+            rel = link['title'][1:]
+        else:
+            rel = link['title']
+            add_links_only = True
+
         link['href'] = f'{base_url}/{link["href"]}'
+        if add_links_only:
+            link['href'] += '{?links-only}'
+            link['templated'] = True
         link.pop('title', None)
         new_links[rel] = link
 

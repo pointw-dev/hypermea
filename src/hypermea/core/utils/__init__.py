@@ -130,6 +130,19 @@ def get_my_base_url() -> str:
     return base_url
 
 
+
+def add_search_link(self_href: str) -> None:
+    where = current_app.config['QUERY_WHERE']
+    sort = current_app.config['QUERY_SORT']
+    max_results = current_app.config['QUERY_MAX_RESULTS']
+    page = current_app.config['QUERY_PAGE']
+
+    return {
+        'href': f'{self_href}{{?{where},{sort},{max_results},{page},embed}}',
+        'templated': True
+    }
+
+
 def get_id_field(collection_name: str) -> str:
     return current_app.config['DOMAIN'][collection_name]['id_field']
 
