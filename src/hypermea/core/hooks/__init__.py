@@ -82,7 +82,7 @@ def _insert_base_url(link):
 def _remove_regex_from_href(link):
     # TODO: this is needed due to a bug in Eve - fix that bug!
     if '<regex' in link['href']:
-        link['href'] = re.sub('\/\<regex.*?\>', '', link['href'])
+        link['href'] = re.sub(r'\/\<regex.*?\>', '', link['href'])
 
 
 @trace
