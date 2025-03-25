@@ -1,5 +1,5 @@
 # do not change version manually
-VERSION = '0.9.43'
+VERSION = '0.9.44'
 
 from eve import Eve
 from eve.flaskapp import EveWSGIRequestHandler
