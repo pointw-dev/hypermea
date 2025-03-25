@@ -160,28 +160,40 @@ function getSidebar() {
                 link: '/features/runtime-capabilities/validation',
               },
               {
-                text: 'Filtering',
-                link: '/features/runtime-capabilities/filtering',
+                text: 'Search collections',
+                link: '/features/runtime-capabilities/search-collections/',
+                items: [
+                  {
+                    text: 'Filtering',
+                    link: '/features/runtime-capabilities/search-collections/filtering',
+                  },
+                  {
+                    text: 'Sorting',
+                    link: '/features/runtime-capabilities/search-collections/sorting',
+                  },
+                  {
+                    text: 'Pagination',
+                    link: '/features/runtime-capabilities/search-collections/pagination',
+                  },
+                ]
               },
               {
-                text: 'Sorting',
-                link: '/features/runtime-capabilities/sorting',
-              },
-              {
-                text: 'Pagination',
-                link: '/features/runtime-capabilities/pagination',
-              },
-              {
-                text: 'Embed related resources',
-                link: '/features/runtime-capabilities/embed',
-              },
-              {
-                text: 'Projections',
-                link: '/features/runtime-capabilities/projections',
-              },
-              {
-                text: 'Pretty printing',
-                link: '/features/runtime-capabilities/pretty-printing',
+                text: 'Data shaping',
+                link: '/features/runtime-capabilities/data-shaping',
+                items: [
+                  {
+                    text: 'Projections',
+                    link: '/features/runtime-capabilities/data-shaping/projections',
+                  },
+                  {
+                    text: 'Pretty printing',
+                    link: '/features/runtime-capabilities/data-shaping/pretty-printing',
+                  },
+                  {
+                    text: 'Embed related resources',
+                    link: '/features/runtime-capabilities/data-shaping/embed',
+                  }
+                ]
               },
               {
                 text: 'Forms',
