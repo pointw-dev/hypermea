@@ -1,5 +1,5 @@
 # hypermea
-![](./img/hypermea-letterhead.svg)
+![](https://pointw-dev.github.io/hypermea/img/hypermea-letterhead.svg)
 
 ## Create production-ready hypermedia APIs - *fast*
 

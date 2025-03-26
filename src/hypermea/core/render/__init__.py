@@ -9,10 +9,10 @@ class HALRenderer(JSONRenderer):
     mime = ("application/hal+json",)
 
     def render(self, data):
-        self._check_for_embedded(data)
+        self._handle_request_for_embedded(data)
         return super(HALRenderer, self).render(data)
 
-    def _check_for_embedded(self, data):
+    def _handle_request_for_embedded(self, data):
         embed_keys = request.args.getlist("embed")
         if not embed_keys:
             return
