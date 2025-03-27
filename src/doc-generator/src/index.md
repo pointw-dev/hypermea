@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: <img class="magic-image" src="/hypermea/img/banner.png">
+  name: <img class="magic-image" src="/hypermea/img/hypermea-banner.svg">
   tagline: Create production-ready hypermedia APIs - <i>fast</i>
   
   image:
