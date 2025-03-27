@@ -9,10 +9,23 @@ class HALRenderer(JSONRenderer):
     mime = ("application/hal+json",)
 
     def render(self, data):
-        self._handle_request_for_embedded(data)
+        self._handle_embed_query_string(data)
+
+        if request.method == 'GET':
+            self._move_items_to_embedded(data)
+
         return super(HALRenderer, self).render(data)
 
-    def _handle_request_for_embedded(self, data):
+    def _move_items_to_embedded(self, data):
+        rel = request.url_rule.endpoint.split('|')[0]
+        if '_' in rel:
+            rel = rel.split('_', 1)[1]
+        items = data.pop('_items', None)
+        if items is not None:
+            embedded = data.setdefault('_embedded', {})
+            embedded[rel] = items
+
+    def _handle_embed_query_string(self, data):
         embed_keys = request.args.getlist("embed")
         if not embed_keys:
             return
@@ -66,7 +79,7 @@ class HALRenderer(JSONRenderer):
             document["_embedded"][embed_key] = embedded_data
 
     @staticmethod
-    def _fetch_embedded_data(api_client, href):
+    def _fetch_embedded_data(href):
         headers = {
             "Accept": "application/hal+json, application/json;q=0.9, */*;q=0"
         }
