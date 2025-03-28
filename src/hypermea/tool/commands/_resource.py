@@ -165,7 +165,7 @@ import json
 from flask import g, after_this_request, request as current_request
 from hypermea.core.logging import trace
 from configuration import SETTINGS
-from hypermea.core.utils import get_resource_id, get_id_field, get_my_base_url, clean_href, add_search_link
+from hypermea.core.utils import get_resource_id, add_etag_header_to_post
 from hypermea.core.gateway import get_href_from_gateway
 import affordances
 
@@ -175,78 +175,20 @@ LOG = logging.getLogger('hooks.{plural}')
 @trace
 def add_hooks(app):
     """Wire up the hooks for {plural}."""
+    app.on_post_POST_{plural} += add_etag_header_to_post
     app.on_fetched_item_{plural} += _add_links_to_{singular}
     app.on_fetched_resource_{plural} += _add_links_to_{plural}_collection
-    app.on_post_POST_{plural} += _post_{plural}
-
-
-@trace
-def _post_{plural}(request, payload):
-    if payload.status_code == 201:    
-        j = json.loads(payload.data)
-        if '_etag' in j:
-            g.etag_to_inject = j['_etag']
-
-            @after_this_request
-            def inject_etag_header(response):
-                response.headers['ETag'] = g.etag_to_inject
-                return response
-        
-        if '_items' in j:
-            _add_links_to_{plural}_collection(j, request.url)
-        else:
-            _add_links_to_{singular}(j)
-        payload.data = json.dumps(j)
 
 
 @trace
 def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
-    if 'links-only' in current_request.args:
-        del {plural}_collection['_items']
-
-    if '_items' in {plural}_collection:
-        for {singular} in {plural}_collection['_items']:
-            _add_links_to_{singular}({singular})
-
-    if '_links' not in {plural}_collection:
-        {plural}_collection['_links'] = {{
-            'self': {{
-                'href': self_href
-            }}
-        }}
-
-    for rel in ['self', 'prev', 'next', 'last']:
-        if rel in {plural}_collection['_links']:
-            {plural}_collection['_links'][rel]['href'] = clean_href({plural}_collection['_links'][rel]['href'])
-
-    base_url = get_my_base_url()
-
-    id_field = get_id_field('{plural}')
-    if id_field.startswith('_'):
-        id_field = id_field[1:]
-
-    self_href = f'{{base_url}}/{plural}'
-    {plural}_collection['_links'].update({{
-           'item': {{
-                'href': f'{{self_href}}/{{{{{{id_field}}}}}}',
-                'templated': True
-           }},
-           'search': add_search_link(self_href),
-    }})    
     affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', '/{plural}')
 
 
 @trace
 def _add_links_to_{singular}({singular}):
-    base_url = get_my_base_url()
-    {singular}_id = get_resource_id({singular}, '{plural}')
-
     _add_remote_children_links({singular})
     _add_remote_parent_links({singular})
-
-    {singular}['_links']['self'] = {{
-        'href': f"{{base_url}}/{plural}/{{{singular}_id}}"
-    }}
     affordances.rfc6861.edit_form.add_link({singular}, '{plural}')
 
 

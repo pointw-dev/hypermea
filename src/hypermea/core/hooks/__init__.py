@@ -26,11 +26,12 @@ def fix_links(resource, request, payload):
         if resource is None and '_links' in document:
             document['_links'] = _rewrite_schema_links(links=document.get('_links', {}))
         else:
-            if '_items' in document:
-                for item in document['_items']:
+            if '_' in resource:
+                parent_resource, resource = resource.split('_', 1)
+            collection = document.get('_embedded', {}).get(resource)
+            if collection:
+                for item in collection:
                     _process_item_links(links=item.get('_links', {}))
-            else:
-                _add_parent_link(links=document.get('_links', {}), resource=resource)
             _process_item_links(links=document.get('_links', {}))
 
         payload.data = json.dumps(document, indent=4 if 'pretty' in request.args else None)
@@ -122,7 +123,7 @@ def _rewrite_schema_links(links):
 
 
 @trace
-def _add_parent_link(links, resource):
+def _add_parent_link(links):
     if not links or 'collection' not in links:
         return
 

@@ -2,9 +2,9 @@ from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from pytest_bdd import given, when, then, parsers
 from __tests__ import *
 from __tests__.hypermea import *
-from __tests__.hypermea.pagination import *
 
 FEATURE_PATH = 'hypermea/pagination.feature'
+
 
 @given(parsers.parse('that resource has {number_of_items:d} items in its collection'))
 def step_impl(api, number_of_items):
@@ -35,7 +35,7 @@ def step_impl(api, context, limit):
 
 @then(parsers.parse('the collection in the response has {limit:d} items'))
 def step_impl(context, limit):
-    item_count = len(context['people']['_items'])
+    item_count = len(context['people']['_embedded']['people'])
     if limit > item_count:
         limit = item_count
     assert_that(item_count).is_equal_to(limit)

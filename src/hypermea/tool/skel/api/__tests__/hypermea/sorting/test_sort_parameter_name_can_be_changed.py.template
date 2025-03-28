@@ -27,6 +27,6 @@ def step_impl(api, context):
         '/people?order_by=name'
     )
     assert_that(response.status_code).is_equal_to(200)
-    context['people'] = response.json['_items']
+    context['people'] = response.json['_embedded']['people']
 
 # Then the collection in the response is sorted accordingly

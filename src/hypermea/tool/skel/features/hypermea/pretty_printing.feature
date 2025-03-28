@@ -1,4 +1,4 @@
-# https://pointw-dev.github.io/hypermea/features/runtime-capabilities/pretty-printing.html
+# https://pointw-dev.github.io/hypermea/features/runtime-capabilities/data-shaping/pretty-printing.html
 # https://docs.python-eve.org/en/stable/features.html#pretty-printing
 
 Feature: Resource representations can be pretty-printed

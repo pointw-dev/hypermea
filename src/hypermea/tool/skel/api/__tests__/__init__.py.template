@@ -1,5 +1,4 @@
 import types
-
 from .annotate import annotated_scenario
 
 

@@ -1,0 +1,22 @@
+import pytest
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from pytest_bdd import given, when, then, parsers
+from __tests__.hypermea import *
+from __tests__.hypermea.embedding import *
+
+
+@pytest.fixture(scope='module')
+def context():
+    return {}
+
+@annotated_scenario(FEATURE_PATH, 'Child resource collections are embedded by default')
+def test_child_resource_collections_are_embedded_by_default():
+    pass
+
+
+@when('a client requests the children of a parent')
+def step_impl(api, context):
+    result = api.get(f"/people/{context['first_person_id']}/cars")
+    assert_that(result.status_code).is_equal_to(200)
+    context['collection'] = result.json
+    context['rel'] = 'cars'

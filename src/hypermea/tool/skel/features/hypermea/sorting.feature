@@ -1,4 +1,4 @@
-# https://pointw-dev.github.io/hypermea/features/runtime-capabilities/sorting.html
+# https://pointw-dev.github.io/hypermea/features/runtime-capabilities/search-collections/sorting.html
 # https://docs.python-eve.org/en/stable/features.html#sorting
 
 Feature: Resource collections can be retrieved in sorted order

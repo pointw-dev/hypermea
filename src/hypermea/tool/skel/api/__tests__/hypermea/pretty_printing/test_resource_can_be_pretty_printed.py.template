@@ -1,6 +1,7 @@
 import pytest
 from pytest_bdd import given, when, then, parsers
 
+from __tests__ import *
 from __tests__.hypermea import *
 from __tests__.hypermea.pretty_printing import *
 
@@ -25,4 +26,4 @@ def step_impl(api, context):
 
 @then('the response is pretty-printed')
 def step_impl(context):
-    assert_that(context.get('widget').count('\n')).is_equal_to(23)
+    assert_that(context.get('widget').count('\n')).is_equal_to(20)

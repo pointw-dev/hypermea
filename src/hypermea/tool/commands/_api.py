@@ -70,6 +70,7 @@ def _create_api(project_name):
 
     _create_hypermea_config_file(project_name)
     _copy_documentation(skel)
+    _create_idea_folder(project_name, skel)
 
     os.mkdir('src')
     os.chdir('src')
@@ -77,7 +78,6 @@ def _create_api(project_name):
     _create_scripts_folder(skel)
     _create_features_folder(project_name, skel)
     _create_service_folder(project_name, skel)
-    # _create_idea_folder(project_name, skel)
     _remove_pycache_folders(project_name)
 
     os.chdir('..')
@@ -90,19 +90,10 @@ def _remove_pycache_folders(project_name):
     hypermea.tool.remove_folder_if_exists('scripts', '__pycache__', recursive=True)
 
 
-def _create_idea_folder(project_name, skel):
-    # TODO: #114 - probably move to root first (current /src)
-    # TODO: #114 - maybe logo only at this point (no longer a need for multiple source roots)
-    idea_target_folder = '.idea'
-    os.mkdir(idea_target_folder)
-    copytree(os.path.join(skel, 'idea'), idea_target_folder, dirs_exist_ok=True)
-    move(os.path.join(idea_target_folder, 'project_name.iml'), os.path.join(idea_target_folder, f'{project_name}.iml'))
-
-
 def _create_service_folder(project_name, skel):
     folder_name = 'service'
-    _copy_api_skel(folder_name, skel)
-    _rename_test_templates(folder_name)
+    _copy_api_skel(project_name, folder_name, skel)
+    _rename_test_templates(project_name, folder_name)
     _rename_api_settings(project_name, folder_name)
 
 
@@ -118,7 +109,7 @@ def _rename_api_settings(project_name, folder_name):
               os.path.join(folder_name, f'configuration/{module_name}_settings.py'))
 
 
-def _rename_test_templates(folder_name):
+def _rename_test_templates(project_name, folder_name):
     directory = os.path.realpath(os.path.join(folder_name, f'__tests__'))
     for subdir, dirs, files in os.walk(directory):
         for filename in files:
@@ -128,11 +119,11 @@ def _rename_test_templates(folder_name):
                 os.rename(file_path, new_file_path)
 
 
-def _copy_api_skel(folder_name, skel):
+def _copy_api_skel(project_name, folder_name, skel):
     os.mkdir(folder_name)
     api_folder = os.path.join(skel, 'api')
     copytree(api_folder, folder_name, dirs_exist_ok=True)
-    move(os.path.join(folder_name, f'__tests__/project_name'), os.path.join(folder_name, f'__tests__/{folder_name}'))
+    move(os.path.join(folder_name, f'__tests__/project_name'), os.path.join(folder_name, f'__tests__/{project_name}'))
 
 
 def _create_features_folder(project_name, skel):
@@ -157,6 +148,15 @@ def _copy_documentation(skel):
     # os.mkdir('doc')
     # readme_filename = os.path.join(skel, 'doc/Setup-Dev-Environment.md')
     # copyfile(readme_filename, './doc/Setup-Dev-Environment.md')
+    # hypermea.tool.replace_project_name(project_name, 'doc')
+
+def _create_idea_folder(project_name, skel):
+    idea_target_folder = '.idea'
+    os.mkdir(idea_target_folder)
+    copytree(os.path.join(skel, 'idea'), idea_target_folder, dirs_exist_ok=True)
+    move(os.path.join(idea_target_folder, 'project_name.iml'), os.path.join(idea_target_folder, f'{project_name}.iml'))
+    hypermea.tool.replace_project_name(project_name, idea_target_folder)
+
 
 
 def _create_hypermea_config_file(project_name):

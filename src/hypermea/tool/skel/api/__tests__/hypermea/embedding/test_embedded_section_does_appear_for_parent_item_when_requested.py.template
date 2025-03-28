@@ -1,0 +1,25 @@
+import pytest
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from pytest_bdd import given, when, then, parsers
+from __tests__.hypermea import *
+from __tests__.hypermea.embedding import *
+
+
+@pytest.fixture(scope='module')
+def context():
+    return {}
+
+
+@annotated_scenario(FEATURE_PATH, 'Embedded section does appear for parent item when requested')
+def test_embedded_section_does_appear_for_parent_item_when_requested():
+    pass
+
+
+#   When a client requests a parent item asking for related children
+#   Then the parent's children appear in embedded property
+
+@then("the parent's children appear in embedded property")
+def step_impl(context):
+    assert_that(context['person']).contains_key('_embedded')
+    assert_that(context['person']['_embedded']).contains_key('cars')
+    assert_that(context['person']['_embedded']['cars']).is_type_of(list)

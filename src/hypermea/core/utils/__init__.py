@@ -7,7 +7,7 @@ import hashlib
 from typing import List, Dict, Optional
 import re
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
-from flask import jsonify, make_response, current_app, request, Response
+from flask import jsonify, make_response, current_app, request, Response, g, after_this_request
 from flask.testing import FlaskClient
 from pymongo.database import Database
 from eve.utils import document_etag
@@ -40,16 +40,6 @@ def get_db() -> Database:
 
 def get_api() -> FlaskClient:
     return current_app.test_client()
-
-
-def adjust_etag_and_updated_date(record: dict) -> dict:
-    if not ('_etag' in record and '_updated' in record):
-        return record
-
-    record['_etag'] = document_etag(record)
-    record['_updated'] = datetime.now()
-
-    return record
 
 
 def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = None, **kwargs):
@@ -102,7 +92,6 @@ def url_join(*parts: str) -> str:
     return url
 
 
-
 def is_mongo_running() -> bool:
     host = SETTINGS['HY_MONGO_HOST']
     port = SETTINGS['HY_MONGO_PORT']
@@ -128,19 +117,6 @@ def get_my_base_url() -> str:
         base_url = base_url[0:-1]
 
     return base_url
-
-
-
-def add_search_link(self_href: str) -> None:
-    where = current_app.config['QUERY_WHERE']
-    sort = current_app.config['QUERY_SORT']
-    max_results = current_app.config['QUERY_MAX_RESULTS']
-    page = current_app.config['QUERY_PAGE']
-
-    return {
-        'href': f'{self_href}{{?{where},{sort},{max_results},{page},embed}}',
-        'templated': True
-    }
 
 
 def get_id_field(collection_name: str) -> str:
@@ -177,9 +153,6 @@ def echo_message() -> Response:
     return make_response(jsonify(message), status_code)
 
 
-
-
-
 def inject_path(base, path, remove_query_string=False):
     parts = base.split('?', 1)
     base_part = parts[0]
@@ -199,5 +172,40 @@ def clean_href(href:str) -> str:
     cleaned_url = urlunparse((parsed.scheme, parsed.netloc, parsed.path,
                               parsed.params, cleaned_query, parsed.fragment))
     return cleaned_url
+
+
+def add_search_link(self_href: str) -> None:
+    where = current_app.config['QUERY_WHERE']
+    sort = current_app.config['QUERY_SORT']
+    max_results = current_app.config['QUERY_MAX_RESULTS']
+    page = current_app.config['QUERY_PAGE']
+
+    return {
+        'href': f'{self_href}{{?{where},{sort},{max_results},{page},embed}}',
+        'templated': True
+    }
+
+
+def add_etag_header_to_post(_, payload):
+    if payload.status_code == 201:
+        j = json.loads(payload.data)
+        if '_etag' in j:
+            g.etag_to_inject = j['_etag']
+
+            @after_this_request
+            def inject_etag_header(response):
+                response.headers['ETag'] = g.etag_to_inject
+                return response
+        payload.data = json.dumps(j)
+
+
+def adjust_etag_and_updated_date(record: dict) -> dict:
+    if not ('_etag' in record and '_updated' in record):
+        return record
+
+    record['_etag'] = document_etag(record)
+    record['_updated'] = datetime.now()
+
+    return record
 
 

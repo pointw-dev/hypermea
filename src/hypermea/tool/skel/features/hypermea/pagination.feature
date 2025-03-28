@@ -1,4 +1,4 @@
-# https://pointw-dev.github.io/hypermea/features/runtime-capabilities/pagination.html
+# https://pointw-dev.github.io/hypermea/features/runtime-capabilities/search-collections/pagination.html
 # https://docs.python-eve.org/en/stable/features.html#pagination
 
 Feature: Resource collections can split into "pages" and retrieved one page at a time
@@ -34,14 +34,18 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
       prev: 4.12.4.16.2
 
 
+    Background:
+      Given the service is configured with a limit of 3000 items per page
+
+
     Scenario Outline: Client can limit the number of items in a collection
         Given a resource is configured
         And that resource has 100 items in its collection
         When a client requests this collection with a limit of <limit>
         Then the collection in the response has <limit> items
-        And the prev link relation is <prev_link>
-        And the next link relation is <next_link>
-        And the value of the last page is <last_page>
+        * the prev link relation is <prev_link>
+        * the next link relation is <next_link>
+        * the value of the last page is <last_page>
 
       Examples:
         | limit | next_link | prev_link | last_page |
@@ -54,9 +58,9 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
         And that resource has 100 items in its collection
         When a client requests page 2 of this collection with a limit of <limit>
         Then the collection in the response has <limit> items
-        And the prev link relation is <prev_link>
-        And the next link relation is <next_link>
-        And the value of the last page is <last_page>
+        * the prev link relation is <prev_link>
+        * the next link relation is <next_link>
+        * the value of the last page is <last_page>
 
       Examples:
         | limit | next_link | prev_link | last_page |
@@ -93,9 +97,9 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
         And that resource has 100 items in its collection
         When a client requests this collection with a limit of <limit>
         Then the collection in the response has <limit> items
-        And the prev link relation is <prev_link>
-        And the next link relation is <next_link>
-        And the value of the last page is <last_page>
+        * the prev link relation is <prev_link>
+        * the next link relation is <next_link>
+        * the value of the last page is <last_page>
 
       Examples:
         | limit | next_link | prev_link | last_page |

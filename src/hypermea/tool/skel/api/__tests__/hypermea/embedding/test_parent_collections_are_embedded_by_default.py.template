@@ -1,0 +1,25 @@
+import pytest
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from pytest_bdd import given, when, then, parsers
+from __tests__.hypermea import *
+from __tests__.hypermea.embedding import *
+
+@pytest.fixture(scope='module')
+def context():
+    return {}
+
+
+@annotated_scenario(FEATURE_PATH, 'Parent resource collections are embedded by default')
+def test_parent_collections_are_embedded_by_default():
+    pass
+
+# Background:
+#   Given a parent and a child resource are configured
+#   And each resource has multiple items
+
+@when('a client requests the parent resource collection')
+def step_impl(api, context):
+    result = api.get('/people')
+    assert_that(result.status_code).is_equal_to(200)
+    context['collection'] = result.json
+    context['rel'] = 'people'

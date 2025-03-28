@@ -1,7 +1,13 @@
+import os
 import json
 
 from assertpy import assert_that
-from pytest_bdd import given
+from pytest_bdd import given, parsers
+
+
+@given(parsers.parse('the service is configured with a limit of {items_per_page:d} items per page'))
+def step_impl(hypermea_settings, items_per_page):
+    hypermea_settings['HY_PAGINATION_LIMIT'] = str(items_per_page)
 
 
 @given('a resource is configured')

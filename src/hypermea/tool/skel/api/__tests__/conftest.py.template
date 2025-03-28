@@ -21,7 +21,7 @@ def pytest_sessionstart(session):
         pytest.exit("❌ Could not connect to MongoDB instance.  Aborting.")
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def hypermea_settings() -> dict[str, str]:
     return {
         'HY_API_PORT': '2113',
@@ -32,12 +32,12 @@ def hypermea_settings() -> dict[str, str]:
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def settings_py() -> dict[str, Any]:
     return {}
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def api(hypermea_settings, settings_py):
     # allow step definitions to change hypermea settings
     for key, value in hypermea_settings.items():

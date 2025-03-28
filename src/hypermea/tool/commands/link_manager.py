@@ -5,11 +5,8 @@ import re
 import hypermea.tool
 import hypermea.tool.commands._api
 from hypermea.tool.code_gen import \
-    ChildLinksInserter, \
-    ParentLinksInserter, \
     DomainChildrenDefinitionInserter, \
     DomainRelationsInserter, \
-    ChildLinksRemover, \
     ParentReferenceRemover, \
     DomainRelationsRemover
 from hypermea.tool.commands._resource import _get_resource_list
@@ -207,15 +204,10 @@ class LinkManager:
         if self.remote_parent:
             hypermea.tool.commands._api._add_addins({'add_validation': 'n/a'}, silent=True)
 
-        # update parent code
-        if not self.remote_parent:
-            ParentLinksInserter(self).transform(f'hooks/{self.parents}.py', )
-
         # update child code
         if not self.remote_child:
             DomainRelationsInserter(self).transform('domain/__init__.py', )
             DomainChildrenDefinitionInserter(self).transform(f'domain/{self.children}.py')
-            ChildLinksInserter(self).transform(f'hooks/{self.children}.py')
 
         hypermea.tool.jump_back_to(starting_folder)
 
@@ -231,13 +223,10 @@ class LinkManager:
         print(f'Removing link from {self.parent} to {self.children}')
 
         DomainRelationsRemover(self.parents, self.children).transform('domain/__init__.py')
-        if not self.remote_parent:
-            ChildLinksRemover(self.children).transform(f'hooks/{self.parents}.py')
 
         # update child code
         if not self.remote_child:
             ParentReferenceRemover(self.parents).transform(f'domain/{self.children}.py')
-            ChildLinksRemover(self.parents).transform(f'hooks/{self.children}.py')
 
         hypermea.tool.jump_back_to(starting_folder)
 

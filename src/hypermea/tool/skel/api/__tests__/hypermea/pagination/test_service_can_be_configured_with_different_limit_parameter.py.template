@@ -34,5 +34,5 @@ def step_impl(api, context):
 
 @then("the collection in the response is limited accordingly")
 def step_impl(context):
-    item_count = len(context['people']['_items'])
+    item_count = len(context['people']['_embedded']['people'])
     assert_that(item_count).is_equal_to(LIMIT)

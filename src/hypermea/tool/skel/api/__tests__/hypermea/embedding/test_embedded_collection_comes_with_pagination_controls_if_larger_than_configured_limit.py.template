@@ -1,0 +1,22 @@
+import pytest
+from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from pytest_bdd import given, when, then, parsers
+from __tests__.hypermea import *
+from __tests__.hypermea.embedding import *
+
+
+@pytest.fixture(scope='module')
+def context():
+    return {}
+
+
+@annotated_scenario(FEATURE_PATH, 'Embedded collection comes with pagination controls if larger than configured limit')
+def test_embedded_collection_comes_with_pagination_controls_if_larger_than_configured_limit():
+    pass
+
+
+@then('the parent links contain page controls for the embedded child collection')
+def step_impl(context):
+    links = context['person']['_links']
+    assert_that(links).contains_key('cars:next')
+    assert_that(links).contains_key('cars:last')
