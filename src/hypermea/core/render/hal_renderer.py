@@ -2,7 +2,7 @@ import json
 import requests
 from flask import request, current_app
 from eve.render import JSONRenderer
-from hypermea.core.utils import get_api, get_my_base_url, get_id_field, get_resource_id, clean_href, add_search_link
+from hypermea.core.utils import get_api, get_my_base_url, get_id_field, get_resource_id, clean_href, add_search_link, get_resource_rel
 
 
 class HALRenderer(JSONRenderer):
@@ -10,6 +10,7 @@ class HALRenderer(JSONRenderer):
 
 
     def render(self, data):
+        # set stage
         self.data = data
         self.query_args = request.args
         self.resource_name, self.resource_scope = HALRenderer._parse_url_rule()
@@ -17,10 +18,13 @@ class HALRenderer(JSONRenderer):
             self.parent, self.child = self.resource_name.split('_', 1)
             self.resource_name = self.child
         self.base_url = get_my_base_url()
-        self.id_field = get_id_field(self.resource_name)
         self.domain = current_app.config['DOMAIN']
+        if not self.resource_scope == 'root':
+            self.id_field = get_id_field(self.resource_name)
         self.schema = self.domain.get(self.resource_name, {}).get('schema')
+        self.resource_rel = get_resource_rel(self.resource_name)
 
+        # action
         self._handle_links_only()
         self._add_links()
         self._handle_embed_query_string()
@@ -29,7 +33,6 @@ class HALRenderer(JSONRenderer):
             self._move_items_to_embedded()
 
         return super(HALRenderer, self).render(self.data)
-
 
     def _handle_links_only(self):
         if 'links-only' in self.query_args:
@@ -91,16 +94,16 @@ class HALRenderer(JSONRenderer):
             if '_' not in resource:
                 continue
             parent, child = resource.split('_')
+            rel = get_resource_rel(child)
             if parent == self.resource_name:
-                item['_links'][child] = {
+                item['_links'][rel] = {
                     'href': f'{self.base_url}/{self.resource_name}/{self.item_id}/{child}',
                 }
 
     def _add_parent_links(self, item):
         # add any parent links if I am a child to anyone
         parent_rel = ''
-#        for field, spec in self.schema.items():
-#            if 'data_relation' in spec:
+
         for field, spec in [spec for spec in self.schema.items() if 'data_relation' in spec[1]]:
             parent = spec['data_relation'].get('resource')
             parent_rel = parent if parent_rel else 'parent'  # if there are multiples, the first is "parent"
@@ -124,18 +127,23 @@ class HALRenderer(JSONRenderer):
 
     @staticmethod
     def _parse_url_rule():
-        resource_name, scope = request.url_rule.endpoint.split('|')
-        scope = {
-            'resource': 'collection',
-            'item_lookup': 'item'
-        }.get(scope, scope)
+        rule_endpoint = request.url_rule.endpoint
+        if '|' in rule_endpoint:
+            resource_name, scope = request.url_rule.endpoint.split('|')
+            scope = {
+                'resource': 'collection',
+                'item_lookup': 'item'
+            }.get(scope, scope)
+        else:
+            resource_name = rule_endpoint
+            scope = 'root'
         return resource_name, scope
 
     def _move_items_to_embedded(self):
         items = self.data.pop('_items', None)
         if items is not None:
             embedded = self.data.setdefault('_embedded', {})
-            embedded[self.resource_name] = items
+            embedded[self.resource_rel] = items
 
     def _handle_embed_query_string(self):
         embed_keys = self.query_args.getlist('embed')
@@ -171,6 +179,28 @@ class HALRenderer(JSONRenderer):
                 self._add_embedded_section_to_document(document, embed_key, embedded_data)
             except Exception as e:
                 current_app.logger.warning(f'Failed to embed {embed_key}: {e}')
+
+    def _get_href_to_embed(self, document, embed_key):
+        link_info = document.get('_links', {}).get(embed_key)
+        if not link_info:
+            parent_link = None
+            # Detect parent relation
+            for field, spec in [spec for spec in self.schema.items() if 'data_relation' in spec[1]]:
+                parent_resource_name = spec['data_relation'].get('resource')
+                parent_rel = get_resource_rel(parent_resource_name)
+                if parent_rel == embed_key:
+                    parent_link = document.get('_links', {}).get('related',{}).get(field)
+                break
+
+            if parent_link:
+                link_info = parent_link
+
+        if not link_info:
+            return None
+
+        href = link_info.get('href')
+        return href
+
 
     @staticmethod
     def _add_embedded_section_to_document(document, embed_key, embedded_data):
@@ -209,17 +239,3 @@ class HALRenderer(JSONRenderer):
             embedded_data = None
         return embedded_data
 
-    @staticmethod
-    def _get_href_to_embed(document, embed_key):
-        link_info = document.get('_links', {}).get(embed_key)
-        if not link_info:
-            # Detect parent relation
-            parent_link = document.get('_links', {}).get('related',{}).get(f'_{embed_key}_ref')
-            if parent_link:
-                link_info = parent_link
-
-        if not link_info:
-            return None
-
-        href = link_info.get('href')
-        return href

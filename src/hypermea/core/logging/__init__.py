@@ -16,7 +16,7 @@ def _get_console_handler_level():
 
 
 def log_request(log, resource, request, lookup):
-    requested = resource if resource else 'root'
+    requested = resource if resource else 'home'
 
     current_console_level = _get_console_handler_level()
     if current_console_level is None or current_console_level >= logging.INFO:
@@ -42,7 +42,7 @@ def log_request(log, resource, request, lookup):
 
 @trace
 def log_response(log, resource, request, payload):
-    requested = resource if resource else 'root'
+    requested = resource if resource else 'home'
 
     current_console_level = _get_console_handler_level()
     if current_console_level is None or current_console_level >= logging.INFO:

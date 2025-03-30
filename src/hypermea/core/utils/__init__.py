@@ -123,6 +123,12 @@ def get_id_field(collection_name: str) -> str:
     return current_app.config['DOMAIN'][collection_name]['id_field']
 
 
+def get_resource_rel(resource_name: str) -> str:
+    rel = current_app.config['DOMAIN'].get(resource_name, {}).get('link_relation', '')
+    rel = rel if rel else resource_name
+    return rel
+
+
 def get_resource_id(resource: dict, collection_name: str) -> str:
     id_field = get_id_field(collection_name)
     rtn = resource.get(id_field, None)

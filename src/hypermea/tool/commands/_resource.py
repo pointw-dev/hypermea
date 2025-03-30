@@ -24,7 +24,7 @@ def _create(resource_name, no_common):
     if _resource_already_exists(plural):
         hypermea.tool.escape('This resource already exist', 702)
     else:
-        _create_resource_domain_file(plural, add_common)
+        _create_resource_domain_file(singular, plural, add_common)
         _insert_domain_definition(plural)
         _create_resource_hook_file(singular, plural)
         _insert_hooks(plural)
@@ -114,10 +114,10 @@ def _get_resource_list():
     return sorted(resources)
 
 
-def _create_resource_domain_file(resource, add_common):
-    with open(f'domain/{resource}.py', 'w') as file:
+def _create_resource_domain_file(singular, plural, add_common):
+    with open(f'domain/{plural}.py', 'w') as file:
         file.write(f'''"""
-Defines the {resource} resource.
+Defines the {plural} resource.
 """
 ''')
 
@@ -127,9 +127,7 @@ Defines the {resource} resource.
         file.write('''SCHEMA = {
     'name': {
         'type': 'string',
-        'required': True,
-        'empty': False,
-        'unique': True
+        'required': True
     },
     'description': {
         'type': 'string'
@@ -141,16 +139,13 @@ Defines the {resource} resource.
         if add_common:
             file.write('SCHEMA.update(COMMON_FIELDS)\n\n')
 
-        file.write('''DEFINITION = {
+        file.write(f'''DEFINITION = {{
     'schema': SCHEMA,
-    'datasource': {
-        'projection': {'_owner': 0}
-    },
-    'additional_lookup': {
-        'url': r'regex("[\w]+")',
-        'field': 'name'
-    }
-}
+    'link_relation': '{singular}', 
+    'datasource': {{
+        'projection': {{'_owner': 0}}
+    }}
+}}
 ''')
 
 

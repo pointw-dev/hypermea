@@ -1,7 +1,7 @@
 import logging
 import json
 import re
-from hypermea.core.utils import get_my_base_url
+from hypermea.core.utils import get_my_base_url, get_resource_rel
 from hypermea.core.logging import trace
 from configuration import SETTINGS
 
@@ -19,16 +19,17 @@ def tidy_post_links(_, request, payload):
 
 
 @trace
-def fix_links(resource, request, payload):
+def fix_links(resource_name, request, payload):
     if payload.status_code in [200, 201]:
         document = json.loads(payload.data)
 
-        if resource is None and '_links' in document:
+        if resource_name is None and '_links' in document:
             document['_links'] = _rewrite_schema_links(links=document.get('_links', {}))
         else:
-            if '_' in resource:
-                parent_resource, resource = resource.split('_', 1)
-            collection = document.get('_embedded', {}).get(resource)
+            if '_' in resource_name:
+                parent_resource_name, resource_name = resource_name.split('_', 1)
+            rel = get_resource_rel(resource_name)
+            collection = document.get('_embedded', {}).get(rel)
             if collection:
                 for item in collection:
                     _process_item_links(links=item.get('_links', {}))
@@ -55,9 +56,7 @@ def _process_item_links(links):
 def _remove_unnecessary_links(links):
     if not links:
         return
-
-    if 'related' in links:
-        del links['related']
+    links.pop('related', None)
 
 
 @trace
@@ -91,13 +90,11 @@ def _rewrite_schema_links(links):
     if not links or 'child' not in links or len(links) != 1:
         return
 
-    old = links['child']
-    del links['child']
-
+    old = links.pop('child')
     base_url = get_my_base_url()
 
     new_links = {
-        'self': {'href': f'{base_url}/', '_note': f'Root resource for {SETTINGS["HY_API_NAME"]}'},
+        'self': {'href': f'{base_url}/', '_note': f'Home resource for {SETTINGS["HY_API_NAME"]}'},
         'logging': {'href': f'{base_url}/_logging'}
     }
 
@@ -109,7 +106,7 @@ def _rewrite_schema_links(links):
         if link['title'].startswith('_'):
             rel = link['title'][1:]
         else:
-            rel = link['title']
+            rel = get_resource_rel(link['title'])
             add_links_only = True
 
         link['href'] = f'{base_url}/{link["href"]}'
