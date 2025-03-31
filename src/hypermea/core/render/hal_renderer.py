@@ -11,6 +11,9 @@ class HALRenderer(JSONRenderer):
 
 
     def render(self, data):
+        if '_error' in data:
+            return super(HALRenderer, self).render(data)
+
         # set stage
         self.data = data
         self.query_args = request.args
