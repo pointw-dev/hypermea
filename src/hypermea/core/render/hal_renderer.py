@@ -1,3 +1,4 @@
+import re
 import json
 import requests
 from flask import request, current_app
@@ -14,6 +15,8 @@ class HALRenderer(JSONRenderer):
         self.data = data
         self.query_args = request.args
         self.resource_name, self.resource_scope = HALRenderer._parse_url_rule()
+        if request.method  == 'POST':
+            self.resource_scope = 'collection' if isinstance(data, list) else 'item'
         if '_' in self.resource_name:
             self.parent, self.child = self.resource_name.split('_', 1)
             self.resource_name = self.child
@@ -108,12 +111,16 @@ class HALRenderer(JSONRenderer):
             parent = spec['data_relation'].get('resource')
             parent_rel = parent if parent_rel else 'parent'  # if there are multiples, the first is "parent"
             if parent:
+                if field in item:
+                    parent_id = item[field]
+                else:
+                    parent_id = HALRenderer._extract_parent_id(field)
                 item['_links']['parent'] = {
-                    'href': f'{self.base_url}/{parent}/{item[field]}',
+                    'href': f'{self.base_url}/{parent}/{parent_id}',
                 }
                 if parent_rel == 'parent':
                     item['_links']['collection'] = {
-                        'href': f'{self.base_url}/{parent}/{item[field]}/{self.resource_name}',
+                        'href': f'{self.base_url}/{parent}/{parent_id}/{self.resource_name}',
                     }
         if not parent_rel:
             collection_href = f'{self.base_url}/{self.resource_name}' 
@@ -124,20 +131,6 @@ class HALRenderer(JSONRenderer):
                 'href': collection_href
             }
 
-
-    @staticmethod
-    def _parse_url_rule():
-        rule_endpoint = request.url_rule.endpoint
-        if '|' in rule_endpoint:
-            resource_name, scope = request.url_rule.endpoint.split('|')
-            scope = {
-                'resource': 'collection',
-                'item_lookup': 'item'
-            }.get(scope, scope)
-        else:
-            resource_name = rule_endpoint
-            scope = 'root'
-        return resource_name, scope
 
     def _move_items_to_embedded(self):
         items = self.data.pop('_items', None)
@@ -203,6 +196,34 @@ class HALRenderer(JSONRenderer):
 
 
     @staticmethod
+    def _extract_parent_id(parent_id_field):
+        rule = request.url_rule.rule
+        url = request.url
+
+        pattern = re.sub(r'<regex\("(.*?)"\):' + re.escape(parent_id_field) + r'>', r'(\1)', rule)
+        match = re.search(pattern, url)
+
+        if match:
+            return match.group(1)
+        else:
+            raise ValueError(f"{parent_id_field} not found in the URL")
+
+
+    @staticmethod
+    def _parse_url_rule():
+        rule_endpoint = request.url_rule.endpoint
+        if '|' in rule_endpoint:
+            resource_name, scope = request.url_rule.endpoint.split('|')
+            scope = {
+                'resource': 'collection',
+                'item_lookup': 'item'
+            }.get(scope, scope)
+        else:
+            resource_name = rule_endpoint
+            scope = 'root'
+        return resource_name, scope
+
+    @staticmethod
     def _add_embedded_section_to_document(document, embed_key, embedded_data):
         if '_embedded' not in document:
             document['_embedded'] = {}
@@ -238,4 +259,3 @@ class HALRenderer(JSONRenderer):
         if not resp.status_code == 200:
             embedded_data = None
         return embedded_data
-
