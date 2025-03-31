@@ -12,7 +12,7 @@ class HALRenderer(JSONRenderer):
 
     def render(self, data):
         if '_error' in data:
-            return super(HALRenderer, self).render(data)
+            return super(HALRenderer, self).render(HALRenderer._halify_error(data))
 
         # set stage
         self.data = data
@@ -262,3 +262,22 @@ class HALRenderer(JSONRenderer):
         if not resp.status_code == 200:
             embedded_data = None
         return embedded_data
+
+
+    @staticmethod
+    def _halify_error(data):
+        rtn = {
+            'status': data.get('_status',"unknown"),
+            'status_code': data['_error']['code'],
+            'message': data['_error']['message'],
+            '_links': {
+                "self": request.url
+            }
+        }
+
+        if '_issues' in data:
+            rtn['_embedded'] = {
+                "issues": data['_issues']
+            }
+
+        return rtn

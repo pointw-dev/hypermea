@@ -1,3 +1,6 @@
+import traceback
+import sys
+import os
 import logging
 import json
 import socket
@@ -50,12 +53,35 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
         ex = kwargs.get('exception')
         LOG.exception(message, ex)
 
+        tb = traceback.TracebackException.from_exception(ex)
+        site_packages_stack = []
+        app_stack = []
+
+        for frame in tb.stack:
+            path = os.path.relpath(frame.filename)
+
+            stack_item = {
+                "line_number": frame.lineno,
+                "function": frame.name,
+                "code": frame.line.strip() if frame.line else None
+            }
+
+            if 'site-packages' in path:
+                stack_item['file'] = 'site-packages' + path.split('site-packages')[1]
+                site_packages_stack.append(stack_item)
+            else:
+                stack_item['file'] = path
+                app_stack.append(stack_item)
+
+
         if ex:
             issues.append({
                 'exception': {
                     'name': type(ex).__name__,
                     'type': ".".join([type(ex).__module__, type(ex).__name__]),
-                    'args': ex.args
+                    'args': ex.args,
+                    'site_packages_stack': site_packages_stack,
+                    'app_stack': app_stack
                 }
             })
 
