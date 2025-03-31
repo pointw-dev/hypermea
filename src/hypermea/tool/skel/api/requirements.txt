@@ -1,7 +1,7 @@
 Eve==2.2.0
 Flask-Cors==5.0.0
 requests==2.32.3
-hypermea-core==0.9.46
+hypermea-core==0.9.47
 pytest~=8.3.5
 pytest-bdd==8.1.0
 assertpy==1.1
