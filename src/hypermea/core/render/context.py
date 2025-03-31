@@ -2,11 +2,12 @@ from flask import request, current_app
 from hypermea.core.utils import get_my_base_url, get_id_field, get_resource_rel
 
 
-class HalResourceContext:
-    def __init__(self, resource_name, resource_scope, base_url, domain, schema, id_field, parent, child, resource_rel):
+class ResourceContext:
+    def __init__(self, resource_name, resource_scope, base_url, query_args, domain, schema, id_field, parent, child, resource_rel):
         self.name = resource_name
         self.scope = resource_scope
         self.base_url = base_url
+        self.query_args = query_args
         self.domain = domain
         self.schema = schema
         self.id_field = id_field
@@ -17,6 +18,7 @@ class HalResourceContext:
 
     @classmethod
     def from_request(cls, data):
+        query_args = request.args
         resource_name, scope = cls._parse_url_rule()
         if request.method  == 'POST':
             scope = 'collection' if (isinstance(data, list) or '_items' in data) else 'item'
@@ -24,14 +26,17 @@ class HalResourceContext:
         base_url = get_my_base_url()
         domain = current_app.config['DOMAIN']
         schema = domain.get(resource_name, {}).get('schema')
-        resource_rel = get_resource_rel(resource_name)
+        parent = None
+        child = None
 
         if '_' in resource_name:
             parent, child = resource_name.split('_', 1)
             resource_name = child
-        self.id_field = get_id_field(self.name) if scope != 'root' else None
 
-        return cls(resource_name, scope, base_url, domain, schema, id_field, parent, child, resource_rel)
+        id_field = get_id_field(resource_name) if scope != 'root' else None
+        resource_rel = get_resource_rel(resource_name)
+
+        return cls(resource_name, scope, base_url, query_args, domain, schema, id_field, parent, child, resource_rel)
 
     @staticmethod
     def _parse_url_rule():

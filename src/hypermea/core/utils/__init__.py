@@ -57,6 +57,9 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
         site_packages_stack = []
         app_stack = []
         hypermea_stack = []
+        full_stack = []
+
+        debug_mode = False
 
         for frame in tb.stack:
             path = os.path.relpath(frame.filename)
@@ -67,28 +70,40 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
                 "code": frame.line.strip() if frame.line else None
             }
 
-            if 'hypermea' in path:
-                stack_item['file'] = 'hypermea' + path.split('hypermea')[1]
-                hypermea_stack.append(stack_item)
-            elif 'site-packages' in path:
-                stack_item['file'] = 'site-packages' + path.split('site-packages')[1]
-                site_packages_stack.append(stack_item)
+            if debug_mode:
+                if '/hypermea/' in path:
+                    stack_item['file'] = 'hypermea' + path.split('/hypermea/')[1]
+                    hypermea_stack.append(stack_item)
+                elif 'site-packages' in path:
+                    stack_item['file'] = '/site-packages/' + path.split('/site-packages/')[1]
+                    site_packages_stack.append(stack_item)
+                else:
+                    stack_item['file'] = path
+                    app_stack.append(stack_item)
             else:
                 stack_item['file'] = path
-                app_stack.append(stack_item)
+                full_stack.append(stack_item)
 
 
         if ex:
-            issues.append({
+            issue = {
                 'exception': {
                     'name': type(ex).__name__,
                     'type': ".".join([type(ex).__module__, type(ex).__name__]),
                     'args': ex.args,
+                }
+            }
+
+            if debug_mode:
+                issue.update({
                     'app_stack': app_stack,
                     'hypermea_stack': hypermea_stack,
                     'site_packages_stack': site_packages_stack
-                }
-            })
+                })
+            else:
+                issue.update({'stack': full_stack})
+
+            issues.append(issue)
 
     resp = {
         '_status': 'ERR',
@@ -102,6 +117,24 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
         resp['_issues'] = issues
 
     return make_response(jsonify(resp), code)
+
+def hal_format_error(data):
+    rtn = {
+        'status': data.get('_status', "unknown"),
+        'status_code': data['_error']['code'],
+        'message': data['_error']['message'],
+        '_links': {
+            "self": request.url
+        }
+    }
+
+    if '_issues' in data:
+        rtn['_embedded'] = {
+            "issues": data['_issues']
+        }
+
+    return rtn
+
 
     
 def url_join(*parts: str) -> str:
@@ -211,7 +244,7 @@ def clean_href(href:str) -> str:
     return cleaned_url
 
 
-def add_search_link(self_href: str) -> None:
+def add_search_link(self_href: str) -> dict[str, bool | str]:
     where = current_app.config['QUERY_WHERE']
     sort = current_app.config['QUERY_SORT']
     max_results = current_app.config['QUERY_MAX_RESULTS']

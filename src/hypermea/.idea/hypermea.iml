@@ -7,7 +7,7 @@
     <content url="file://$MODULE_DIR$/../doc-generator/node_modules" />
     <content url="file://$MODULE_DIR$/../features" />
     <content url="file://$MODULE_DIR$" />
-    <orderEntry type="jdk" jdkName="Python 3.12 (hypermea)" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 3.12 virtualenv at ~/.pyenv/versions/hypermea-packages" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
