@@ -14,12 +14,12 @@ class HALRenderer(JSONRenderer):
         if '_error' in data:
             return super(HALRenderer, self).render(HALRenderer._halify_error(data))
 
-        # set stage
+        # set stage (context)
         self.data = data
         self.query_args = request.args
         self.resource_name, self.resource_scope = HALRenderer._parse_url_rule()
         if request.method  == 'POST':
-            self.resource_scope = 'collection' if isinstance(data, list) else 'item'
+            self.resource_scope = 'collection' if (isinstance(data, list) or '_items' in self.data) else 'item'
         if '_' in self.resource_name:
             self.parent, self.child = self.resource_name.split('_', 1)
             self.resource_name = self.child
@@ -50,18 +50,10 @@ class HALRenderer(JSONRenderer):
         if self.resource_scope == 'collection':
             self._add_links_to_collection()
 
-    def _add_links_to_item(self, item):
-        self.item_id = get_resource_id(item, self.resource_name)
-
-        self._add_self_link(item)
-        self._add_child_link(item)
-        self._add_parent_links(item)
-
     def _add_links_to_collection(self):
         if '_items' in self.data:
             for item in self.data['_items']:
                 self._add_links_to_item(item)
-
 
         self_href = f'{self.base_url}/{self.resource_name}'
         if '_links' not in self.data:
@@ -86,6 +78,13 @@ class HALRenderer(JSONRenderer):
             },
             'search': add_search_link(self_href)
         })
+
+    def _add_links_to_item(self, item):
+        self.item_id = get_resource_id(item, self.resource_name)
+
+        self._add_self_link(item)
+        self._add_child_link(item)
+        self._add_parent_links(item)
 
 
     def _add_self_link(self, item):
@@ -117,7 +116,7 @@ class HALRenderer(JSONRenderer):
                 if field in item:
                     parent_id = item[field]
                 else:
-                    parent_id = HALRenderer._extract_parent_id(field)
+                    parent_id = request.view_args.get(field)
                 item['_links']['parent'] = {
                     'href': f'{self.base_url}/{parent}/{parent_id}',
                 }
@@ -196,20 +195,6 @@ class HALRenderer(JSONRenderer):
 
         href = link_info.get('href')
         return href
-
-
-    @staticmethod
-    def _extract_parent_id(parent_id_field):
-        rule = request.url_rule.rule
-        url = request.url
-
-        pattern = re.sub(r'<regex\("(.*?)"\):' + re.escape(parent_id_field) + r'>', r'(\1)', rule)
-        match = re.search(pattern, url)
-
-        if match:
-            return match.group(1)
-        else:
-            raise ValueError(f"{parent_id_field} not found in the URL")
 
 
     @staticmethod

@@ -56,6 +56,7 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
         tb = traceback.TracebackException.from_exception(ex)
         site_packages_stack = []
         app_stack = []
+        hypermea_stack = []
 
         for frame in tb.stack:
             path = os.path.relpath(frame.filename)
@@ -66,7 +67,10 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
                 "code": frame.line.strip() if frame.line else None
             }
 
-            if 'site-packages' in path:
+            if 'hypermea' in path:
+                stack_item['file'] = 'hypermea' + path.split('hypermea')[1]
+                hypermea_stack.append(stack_item)
+            elif 'site-packages' in path:
                 stack_item['file'] = 'site-packages' + path.split('site-packages')[1]
                 site_packages_stack.append(stack_item)
             else:
@@ -80,8 +84,9 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
                     'name': type(ex).__name__,
                     'type': ".".join([type(ex).__module__, type(ex).__name__]),
                     'args': ex.args,
-                    'site_packages_stack': site_packages_stack,
-                    'app_stack': app_stack
+                    'app_stack': app_stack,
+                    'hypermea_stack': hypermea_stack,
+                    'site_packages_stack': site_packages_stack
                 }
             })
 
