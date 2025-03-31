@@ -173,7 +173,7 @@ def inject_path(base, path, remove_query_string=False):
 def clean_href(href:str) -> str:
     parsed = urlparse(href)
     query_params = parse_qsl(parsed.query, keep_blank_values=True)
-    filtered_params = [(k, v) for k, v in query_params if k not in ('links-only', 'pretty')]
+    filtered_params = [(k, v) for k, v in query_params if k not in ('links_only', 'pretty')]
     cleaned_query = urlencode(filtered_params, doseq=True)
     cleaned_url = urlunparse((parsed.scheme, parsed.netloc, parsed.path,
                               parsed.params, cleaned_query, parsed.fragment))

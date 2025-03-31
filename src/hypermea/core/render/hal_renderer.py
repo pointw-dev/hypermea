@@ -35,7 +35,7 @@ class HALRenderer(JSONRenderer):
         return super(HALRenderer, self).render(self.data)
 
     def _handle_links_only(self):
-        if 'links-only' in self.query_args:
+        if 'links_only' in self.query_args:
             self.data.pop('_items')
 
     def _add_links(self):

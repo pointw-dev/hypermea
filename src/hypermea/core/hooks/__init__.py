@@ -111,7 +111,7 @@ def _rewrite_schema_links(links):
 
         link['href'] = f'{base_url}/{link["href"]}'
         if add_links_only:
-            link['href'] += '{?links-only}'
+            link['href'] += '{?links_only}'
             link['templated'] = True
         link.pop('title', None)
         new_links[rel] = link
