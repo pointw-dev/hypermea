@@ -59,7 +59,7 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
         hypermea_stack = []
         full_stack = []
 
-        debug_mode = False
+        debug_mode = True
 
         for frame in tb.stack:
             path = os.path.relpath(frame.filename)
@@ -72,17 +72,17 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
 
             if debug_mode:
                 if '/hypermea/' in path:
-                    stack_item['file'] = 'hypermea' + path.split('/hypermea/')[1]
-                    hypermea_stack.append(stack_item)
+                    stack_item['file'] = 'hypermea/' + path.split('/hypermea/')[1]
+                    hypermea_stack.insert(0, stack_item)
                 elif 'site-packages' in path:
                     stack_item['file'] = '/site-packages/' + path.split('/site-packages/')[1]
-                    site_packages_stack.append(stack_item)
+                    site_packages_stack.insert(0, stack_item)
                 else:
                     stack_item['file'] = path
-                    app_stack.append(stack_item)
+                    app_stack.insert(0, stack_item)
             else:
                 stack_item['file'] = path
-                full_stack.append(stack_item)
+                full_stack.insert(0, stack_item)
 
 
         if ex:

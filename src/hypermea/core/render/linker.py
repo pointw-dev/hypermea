@@ -2,10 +2,25 @@ from flask import request, current_app
 from hypermea.core.utils import clean_href, add_search_link, get_resource_id, get_resource_rel
 
 
-class HalLinkBuilder:
+class HalLinker:
     def __init__(self, resource):
         self.item_id = None
         self.resource = resource
+
+
+    def process_links(self, data):
+        if 'links_only' in self.resource.query_args:
+            data.pop('_items')
+
+        if self.resource.scope == 'item':
+            self.add_links_to_item(data)
+        if self.resource.scope == 'collection':
+            self.add_links_to_collection(data)
+
+
+
+
+
 
     def add_links_to_item(self, item):
         self.item_id = get_resource_id(item, self.resource.name)

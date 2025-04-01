@@ -3,7 +3,8 @@ from hypermea.core.utils import get_my_base_url, get_id_field, get_resource_rel
 
 
 class ResourceContext:
-    def __init__(self, resource_name, resource_scope, base_url, query_args, domain, schema, id_field, parent, child, resource_rel):
+    def __init__(self, method, resource_name, resource_scope, base_url, query_args, domain, schema, id_field, parent, child, resource_rel):
+        self.method = method
         self.name = resource_name
         self.scope = resource_scope
         self.base_url = base_url
@@ -18,6 +19,7 @@ class ResourceContext:
 
     @classmethod
     def from_request(cls, data):
+        method = request.method
         query_args = request.args
         resource_name, scope = cls._parse_url_rule()
         if request.method  == 'POST':
@@ -36,7 +38,7 @@ class ResourceContext:
         id_field = get_id_field(resource_name) if scope != 'root' else None
         resource_rel = get_resource_rel(resource_name)
 
-        return cls(resource_name, scope, base_url, query_args, domain, schema, id_field, parent, child, resource_rel)
+        return cls(method, resource_name, scope, base_url, query_args, domain, schema, id_field, parent, child, resource_rel)
 
     @staticmethod
     def _parse_url_rule():

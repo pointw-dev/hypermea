@@ -7,6 +7,15 @@ class HalEmbedder:
     def __init__(self, resource):
         self.resource = resource
 
+    def process_embedding(self, data):
+        self.handle_embed_query_string(data)
+        if self.resource.method == 'GET':
+            self.move_items_to_embedded(data)
+
+
+
+
+
     def handle_embed_query_string(self, data):
         embed_keys = self.resource.query_args.getlist('embed')
         if not embed_keys:
