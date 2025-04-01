@@ -27,7 +27,6 @@ def validate_links(context, resource, datatable):
         assert_that(link.get('templated', False)).is_equal_to(is_templated == 'true')
 
 
-
 @given('the client has fetched the home resource')
 def step_impl(api, context):
     response = api.get('/')

@@ -18,5 +18,5 @@ def test_embedded_section_does_not_appear_for_parent_when_requesting_unrelated_r
 def step_impl(api, context):
     result = api.get(f"/people/{context['first_person_id']}?embed=unrelated")
     assert_that(result.status_code).is_equal_to(200)
-    context['person'] = result.json
+    context['resource'] = result.json
 

@@ -1,7 +1,6 @@
 # https://pointw-dev.github.io/hypermea/features/runtime-capabilities/search-collections/embed.html
 
 
-@wip
 Feature: Resources can be embedded, for resource collection by default, by request for related resources
   As a client
   I want to request that a resource I fetch also includes related resources
@@ -72,7 +71,8 @@ Feature: Resources can be embedded, for resource collection by default, by reque
     When a client requests the parent collection asking for embedded children
     Then each item in the embedded parent collection must contain that parent's children
 
-#  Scenario: Embedding multiple resources at once
-#    When a client performs GET /cars/abc?embed=people&embed=service-history
-#    Then "_embedded.people" MUST be embedded
-#    And "_embedded.service-history" MUST be embedded if links exist
+  Scenario: Embedding multiple resources at once
+    Given a resource is configured having relations to two other resources
+     And the resources are populated
+    When a client requests that resource asking for each to be embedded
+    Then the item has both embedded resources

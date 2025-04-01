@@ -1,8 +1,7 @@
-import os
 import json
 
 from assertpy import assert_that
-from pytest_bdd import given, parsers
+from pytest_bdd import given, when, parsers
 
 
 @given(parsers.parse('the service is configured with a limit of {items_per_page:d} items per page'))
@@ -128,5 +127,18 @@ def step_impl(api, context):
     assert_that(first_car_id).is_not_none()
     context['first_person_id'] = first_person_id
     context['first_car_id'] = first_car_id
+
+
+@when('a client requests a child item asking for related parent')
+def step_impl(api, context):
+    result = api.get(f"/cars/{context['first_car_id']}?embed=people")
+    assert_that(result.status_code).is_equal_to(200)
+    context['resource'] = result.json
+
+@when('a client requests a parent item asking for related children')
+def step_impl(api, context):
+    result = api.get(f"/people/{context['first_person_id']}?embed=cars")
+    assert_that(result.status_code).is_equal_to(200)
+    context['resource'] = result.json
 
 

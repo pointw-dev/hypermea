@@ -98,3 +98,25 @@ Feature: Resources are represented as application/hal+json
       | parent     | /people/[[first_person_id]]      | false        |
       | collection | /people/[[first_person_id]]/cars | false        |
     And the resource has no embedded property
+
+
+  Scenario: Embedded child resources have correct links
+    Given a parent and a child resource are configured
+    And each resource has multiple items
+    When a client requests a child item asking for related parent
+    Then each _embedded people has a _links property with
+      | rel        | value                  | is_templated |
+      | self       | /people/[[my_id]]      | false        |
+      | parent     | /people                | false        |
+      | collection | /people                | false        |
+      | cars       | /people/[[my_id]]/cars | false        |
+
+  Scenario: Embedded parent resources have correct links
+    Given a parent and a child resource are configured
+    And each resource has multiple items
+    When a client requests a parent item asking for related children
+    Then each _embedded cars has a _links property with
+      | rel        | value                         | is_templated |
+      | self       | /cars/[[my_id]]               | false        |
+      | parent     | /people/[[my_person_id]]      | false        |
+      | collection | /people/[[my_person_id]]/cars | false        |

@@ -18,4 +18,4 @@ def test_embedded_section_does_not_appear_for_item_when_not_requested():
 def step_impl(api, context):
     result = api.get(f"/people/{context['first_person_id']}")
     assert_that(result.status_code).is_equal_to(200)
-    context['person'] = result.json
+    context['resource'] = result.json

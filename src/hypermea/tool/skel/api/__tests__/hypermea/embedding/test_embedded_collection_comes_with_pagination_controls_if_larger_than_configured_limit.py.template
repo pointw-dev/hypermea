@@ -16,6 +16,6 @@ def test_embedded_collection_comes_with_pagination_controls_if_larger_than_confi
 
 @then('the parent links contain page controls for the embedded child collection')
 def step_impl(context):
-    links = context['person']['_links']
+    links = context['resource']['_links']
     assert_that(links).contains_key('cars:next')
     assert_that(links).contains_key('cars:last')
