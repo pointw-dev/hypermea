@@ -16,9 +16,9 @@ def test_embedding_in_a_collection():
 
 @when('a client requests the parent collection asking for embedded children')
 def step_impl(api, context):
-    result = api.get('/people?embed=cars')
-    assert_that(result.status_code).is_equal_to(200)
-    context['collection'] = result.json
+    response = api.get('/people?embed=cars')
+    assert_that(response.status_code).is_equal_to(200)
+    context['collection'] = response.json
     context['rel'] = 'people'
 
 

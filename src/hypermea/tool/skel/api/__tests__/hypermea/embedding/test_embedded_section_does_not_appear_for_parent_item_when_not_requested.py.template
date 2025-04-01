@@ -16,6 +16,6 @@ def test_embedded_section_does_not_appear_for_item_when_not_requested():
 
 @when('a client requests a parent item without asking for related children')
 def step_impl(api, context):
-    result = api.get(f"/people/{context['first_person_id']}")
-    assert_that(result.status_code).is_equal_to(200)
-    context['resource'] = result.json
+    response = api.get(f"/people/{context['first_person_id']}")
+    assert_that(response.status_code).is_equal_to(200)
+    context['resource'] = response.json

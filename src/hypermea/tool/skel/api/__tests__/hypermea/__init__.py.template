@@ -131,14 +131,14 @@ def step_impl(api, context):
 
 @when('a client requests a child item asking for related parent')
 def step_impl(api, context):
-    result = api.get(f"/cars/{context['first_car_id']}?embed=people")
-    assert_that(result.status_code).is_equal_to(200)
-    context['resource'] = result.json
+    response = api.get(f"/cars/{context['first_car_id']}?embed=people")
+    assert_that(response.status_code).is_equal_to(200)
+    context['resource'] = response.json
 
 @when('a client requests a parent item asking for related children')
 def step_impl(api, context):
-    result = api.get(f"/people/{context['first_person_id']}?embed=cars")
-    assert_that(result.status_code).is_equal_to(200)
-    context['resource'] = result.json
+    response = api.get(f"/people/{context['first_person_id']}?embed=cars")
+    assert_that(response.status_code).is_equal_to(200)
+    context['resource'] = response.json
 
 
