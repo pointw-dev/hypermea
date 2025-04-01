@@ -11,7 +11,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Client can sort collections using the sort query string parameter')
+@annotated_scenario(FEATURE, 'Client can sort collections using the sort query string parameter')
 def test_collection_can_be_sorted_by_request():
     pass
 

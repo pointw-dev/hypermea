@@ -1,5 +1,4 @@
 import pytest
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from pytest_bdd import given, when, then, parsers
 from __tests__.hypermea import *
 from __tests__.hypermea.pagination import *
@@ -10,7 +9,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Pagination can be enabled per resource')
+@annotated_scenario(FEATURE, 'Pagination can be enabled per resource')
 def test_pagination_can_be_enabled_per_resource():
     pass
 

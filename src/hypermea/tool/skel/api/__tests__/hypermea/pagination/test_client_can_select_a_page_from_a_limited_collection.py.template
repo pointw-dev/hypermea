@@ -1,5 +1,4 @@
 import pytest
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from pytest_bdd import given, when, then, parsers
 from __tests__.hypermea import *
 from __tests__.hypermea.pagination import *
@@ -10,7 +9,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Client can request a page in a limited collection')
+@annotated_scenario(FEATURE, 'Client can request a page in a limited collection')
 def test_client_can_select_a_page_from_a_limited_collection():
     pass
 

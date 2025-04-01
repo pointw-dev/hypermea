@@ -1,0 +1,15 @@
+import pytest
+from pytest_bdd import given, when, then, parsers
+from assertpy import assert_that
+from __tests__.hypermea import *
+from __tests__.hypermea.hal_compliant import *
+
+
+@pytest.fixture(scope='module')
+def context():
+    return {}
+
+@annotated_scenario(FEATURE, 'fetching a parent collection resource from the home resource')
+def test_fetching_a_parent_collection_resource_from_the_home_resource():
+    pass
+

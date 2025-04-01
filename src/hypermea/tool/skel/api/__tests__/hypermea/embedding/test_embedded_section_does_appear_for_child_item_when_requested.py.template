@@ -1,5 +1,4 @@
 import pytest
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from pytest_bdd import given, when, then, parsers
 from __tests__.hypermea import *
 from __tests__.hypermea.embedding import *
@@ -10,7 +9,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Embedded section does appear for child item when requested')
+@annotated_scenario(FEATURE, 'Embedded section does appear for child item when requested')
 def test_embedded_section_does_appear_for_child_item_when_requested():
     pass
 

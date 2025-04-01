@@ -1,5 +1,4 @@
 import pytest
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from pytest_bdd import given, when, then, parsers
 from __tests__.hypermea import *
 from __tests__.hypermea.embedding import *
@@ -10,7 +9,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Embedded section does not appear for parent when requesting unrelated resource')
+@annotated_scenario(FEATURE, 'Embedded section does not appear for parent when requesting unrelated resource')
 def test_embedded_section_does_not_appear_for_parent_when_requesting_unrelated_resource():
     pass
 

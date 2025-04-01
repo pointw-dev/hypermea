@@ -1,5 +1,4 @@
 import pytest
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from pytest_bdd import given, when, then, parsers
 from __tests__.hypermea import *
 from __tests__.hypermea.embedding import *
@@ -10,7 +9,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Embedded collection comes with pagination controls if larger than configured limit')
+@annotated_scenario(FEATURE, 'Embedded collection comes with pagination controls if larger than configured limit')
 def test_embedded_collection_comes_with_pagination_controls_if_larger_than_configured_limit():
     pass
 

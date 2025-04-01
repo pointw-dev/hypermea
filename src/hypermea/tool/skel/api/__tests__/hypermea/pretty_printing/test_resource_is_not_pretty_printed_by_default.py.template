@@ -10,7 +10,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Client requests a resource without pretty-printing')
+@annotated_scenario(FEATURE, 'Client requests a resource without pretty-printing')
 def test_resource_is_not_pretty_printed_by_default():
     pass
 

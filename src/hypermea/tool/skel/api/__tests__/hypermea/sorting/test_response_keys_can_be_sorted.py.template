@@ -9,7 +9,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, "An item's keys can be sorted")
+@annotated_scenario(FEATURE, "An item's keys can be sorted")
 def test_response_keys_can_be_sorted():
     pass
 

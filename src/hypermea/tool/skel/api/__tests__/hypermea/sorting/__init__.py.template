@@ -4,7 +4,7 @@ from __tests__ import *
 from assertpy import assert_that
 from pytest_bdd import given, when, then
 
-FEATURE_PATH = 'hypermea/sorting.feature'
+FEATURE = 'hypermea/sorting.feature'
 
 
 @given('that resource has multiple items in its collection')

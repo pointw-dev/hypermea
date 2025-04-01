@@ -10,7 +10,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Sorting can be disabled globally')
+@annotated_scenario(FEATURE, 'Sorting can be disabled globally')
 def test_sorting_can_be_disabled_globally():
     pass
 

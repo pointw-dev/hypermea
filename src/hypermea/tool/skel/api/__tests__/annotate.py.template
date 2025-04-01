@@ -5,7 +5,7 @@ try:
 except ImportError:
     from .mock_allure import allure
 
-def annotated_scenario(feature_path, scenario_title):
+def annotated_scenario(feature, scenario_title):
     def decorator(func):
         test_file = Path(func.__globals__.get('__file__', '')).resolve()
 
@@ -15,7 +15,7 @@ def annotated_scenario(feature_path, scenario_title):
         feature_name = test_file.parent.name
         epic_name = test_file.parent.parent.name
 
-        func = scenario(feature_path, scenario_title)(func)
+        func = scenario(feature, scenario_title)(func)
 
         func = allure.epic(epic_name)(func)
         func = allure.feature(feature_name)(func)

@@ -1,5 +1,4 @@
 import pytest
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from pytest_bdd import given, when, then, parsers
 from __tests__.hypermea import *
 from __tests__.hypermea.pagination import *
@@ -11,7 +10,7 @@ def context():
 
 LIMIT = 5
 
-@annotated_scenario(FEATURE_PATH, 'Service can be configured with a different limit query string parameter')
+@annotated_scenario(FEATURE, 'Service can be configured with a different limit query string parameter')
 def test_service_can_be_configured_with_different_limit_parameter():
     pass
 

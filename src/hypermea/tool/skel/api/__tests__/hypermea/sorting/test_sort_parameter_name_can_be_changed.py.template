@@ -9,7 +9,7 @@ def context():
     return {}
 
 
-@annotated_scenario(FEATURE_PATH, 'Service can be configured with a different sort query string parameter')
+@annotated_scenario(FEATURE, 'Service can be configured with a different sort query string parameter')
 def test_sort_parameter_name_can_be_changed():
     pass
 

@@ -1,9 +1,9 @@
-from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
+from urllib.parse import urlparse, parse_qsl
 from pytest_bdd import given, when, then, parsers
 from __tests__ import *
 from __tests__.hypermea import *
 
-FEATURE_PATH = 'hypermea/pagination.feature'
+FEATURE = 'hypermea/pagination.feature'
 
 
 @given(parsers.parse('that resource has {number_of_items:d} items in its collection'))
