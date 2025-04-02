@@ -23,16 +23,11 @@ class HalLinker:
                 HalLinker._remove_unnecessary_links(links=item.get('_links', {}))
 
         if self.resource.scope == 'item':
-            self.add_links_to_item(data)
+            self._add_links_to_item(data)
         if self.resource.scope == 'collection':
-            self.add_links_to_collection(data)
+            self._add_links_to_collection(data)
 
-
-
-
-
-
-    def add_links_to_item(self, item):
+    def _add_links_to_item(self, item):
         if not item:
             return
 
@@ -42,10 +37,10 @@ class HalLinker:
         self._add_child_link(item)
         self._add_parent_links(item)
 
-    def add_links_to_collection(self, data):
+    def _add_links_to_collection(self, data):
         if '_items' in data:
             for item in data['_items']:
-                self.add_links_to_item(item)
+                self._add_links_to_item(item)
 
         self_href = f'{self.resource.base_url}/{self.resource.name}'
         data['_links'] = data.get('_links', {})

@@ -1,23 +1,10 @@
-import json
-
+from pytest_bdd import given, when, then, parsers
 from __tests__ import *
-from assertpy import assert_that
-from pytest_bdd import given, when, then
+from __tests__.hypermea import *
+
 
 FEATURE = 'hypermea/sorting.feature'
 
-
-@given('that resource has multiple items in its collection')
-def step_impl(api):
-    people = []
-    for name in ['Robert', 'James', 'Cheryl', 'Jessica', 'Cory', 'Michael', 'Catherine', 'Mark', 'Jacqueline', 'Marissa']:
-        people.append({'name': name})
-    response = api.post(
-        '/people',
-        data=json.dumps(people),
-        headers={'content-type': 'application/json'}
-    )
-    assert_that(response.status_code).is_equal_to(201)
 
 @given('sorting is disabled globally')
 def step_impl(settings_py):

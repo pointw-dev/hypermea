@@ -8,15 +8,12 @@ class HalEmbedder:
         self.resource = resource
 
     def process_embedding(self, data):
-        self.handle_embed_query_string(data)
+        self._handle_embed_query_string(data)
         if self.resource.method == 'GET':
-            self.move_items_to_embedded(data)
+            self._move_items_to_embedded(data)
 
 
-
-
-
-    def handle_embed_query_string(self, data):
+    def _handle_embed_query_string(self, data):
         embed_rels = self.resource.query_args.getlist('embed')
         if not embed_rels:
             return
@@ -30,7 +27,7 @@ class HalEmbedder:
         elif isinstance(data, dict):
             self._embed_resources(data, embed_rels)
 
-    def move_items_to_embedded(self, data):
+    def _move_items_to_embedded(self, data):
         items = data.pop('_items', None)
         if items is not None:
             embedded = data.setdefault('_embedded', {})

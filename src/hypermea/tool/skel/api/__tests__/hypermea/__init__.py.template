@@ -19,6 +19,19 @@ def step_impl(settings_py):
         }
     }
 
+@given('that resource has multiple items in its collection')
+def step_impl(api, context):
+    people = []
+    for name in ['Robert', 'James', 'Cheryl', 'Jessica', 'Cory', 'Michael', 'Catherine', 'Mark', 'Jacqueline', 'Marissa']:
+        people.append({'name': name})
+    response = api.post(
+        '/people',
+        data=json.dumps(people),
+        headers={'content-type': 'application/json'}
+    )
+    assert_that(response.status_code).is_equal_to(201)
+    context['first_person'] = response.json['_items'][0]
+
 
 @given('a resource is configured with multiple keys')
 def step_impl(settings_py):
@@ -140,5 +153,4 @@ def step_impl(api, context):
     response = api.get(f"/people/{context['first_person_id']}?embed=cars")
     assert_that(response.status_code).is_equal_to(200)
     context['resource'] = response.json
-
 

@@ -4,13 +4,6 @@ from __tests__.hypermea import *
 
 FEATURE = 'hypermea/embedding.feature'
 
-"""
-  Background:
-    Given a parent and a child resource are configured
-    And each resource has multiple items
-"""
-
-
 @then('the parent item has no embedded property')
 def step_impl(context):
     assert_that(context['resource']).does_not_contain('_embedded')
