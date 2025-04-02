@@ -12,6 +12,12 @@ class HalLinker:
         if 'links_only' in self.resource.query_args:
             data.pop('_items')
 
+        if self.resource.method == 'POST':
+            HalLinker._remove_unnecessary_links(links=data.get('_links', {}))  #####  Move this above condition and/or remove condition after embedder works without "related" link
+            if '_items' in data:
+                for item in data['_items']:
+                    HalLinker._remove_unnecessary_links(links=item.get('_links', {}))
+
         if self.resource.scope == 'item':
             self.add_links_to_item(data)
         if self.resource.scope == 'collection':
@@ -101,3 +107,9 @@ class HalLinker:
             item['_links']['collection'] = {
                 'href': collection_href
             }
+
+    @staticmethod
+    def _remove_unnecessary_links(links):
+        if not links:
+            return
+        links.pop('related', None)

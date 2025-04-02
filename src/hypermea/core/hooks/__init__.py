@@ -6,19 +6,6 @@ from hypermea.core.logging import trace
 from configuration import SETTINGS
 
 @trace
-def tidy_post_links(_, request, payload):
-    if payload.status_code == 201:
-        document = json.loads(payload.data)
-        if '_items' in document:
-            for item in document['_items']:
-                _remove_unnecessary_links(links=item.get('_links', {}))
-        else:
-            _remove_unnecessary_links(links=document.get('_links', {}))
-
-        payload.data = json.dumps(document, indent=4 if 'pretty' in request.args else None)
-
-
-@trace
 def fix_links(resource_name, request, payload):
     if payload.status_code in [200, 201]:
         document = json.loads(payload.data)
