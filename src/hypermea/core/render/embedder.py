@@ -42,7 +42,7 @@ class HalEmbedder:
             if '_embedded' in data and embed_rel in data['_embedded']:
                 continue  # Already embedded
 
-            href = self._get_href_to_embed(data, embed_rel)
+            href = data.get('_links', {}).get(embed_rel, {}).get('href')
             if not href:
                 continue
 
@@ -54,26 +54,6 @@ class HalEmbedder:
                 self._add_embedded_section_to_data(data, embed_rel, embedded_data)
             except Exception as e:
                 current_app.logger.warning(f'Failed to embed {embed_rel}: {e}')
-
-    def _get_href_to_embed(self, data, embed_rel):
-        href = data.get('_links', {}).get(embed_rel, {}).get('href')
-        if href:
-            return href
-        #
-        # # Detect relation
-        # for field, spec in [spec for spec in self.resource.schema.items() if 'data_relation' in spec[1]]:
-        #     related_resource_name = spec['data_relation'].get('resource')
-        #     related_rel = get_resource_rel(related_resource_name)
-        #     if related_rel == embed_rel:
-        #         related_id_field = get_id_field(related_resource_name)
-        #         related_id = request.view_args.get(field, request.view_args.get(related_id_field))
-        #         my_id_field = get_id_field(self.resource.name)
-        #         base_url = get_my_base_url()
-        #         possible_href = f'{base_url}/{related_resource_name}/{related_id}'
-        #         href = data.get('_links', {}).get('related', {}).get(field, {}).get('href')
-        #     break
-        #
-        return href
 
 
     @staticmethod
