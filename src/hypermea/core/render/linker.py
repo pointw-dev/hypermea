@@ -1,5 +1,6 @@
 from flask import request, current_app
-from hypermea.core.utils import clean_href, add_search_link, get_resource_id, get_resource_rel
+from hypermea.core.utils import clean_href, add_search_link, get_resource_id, get_resource_rel, get_my_base_url
+from configuration import SETTINGS
 
 
 class HalLinker:
@@ -12,11 +13,14 @@ class HalLinker:
         if 'links_only' in self.resource.query_args:
             data.pop('_items')
 
-        if self.resource.method == 'POST':
-            HalLinker._remove_unnecessary_links(links=data.get('_links', {}))  #####  Move this above condition and/or remove condition after embedder works without "related" link
-            if '_items' in data:
-                for item in data['_items']:
-                    HalLinker._remove_unnecessary_links(links=item.get('_links', {}))
+        if self.resource.name == 'home' and self.resource.scope == 'root':
+            data['_links'] = HalLinker._rewrite_home_resource_links(data['_links'])
+            return
+
+        HalLinker._remove_unnecessary_links(links=data.get('_links', {}))
+        if '_items' in data:
+            for item in data['_items']:
+                HalLinker._remove_unnecessary_links(links=item.get('_links', {}))
 
         if self.resource.scope == 'item':
             self.add_links_to_item(data)
@@ -82,24 +86,30 @@ class HalLinker:
 
     def _add_parent_links(self, item):
         # add any parent links if I am a child to anyone
-        parent_rel = ''
+        added_parent_link = False
 
         for field, spec in [spec for spec in self.resource.schema.items() if 'data_relation' in spec[1]]:
-            parent = spec['data_relation'].get('resource')
-            parent_rel = parent if parent_rel else 'parent'  # if there are multiples, the first is "parent"
-            if parent:
+            parent_resource_name = spec['data_relation'].get('resource')
+            parent_rel = get_resource_rel(parent_resource_name)
+            if parent_rel:
                 if field in item:
                     parent_id = item[field]
                 else:
                     parent_id = request.view_args.get(field)
-                item['_links']['parent'] = {
-                    'href': f'{self.resource.base_url}/{parent}/{parent_id}',
+
+                item['_links'][parent_rel] = {
+                    'href': f'{self.resource.base_url}/{parent_resource_name}/{parent_id}',
                 }
-                if parent_rel == 'parent':
-                    item['_links']['collection'] = {
-                        'href': f'{self.resource.base_url}/{parent}/{parent_id}/{self.resource.name}',
+                if not added_parent_link:
+                    item['_links']['parent'] = {
+                        'href': f'{self.resource.base_url}/{parent_resource_name}/{parent_id}',
                     }
-        if not parent_rel:
+                    item['_links']['collection'] = {
+                        'href': f'{self.resource.base_url}/{parent_resource_name}/{parent_id}/{self.resource.name}',
+                    }
+                    added_parent_link = True
+
+        if not added_parent_link:
             collection_href = f'{self.resource.base_url}/{self.resource.name}'
             item['_links']['parent'] = {
                 'href': collection_href
@@ -113,3 +123,37 @@ class HalLinker:
         if not links:
             return
         links.pop('related', None)
+
+
+    @staticmethod
+    def _rewrite_home_resource_links(links):
+        if not links or 'child' not in links or len(links) != 1:
+            return
+
+        old = links.pop('child')
+        base_url = get_my_base_url()
+
+        new_links = {
+            'self': {'href': f'{base_url}/', '_note': f'Home resource for {SETTINGS["HY_API_NAME"]}'},
+            'logging': {'href': f'{base_url}/_logging'}
+        }
+
+        for link in old:
+            if '<' in link['href'] or link['title'] == '_schema':
+                continue
+
+            add_links_only = False
+            if link['title'].startswith('_'):
+                rel = link['title'][1:]
+            else:
+                rel = get_resource_rel(link['title'])
+                add_links_only = True
+
+            link['href'] = f'{base_url}/{link["href"]}'
+            if add_links_only:
+                link['href'] += '{?links_only}'
+                link['templated'] = True
+            link.pop('title', None)
+            new_links[rel] = link
+
+        return new_links

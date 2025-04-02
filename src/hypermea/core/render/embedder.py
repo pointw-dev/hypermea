@@ -1,6 +1,6 @@
 import requests
-from flask import current_app
-from hypermea.core.utils import get_resource_rel, get_api
+from flask import current_app, request
+from hypermea.core.utils import get_resource_rel, get_id_field, get_api, get_my_base_url
 
 
 class HalEmbedder:
@@ -17,21 +17,18 @@ class HalEmbedder:
 
 
     def handle_embed_query_string(self, data):
-        embed_keys = self.resource.query_args.getlist('embed')
-        if not embed_keys:
+        embed_rels = self.resource.query_args.getlist('embed')
+        if not embed_rels:
             return
 
         if '_items' in data:
-            # GET /resource (Eve paginated collection)
             for item in data['_items']:
-                self._embed_resources(item, embed_keys)
+                self._embed_resources(item, embed_rels)
         elif isinstance(data, list):
-            # Document list (GET /resource)
             for item in data:
-                self._embed_resources(item, embed_keys)
+                self._embed_resources(item, embed_rels)
         elif isinstance(data, dict):
-            # Single document (GET /resource/{id})
-            self._embed_resources(data, embed_keys)
+            self._embed_resources(data, embed_rels)
 
     def move_items_to_embedded(self, data):
         items = data.pop('_items', None)
@@ -40,12 +37,12 @@ class HalEmbedder:
             embedded[self.resource.rel] = items
 
 
-    def _embed_resources(self, document, embed_keys):
-        for embed_key in embed_keys:
-            if '_embedded' in document and embed_key in document['_embedded']:
+    def _embed_resources(self, data, embed_rels):
+        for embed_rel in embed_rels:
+            if '_embedded' in data and embed_rel in data['_embedded']:
                 continue  # Already embedded
 
-            href = self._get_href_to_embed(document, embed_key)
+            href = self._get_href_to_embed(data, embed_rel)
             if not href:
                 continue
 
@@ -54,29 +51,28 @@ class HalEmbedder:
                 continue
 
             try:
-                self._add_embedded_section_to_document(document, embed_key, embedded_data)
+                self._add_embedded_section_to_data(data, embed_rel, embedded_data)
             except Exception as e:
-                current_app.logger.warning(f'Failed to embed {embed_key}: {e}')
+                current_app.logger.warning(f'Failed to embed {embed_rel}: {e}')
 
-    def _get_href_to_embed(self, document, embed_key):
-        link_info = document.get('_links', {}).get(embed_key)
-        if not link_info:
-            parent_link = None
-            # Detect parent relation
-            for field, spec in [spec for spec in self.resource.schema.items() if 'data_relation' in spec[1]]:
-                parent_resource_name = spec['data_relation'].get('resource')
-                parent_rel = get_resource_rel(parent_resource_name)
-                if parent_rel == embed_key:
-                    parent_link = document.get('_links', {}).get('related', {}).get(field)
-                break
-
-            if parent_link:
-                link_info = parent_link
-
-        if not link_info:
-            return None
-
-        href = link_info.get('href')
+    def _get_href_to_embed(self, data, embed_rel):
+        href = data.get('_links', {}).get(embed_rel, {}).get('href')
+        if href:
+            return href
+        #
+        # # Detect relation
+        # for field, spec in [spec for spec in self.resource.schema.items() if 'data_relation' in spec[1]]:
+        #     related_resource_name = spec['data_relation'].get('resource')
+        #     related_rel = get_resource_rel(related_resource_name)
+        #     if related_rel == embed_rel:
+        #         related_id_field = get_id_field(related_resource_name)
+        #         related_id = request.view_args.get(field, request.view_args.get(related_id_field))
+        #         my_id_field = get_id_field(self.resource.name)
+        #         base_url = get_my_base_url()
+        #         possible_href = f'{base_url}/{related_resource_name}/{related_id}'
+        #         href = data.get('_links', {}).get('related', {}).get(field, {}).get('href')
+        #     break
+        #
         return href
 
 
@@ -99,20 +95,20 @@ class HalEmbedder:
         return embedded_data
 
     @staticmethod
-    def _add_embedded_section_to_document(document, embed_key, embedded_data):
-        if '_embedded' not in document:
-            document['_embedded'] = {}
+    def _add_embedded_section_to_data(data, embed_rel, embedded_data):
+        if '_embedded' not in data:
+            data['_embedded'] = {}
 
-        if '_embedded' in embedded_data and embed_key in embedded_data['_embedded']:
+        if '_embedded' in embedded_data and embed_rel in embedded_data['_embedded']:
             embedded_links = embedded_data['_links']
-            document['_embedded'][embed_key] = embedded_data['_embedded'].pop(embed_key, {})
+            data['_embedded'][embed_rel] = embedded_data['_embedded'].pop(embed_rel, {})
             pagination_links = ['next', 'prev', 'last', 'first']
-            for rel in pagination_links:
-                page_link = embedded_links.get(rel)
+            for pagination_rel in pagination_links:
+                page_link = embedded_links.get(pagination_rel)
                 if page_link:
-                    if '_links' not in document:
-                        document['_links'] = {}
-                    document['_links'][f'{embed_key}:{rel}'] = page_link
+                    if '_links' not in data:
+                        data['_links'] = {}
+                    data['_links'][f'{embed_rel}:{pagination_rel}'] = page_link
             return
 
-        document['_embedded'][embed_key] = embedded_data
+        data['_embedded'][embed_rel] = embedded_data

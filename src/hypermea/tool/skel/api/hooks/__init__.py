@@ -1,5 +1,5 @@
 import logging
-from hypermea.core.hooks import fix_links
+### from hypermea.core.hooks import fix_links
 from hypermea.core.utils import echo_message, is_mongo_running, make_error_response
 from hypermea.core.logging import trace
 import hooks._gateway
@@ -14,8 +14,8 @@ LOG = logging.getLogger('hooks')
 
 @trace
 def add_hooks(app):
-    app.on_post_GET += fix_links
-    app.on_post_PATCH += fix_links
+    ### app.on_post_GET += fix_links
+    ### app.on_post_PATCH += fix_links
 
 
     @app.before_request

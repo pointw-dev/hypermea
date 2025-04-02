@@ -11,7 +11,8 @@ def fix_links(resource_name, request, payload):
         document = json.loads(payload.data)
 
         if resource_name is None and '_links' in document:
-            document['_links'] = _rewrite_schema_links(links=document.get('_links', {}))
+            pass
+            # document['_links'] = _rewrite_schema_links(links=document.get('_links', {}))
         else:
             if '_' in resource_name:
                 parent_resource_name, resource_name = resource_name.split('_', 1)
