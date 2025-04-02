@@ -33,6 +33,9 @@ class HalLinker:
 
 
     def add_links_to_item(self, item):
+        if not item:
+            return
+
         self.item_id = get_resource_id(item, self.resource.name)
 
         self._add_self_link(item)

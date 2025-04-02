@@ -13,6 +13,10 @@ LOG = logging.getLogger('hooks')
 
 @trace
 def add_hooks(app):
+    #    app.on_post_GET += fix_links
+    app.on_delete_item = _delete_item
+    app.on_delete_resource = _delete_resource
+
     @app.before_request
     def before_request():
         if not is_mongo_running():
@@ -31,3 +35,10 @@ def add_hooks(app):
     hooks._error_handlers.add_hooks(app)
     hooks._settings.add_hooks(app)
     hooks._logs.add_hooks(app)
+
+
+def _delete_item(resource, item):
+    pass
+
+def _delete_resource(resource):
+    pass
