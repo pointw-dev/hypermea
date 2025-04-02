@@ -5,7 +5,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src/features" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/service" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.12 virtualenv at ~/.pyenv/versions/test (3)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PyDocumentationSettings">
