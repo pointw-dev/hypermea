@@ -34,7 +34,6 @@ additional, but not likely useful
 * get_id_field(collection_name: str) -> str
 * get_resource_id(resource: dict, collection_name: str) -> str
 * is_mongo_running() -> bool (coming soon)
-* echo_message()
 
 Note: the `log_setup.py` under `utils` is used to set up logging and has no uses for your API
 

@@ -204,27 +204,6 @@ def get_resource_id(resource: dict, collection_name: str) -> str:
     return rtn
 
 
-def echo_message() -> Response:
-    log = logging.getLogger('echo')
-    message = 'PUT {"message": {}/"", "status_code": int}, content-type: "application/json"'
-    status_code = 400
-    if request.is_json:
-        try:
-            status_code = int(request.json.get('status_code', status_code))
-            message = request.json.get('message', message)
-        except ValueError:
-            pass
-
-    if status_code < 400:
-        log.info(message)
-    elif status_code < 500:
-        log.warning(message)
-    else:
-        log.error(message)
-
-    return make_response(jsonify(message), status_code)
-
-
 def inject_path(base, path, remove_query_string=False):
     parts = base.split('?', 1)
     base_part = parts[0]

@@ -71,12 +71,14 @@ def _create_api(project_name):
     _create_hypermea_config_file(project_name)
     _copy_documentation(skel)
     _create_idea_folder(project_name, skel)
+    _add_pytest_ini(skel)
 
     os.mkdir('src')
     os.chdir('src')
 
     _create_scripts_folder(skel)
     _create_features_folder(project_name, skel)
+    _create_tests_folder(project_name, skel)
     _create_service_folder(project_name, skel)
     _remove_pycache_folders(project_name)
 
@@ -89,13 +91,15 @@ def _remove_pycache_folders(project_name):
     hypermea.tool.remove_folder_if_exists(project_name, '__pycache__', recursive=True)
     hypermea.tool.remove_folder_if_exists('scripts', '__pycache__', recursive=True)
 
+def _create_tests_folder(project_name, skel):
+    folder_name = 'tests'
+    _copy_tests_skel(project_name, folder_name, skel)
+    _rename_test_templates(project_name, folder_name)
 
 def _create_service_folder(project_name, skel):
     folder_name = 'service'
     _copy_api_skel(project_name, folder_name, skel)
-    _rename_test_templates(project_name, folder_name)
     _rename_api_settings(project_name, folder_name)
-
 
 def _rename_api_settings(project_name, folder_name):
     module_name = _sanitize_for_python_module_name(project_name)
@@ -108,10 +112,16 @@ def _rename_api_settings(project_name, folder_name):
     os.rename(os.path.join(folder_name, 'configuration/api_settings.py'),
               os.path.join(folder_name, f'configuration/{module_name}_settings.py'))
 
+def _add_pytest_ini(skel):
+    with open(f'{skel}/api/pytest.ini', 'r', encoding='utf-8') as f:
+        content = f.read()
+    content = content.replace('../', f'src/')
+    with open('pytest.ini', 'w', encoding='utf-8') as f:
+        f.write(content)
 
 def _rename_test_templates(project_name, folder_name):
-    directory = os.path.realpath(os.path.join(folder_name, f'__tests__'))
-    for subdir, dirs, files in os.walk(directory):
+    move(os.path.join(folder_name, 'project_name'), os.path.join(folder_name, f'{project_name}'))
+    for subdir, dirs, files in os.walk(folder_name):
         for filename in files:
             if filename.find('.py.template') > 0:
                 file_path = os.path.join(subdir, filename)
@@ -119,12 +129,16 @@ def _rename_test_templates(project_name, folder_name):
                 os.rename(file_path, new_file_path)
 
 
+# TODO: nothing here is DRY esp. these two:
 def _copy_api_skel(project_name, folder_name, skel):
     os.mkdir(folder_name)
     api_folder = os.path.join(skel, 'api')
     copytree(api_folder, folder_name, dirs_exist_ok=True)
-    move(os.path.join(folder_name, f'__tests__/project_name'), os.path.join(folder_name, f'__tests__/{project_name}'))
 
+def _copy_tests_skel(project_name, folder_name, skel):
+    os.mkdir(folder_name)
+    tests_folder = os.path.join(skel, 'tests')
+    copytree(tests_folder, folder_name, dirs_exist_ok=True)
 
 def _create_features_folder(project_name, skel):
     folder_name = 'features'

@@ -1,3 +1,0 @@
-from __tests__ import *
-
-FEATURE = 'hypermea/pretty_printing.feature'
