@@ -21,7 +21,7 @@ def test_sorting_can_be_disabled_globally():
 # When a client requests this collection with a sort query string
 
 @then('the collection in the response is not sorted')
-def step_impl(context):
+def then_the_collection_in_the_response_is_not_sorted(context):
     names = [i['name'] for i in context['people']]
     is_sorted = all([True if index == 0 else item >= names[index-1] for index, item in enumerate(names)])
     assert_that(is_sorted).is_equal_to(False)

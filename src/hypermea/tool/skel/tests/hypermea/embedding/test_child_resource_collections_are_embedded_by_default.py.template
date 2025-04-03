@@ -14,7 +14,7 @@ def test_child_resource_collections_are_embedded_by_default():
 
 
 @when('a client requests the children of a parent')
-def step_impl(api, context):
+def when_a_client_requests_the_children_of_a_parent(api, context):
     response = api.get(f"/people/{context['first_person_id']}/cars")
     assert_that(response.status_code).is_equal_to(200)
     context['collection'] = response.json

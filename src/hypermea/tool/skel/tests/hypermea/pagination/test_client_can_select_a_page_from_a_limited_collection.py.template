@@ -17,7 +17,7 @@ def test_client_can_select_a_page_from_a_limited_collection():
 # And that resource has 100 items in its collection
 
 @when(parsers.parse('a client requests page {page} of this collection with a limit of {limit:d}'))
-def step_impl(api, context, page, limit):
+def when_a_client_requests_page_page_of_this_collection_with_a_limit_of_limit(api, context, page, limit):
     response = api.get(
         f'/people?max_results={limit}&page={page}'
     )

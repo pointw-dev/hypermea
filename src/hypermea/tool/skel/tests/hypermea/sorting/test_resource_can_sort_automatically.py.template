@@ -14,7 +14,7 @@ def test_resource_can_sort_automatically():
 
 
 @given('a resource is configured to sort automatically')
-def step_impl(settings_py):
+def given_a_resource_is_configured_to_sort_automatically(settings_py):
     settings_py['DOMAIN'] = {
         'people': {
             'schema': {
@@ -29,7 +29,7 @@ def step_impl(settings_py):
 # And that resource has multiple items in its collection
 
 @when('a client requests this collection without a sort query string')
-def step_impl(api, context):
+def when_a_client_requests_this_collection_without_a_sort_query_string(api, context):
     response = api.get(
         '/people'
     )

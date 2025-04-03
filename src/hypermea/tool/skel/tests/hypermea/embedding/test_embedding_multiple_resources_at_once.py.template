@@ -21,7 +21,7 @@ Then the item has both embedded resources
 """
 
 @given('a resource is configured having relations to two other resources')
-def step_impl(settings_py):
+def given_a_resource_is_configured_having_relations_to_two_other_resources(settings_py):
     settings_py['DOMAIN'] = {
         "people": {
             "schema": {
@@ -94,7 +94,7 @@ def step_impl(settings_py):
 
 
 @given('the resources are populated')
-def step_impl(api, context):
+def given_the_resources_are_populated(api, context):
     response = api.post('/jobs', data=json.dumps({'name':'job'}), content_type='application/json')
     assert_that(response.status_code).is_equal_to(201)
     job = response.json
@@ -114,14 +114,14 @@ def step_impl(api, context):
 
 
 @when('a client requests that resource asking for each to be embedded')
-def step_impl(api, context):
+def when_a_client_requests_that_resource_asking_for_each_to_be_embedded(api, context):
     response = api.get(f'/people/{context['person_id']}?embed=jobs&embed=cars')
     assert_that(response.status_code).is_equal_to(200)
     context['resource'] = response.json
 
 
 @then('the item has both embedded resources')
-def step_impl(context):
+def then_the_item_has_both_embedded_resources(context):
     assert_that(context['resource']).contains_key('_embedded')
     embedded = context['resource']['_embedded']
     assert_that(embedded).contains_key('jobs')

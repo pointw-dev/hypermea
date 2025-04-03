@@ -7,7 +7,7 @@ FEATURE = 'hypermea/pagination.feature'
 
 
 @given(parsers.parse('that resource has {number_of_items:d} items in its collection'))
-def step_impl(api, number_of_items):
+def given_that_resource_has_numberofitems_items_in_its_collection(api, number_of_items):
     people = []
     for index in range(number_of_items):
         people.append({'name': f'name{index+1}'})
@@ -20,12 +20,12 @@ def step_impl(api, number_of_items):
 
 
 @given('pagination is disabled globally')
-def step_impl(settings_py):
+def given_pagination_is_disabled_globally(settings_py):
     settings_py['PAGINATION'] = False
 
 
 @when(parsers.parse('a client requests this collection with a limit of {limit:d}'))
-def step_impl(api, context, limit):
+def when_a_client_requests_this_collection_with_a_limit_of_limit(api, context, limit):
     response = api.get(
         f'/people?max_results={limit}',
     )
@@ -34,7 +34,7 @@ def step_impl(api, context, limit):
 
 
 @then(parsers.parse('the collection in the response has {limit:d} items'))
-def step_impl(context, limit):
+def then_the_collection_in_the_response_has_limit_items(context, limit):
     item_count = len(context['people']['_embedded']['people'])
     if limit > item_count:
         limit = item_count
@@ -42,19 +42,19 @@ def step_impl(context, limit):
 
 
 @then(parsers.parse('the next link relation is {next_link}'))
-def step_impl(context, next_link):
+def then_the_next_link_relation_is_nextlink(context, next_link):
     actual_next_link = 'present' if 'next' in context['people']['_links'] else 'absent'
     assert_that(actual_next_link).is_equal_to(next_link)
 
 
 @then(parsers.parse('the prev link relation is {prev_link}'))
-def step_impl(context, prev_link):
+def then_the_prev_link_relation_is_prevlink(context, prev_link):
     actual_prev_link = 'present' if 'prev' in context['people']['_links'] else 'absent'
     assert_that(actual_prev_link).is_equal_to(prev_link)
 
 
 @then(parsers.parse('the value of the last page is {last_page}'))
-def step_impl(context, last_page):
+def then_the_value_of_the_last_page_is_lastpage(context, last_page):
     last_link = 'absent' if 'last' not in context['people']['_links'] else context['people']['_links']['last']['href']
     if last_link == 'absent':
         actual_last_page = 'absent'

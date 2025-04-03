@@ -40,34 +40,34 @@ def validate_no_unacceptable_links(resource, datatable):
 
 
 @given('the client has fetched the home resource')
-def step_impl(api, context):
+def given_the_client_has_fetched_the_home_resource(api, context):
     response = api.get('/')
     context['home'] = response.json
 
 
 
 @when(parsers.parse('a client fetches the {rel} resource collection'))
-def step_impl(api, context, rel):
+def when_a_client_fetches_the_rel_resource_collection(api, context, rel):
     context['rel'] = rel
     url = href_from_resource(context['home'], rel)
     response = api.get(url)
     context['resource'] = response.json
 
 @when(parsers.parse('a client fetches a single {rel} resource'))
-def step_impl(api, context, rel):
+def when_a_client_fetches_a_single_rel_resource(api, context, rel):
     context['rel'] = rel
     my_id = context['first_person_id'] if rel == 'people' else context['first_car_id']
     response = api.get(f'/{rel}/{my_id}')
     context['resource'] = response.json
 
 @when('a client fetches the cars belonging to one of the people collection')
-def step_impl(api, context):
+def when_a_client_fetches_the_cars_belonging_to_one_of_the_people_collection(api, context):
     response = api.get(f'/people/{context["first_person_id"]}/cars')
     context['resource'] = response.json
 
 
 @when(parsers.parse('a client adds a single {rel} resource'))
-def step_impl(api, context, rel):
+def when_a_client_adds_a_single_rel_resource(api, context, rel):
     person = {
         'name': rel
     }
@@ -75,7 +75,7 @@ def step_impl(api, context, rel):
     context['resource'] = response.json
 
 @when('a client adds to the cars belonging to one of the people collection')
-def step_impl(api, context):
+def when_a_client_adds_to_the_cars_belonging_to_one_of_the_people_collection(api, context):
     car = {
         'name': 'a car'
     }
@@ -85,11 +85,11 @@ def step_impl(api, context):
 
 
 @then('its _links property includes')
-def step_impl(context, datatable):
+def then_its_links_property_includes(context, datatable):
     validate_links(context, context['resource'], datatable)
 
 @then('its _embedded property includes')
-def step_impl(context, datatable):
+def then_its_embedded_property_includes(context, datatable):
     embedded = context['resource'].get('_embedded', {})
     for row in datatable[1:]:  # peel off header row
         rel, type, count = row
@@ -98,12 +98,12 @@ def step_impl(context, datatable):
             assert_that(len(embedded.get(rel, []))).is_equal_to(int(count))
 
 @then('the resource has no embedded property')
-def step_impl(context):
+def then_the_resource_has_no_embedded_property(context):
     assert_that(context['resource'].get('_embedded', None)).is_none()
 
 
 @then(parsers.parse('each _embedded {rel} has a _links property with'))
-def step_impl(context, rel, datatable):
+def then_each_embedded_rel_has_a_links_property_with(context, rel, datatable):
     embedded = context['resource'].get('_embedded', {}).get(rel, {})
     if isinstance(embedded, dict):
         validate_links(context, embedded, datatable)
@@ -113,12 +113,12 @@ def step_impl(context, rel, datatable):
 
 
 @then('the following _links do not appear')
-def step_impl(context, datatable):
+def then_the_following_links_do_not_appear(context, datatable):
     validate_no_unacceptable_links(context['resource'], datatable)
 
 
 @then(parsers.parse('each _embedded {rel} _links property does not include'))
-def step_impl(context, datatable, rel):
+def then_each_embedded_rel_links_property_does_not_include(context, datatable, rel):
     embedded = context['resource'].get('_embedded', {}).get(rel, {})
     if isinstance(embedded, dict):
         validate_no_unacceptable_links(embedded, datatable)

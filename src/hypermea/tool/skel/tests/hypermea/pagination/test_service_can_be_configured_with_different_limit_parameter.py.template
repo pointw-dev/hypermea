@@ -16,14 +16,14 @@ def test_service_can_be_configured_with_different_limit_parameter():
 
 
 @given("the service is configured with a different limit query string parameter")
-def step_impl(settings_py):
+def given_the_service_is_configured_with_a_different_limit_query_string_parameter(settings_py):
     settings_py['QUERY_MAX_RESULTS'] = 'limit'
 
 # And a resource is configured
 # And that resource has 100 items in its collection
 
 @when("a client requests this collection using the new limit parameter")
-def step_impl(api, context):
+def when_a_client_requests_this_collection_using_the_new_limit_parameter(api, context):
     response = api.get(
         f'/people?limit={LIMIT}',
     )
@@ -32,6 +32,6 @@ def step_impl(api, context):
 
 
 @then("the collection in the response is limited accordingly")
-def step_impl(context):
+def then_the_collection_in_the_response_is_limited_accordingly(context):
     item_count = len(context['people']['_embedded']['people'])
     assert_that(item_count).is_equal_to(LIMIT)

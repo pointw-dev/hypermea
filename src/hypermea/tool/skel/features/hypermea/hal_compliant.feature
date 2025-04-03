@@ -1,14 +1,15 @@
 Feature: Resources are represented as application/hal+json
 
   Background:
-    Given a parent and a child resource are configured
+    Given the service is configured with a limit of 3000 items per page
+    And a parent and a child resource are configured
     And each resource has multiple items
     And the client has fetched the home resource
 
   Scenario: fetching a parent collection resource from the home resource
     When a client fetches the people resource collection
     Then its _links property includes
-      | rel    | expected_href                                       | is_templated |
+      | rel    | expected_href                               | is_templated |
       | self   | /people                                     | false        |
       | item   | /people/{id}                                | true         |
       | search | /people{?where,sort,max_results,page,embed} | true         |
@@ -20,7 +21,7 @@ Feature: Resources are represented as application/hal+json
       | rel    | type       | count |
       | people | collection | 5     |
     And each _embedded people has a _links property with
-      | rel        | expected_href                  | is_templated |
+      | rel        | expected_href          | is_templated |
       | self       | /people/[[my_id]]      | false        |
       | parent     | /people                | false        |
       | collection | /people                | false        |
@@ -34,7 +35,7 @@ Feature: Resources are represented as application/hal+json
   Scenario: fetching a parent resource item
     When a client fetches a single people resource
     Then its _links property includes
-      | rel        | expected_href                  | is_templated |
+      | rel        | expected_href          | is_templated |
       | self       | /people/[[my_id]]      | false        |
       | parent     | /people                | false        |
       | collection | /people                | false        |
@@ -45,15 +46,13 @@ Feature: Resources are represented as application/hal+json
       | child   |
     And the resource has no embedded property
 
-# collection links not yet implemented
-  @skip
   Scenario: fetching a resource item's related resource collection
     When a client fetches the cars belonging to one of the people collection
     Then its _links property includes
-      | rel    | expected_href                                                                | is_templated |
+      | rel    | expected_href                                                        | is_templated |
       | self   | /people/[[first_person_id]]/cars                                     | false        |
-      | parent | /people[[first_person_id]]                                           | false        |
-      | item   | /cars/{id}                                                           | true         |
+      | parent | /people/[[first_person_id]]                                          | false        |
+      | item   | /people/[[first_person_id]]/cars/{id}                                | true         |
       | search | /people/[[first_person_id]]/cars{?where,sort,max_results,page,embed} | true         |
     And the following _links do not appear
       | rel     |
@@ -63,7 +62,7 @@ Feature: Resources are represented as application/hal+json
       | rel  | type       | count |
       | cars | collection | 10    |
     And each _embedded cars has a _links property with
-      | rel        | expected_href                            | is_templated |
+      | rel        | expected_href                    | is_templated |
       | self       | /cars/[[my_id]]                  | false        |
       | parent     | /people/[[first_person_id]]      | false        |
       | collection | /people/[[first_person_id]]/cars | false        |
@@ -72,12 +71,10 @@ Feature: Resources are represented as application/hal+json
       | related |
       | child   |
 
-# something mysterious here 5/50
-  @skip
   Scenario: fetching a child collection resource from the home resource
     When a client fetches the cars resource collection
     Then its _links property includes
-      | rel    | expected_href                                     | is_templated |
+      | rel    | expected_href                             | is_templated |
       | self   | /cars                                     | false        |
       | item   | /cars/{id}                                | true         |
       | search | /cars{?where,sort,max_results,page,embed} | true         |
@@ -87,9 +84,9 @@ Feature: Resources are represented as application/hal+json
       | child   |
     And its _embedded property includes
       | rel  | type       | count |
-      | cars | collection | 5     |
+      | cars | collection | 50    |
     And each _embedded cars has a _links property with
-      | rel        | expected_href                         | is_templated |
+      | rel        | expected_href                 | is_templated |
       | self       | /cars/[[my_id]]               | false        |
       | parent     | /people/[[my_person_id]]      | false        |
       | collection | /people/[[my_person_id]]/cars | false        |
@@ -102,7 +99,7 @@ Feature: Resources are represented as application/hal+json
   Scenario: fetching a child resource item
     When a client fetches a single cars resource
     Then its _links property includes
-      | rel        | expected_href                            | is_templated |
+      | rel        | expected_href                    | is_templated |
       | self       | /cars/[[my_id]]                  | false        |
       | parent     | /people/[[first_person_id]]      | false        |
       | collection | /people/[[first_person_id]]/cars | false        |
@@ -116,7 +113,7 @@ Feature: Resources are represented as application/hal+json
   Scenario: adding a parent item
     When a client adds a single people resource
     Then its _links property includes
-      | rel        | expected_href                  | is_templated |
+      | rel        | expected_href          | is_templated |
       | self       | /people/[[my_id]]      | false        |
       | parent     | /people                | false        |
       | collection | /people                | false        |
@@ -130,7 +127,7 @@ Feature: Resources are represented as application/hal+json
   Scenario: adding a child item
     When a client adds to the cars belonging to one of the people collection
     Then its _links property includes
-      | rel        | expected_href                            | is_templated |
+      | rel        | expected_href                    | is_templated |
       | self       | /cars/[[my_id]]                  | false        |
       | parent     | /people/[[first_person_id]]      | false        |
       | collection | /people/[[first_person_id]]/cars | false        |
@@ -144,7 +141,7 @@ Feature: Resources are represented as application/hal+json
   Scenario: Embedded child resources have correct links
     When a client requests a child item asking for related parent
     Then each _embedded people has a _links property with
-      | rel        | expected_href                  | is_templated |
+      | rel        | expected_href          | is_templated |
       | self       | /people/[[my_id]]      | false        |
       | parent     | /people                | false        |
       | collection | /people                | false        |
@@ -157,7 +154,7 @@ Feature: Resources are represented as application/hal+json
   Scenario: Embedded parent resources have correct links
     When a client requests a parent item asking for related children
     Then each _embedded cars has a _links property with
-      | rel        | expected_href                         | is_templated |
+      | rel        | expected_href                 | is_templated |
       | self       | /cars/[[my_id]]               | false        |
       | parent     | /people/[[my_person_id]]      | false        |
       | collection | /people/[[my_person_id]]/cars | false        |

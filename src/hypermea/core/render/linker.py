@@ -42,11 +42,18 @@ class HalLinker:
             for item in data['_items']:
                 self._add_links_to_item(item)
 
-        self_href = f'{self.resource.base_url}/{self.resource.name}'
+
+        self_href = f'{self.resource.base_url}{request.full_path}'
+        if self_href.endswith('?'):
+            self_href = self_href[:-1]
+
+
+        self_href = self_href
         data['_links'] = data.get('_links', {})
         data['_links']['self'] = {
             'href': self_href
         }
+        self._add_parent_links(data)
 
         for rel in ['self', 'prev', 'next', 'last']:
             if rel in data['_links']:
@@ -65,10 +72,10 @@ class HalLinker:
         })
 
     def _add_self_link(self, item):
-        # add link to myself
         item['_links']['self'] = {
             'href': f"{self.resource.base_url}/{self.resource.name}/{self.item_id}"
         }
+
 
     def _add_child_link(self, item):
         # add child link if I am a parent to someone

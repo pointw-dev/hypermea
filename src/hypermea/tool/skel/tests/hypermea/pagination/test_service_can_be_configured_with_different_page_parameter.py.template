@@ -15,14 +15,14 @@ def test_service_can_be_configured_with_different_page_parameter():
 
 
 @given("the service is configured with a different page query string parameter")
-def step_impl(settings_py):
+def given_the_service_is_configured_with_a_different_page_query_string_parameter(settings_py):
     settings_py['QUERY_PAGE'] = 'pg'
 
 # And a resource is configured
 # And that resource has 100 items in its collection
 
 @when("a client requests this collection using the new page parameter")
-def step_impl(api, context):
+def when_a_client_requests_this_collection_using_the_new_page_parameter(api, context):
     response = api.get(
         f'/people?max_results&pg=2',
     )
@@ -31,6 +31,6 @@ def step_impl(api, context):
 
 
 @then("the collection in the response contains the correct page")
-def step_impl(context):
+def then_the_collection_in_the_response_contains_the_correct_page(context):
     meta = context['people']['_meta']
     assert_that(meta['pg']).is_equal_to(2)

@@ -15,14 +15,14 @@ def test_sort_parameter_name_can_be_changed():
 
 
 @given('the service is configured with a different sort query string parameter')
-def step_impl(settings_py):
+def given_the_service_is_configured_with_a_different_sort_query_string_parameter(settings_py):
     settings_py['QUERY_SORT'] = 'order_by'
 
 # And a resource is configured
 # And that resource has multiple items in its collection
 
 @when('a client requests this collection using the new sort parameter')
-def step_impl(api, context):
+def when_a_client_requests_this_collection_using_the_new_sort_parameter(api, context):
     response = api.get(
         '/people?order_by=name'
     )

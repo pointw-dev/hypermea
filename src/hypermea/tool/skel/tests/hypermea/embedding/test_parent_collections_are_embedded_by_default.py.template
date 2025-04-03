@@ -17,7 +17,7 @@ def test_parent_collections_are_embedded_by_default():
 #   And each resource has multiple items
 
 @when('a client requests the parent resource collection')
-def step_impl(api, context):
+def when_a_client_requests_the_parent_resource_collection(api, context):
     response = api.get('/people')
     assert_that(response.status_code).is_equal_to(200)
     context['collection'] = response.json
