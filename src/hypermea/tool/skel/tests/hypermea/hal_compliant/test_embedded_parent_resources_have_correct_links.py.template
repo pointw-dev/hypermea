@@ -1,6 +1,8 @@
 import pytest
 from pytest_bdd import given, when, then, parsers
 from assertpy import assert_that
+
+from tests import *
 from tests.hypermea import *
 from tests.hypermea.hal_compliant import *
 

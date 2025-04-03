@@ -21,6 +21,11 @@ handler = [x for x in logger.handlers if x.name == 'console'][0]
 handler.setLevel(getattr(logging, 'WARNING'))
 
 
+# def pytest_report_header(config):
+#     message = 'This message will display at the top of the pytest report'
+#     return f'🚩 {message}'
+
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
     if not is_mongo_running():
@@ -35,6 +40,7 @@ def hypermea_settings() -> dict[str, str]:
         'HY_TRACE_LOGGING': 'Disabled',
         'HY_CACHE_CONTROL': 'no-cache, no-store, must-revalidate',
         'HY_CACHE_EXPIRES': '30',
+        'HY_PAGINATION_LIMIT': '3000'
     }
 
 

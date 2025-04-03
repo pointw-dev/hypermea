@@ -34,10 +34,6 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
       prev: 4.12.4.16.2
 
 
-    Background:
-      Given the service is configured with a limit of 3000 items per page
-
-
     Scenario Outline: Client can limit the number of items in a collection
         Given a resource is configured
         And that resource has 100 items in its collection
@@ -67,7 +63,6 @@ Feature: Resource collections can split into "pages" and retrieved one page at a
         | 20    | present   | present   | 5         |
         | 50    | absent    | present   | absent    |
         | 105   | absent    | present   | absent    |
-#         should the prev link be there in case 105?
 
 
   Scenario: Service can be configured with a different limit query string parameter

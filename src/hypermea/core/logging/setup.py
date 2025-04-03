@@ -112,11 +112,19 @@ def _configure_logger():
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
 
     LOG = logging.getLogger('configuration')
-    LOG.info('%s version:       %s', api_name, VERSION)
-    LOG.info('Eve version:           %s', eve_version)
-    LOG.info('Cerberus version:      %s', cerberus_version)
-    LOG.info('hypermea-core version: %s', hypermea_core_version)
-    LOG.info('Python version:        %s', platform.sys.version)
+
+    longest = len(api_name) if len(api_name) > len('hypermea-core') else len('hypermea-core')
+
+    def log_version(component, version):
+        spaces = longest - len(component) + 1
+        LOG.info(f'{component} version{' ' * spaces}{version}')
+
+    log_version(api_name, VERSION)
+    log_version('OS', platform.platform())
+    log_version('Python', platform.sys.version)
+    log_version('Eve', eve_version)
+    log_version('Cerberus', cerberus_version)
+    log_version('hypermea-core', hypermea_core_version)
 
     if smtp_warnings:
         for warning in smtp_warnings:

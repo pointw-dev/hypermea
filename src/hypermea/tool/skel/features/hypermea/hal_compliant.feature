@@ -1,8 +1,7 @@
 Feature: Resources are represented as application/hal+json
 
   Background:
-    Given the service is configured with a limit of 3000 items per page
-    And a parent and a child resource are configured
+    Given a parent and a child resource are configured
     And each resource has multiple items
     And the client has fetched the home resource
 
