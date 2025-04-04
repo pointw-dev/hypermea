@@ -18,8 +18,9 @@ from cerberus import __version__ as cerberus_version
 from hypermea.core import VERSION as hypermea_core_version
 from configuration import SETTINGS, VERSION as api_version
 
-def dump_starting_details():
+def dump_operating_environment():
     logger = logging.getLogger("environment")
+    LOG.info("== dump operating environment ==")
     LOG.info("== stack versions")
 
     api_name = SETTINGS.get("HY_API_NAME", "api")
@@ -44,6 +45,7 @@ def dump_starting_details():
 
     SETTINGS.dump(callback=LOG.info)
 
+    LOG.info("=========== end dump ===========")
 
 
 class HypermeaService:
@@ -85,7 +87,7 @@ class HypermeaService:
 
     def start(self):
         self.starting_banner()
-        dump_starting_details()
+        dump_operating_environment()
 
         try:
             register(self._app)
