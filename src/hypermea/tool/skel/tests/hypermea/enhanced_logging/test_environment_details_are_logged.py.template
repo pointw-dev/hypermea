@@ -1,0 +1,104 @@
+import logging
+import pytest
+from pytest_bdd import given, when, then, parsers
+from assertpy import assert_that
+from tests.hypermea import *
+from tests.hypermea.enhanced_logging import *
+
+import io
+from multiprocessing import Process, Queue, Event
+import sys
+import signal
+import time
+from contextlib import redirect_stdout, redirect_stderr
+
+
+@pytest.fixture(scope='module')
+def context():
+    return SimpleNamespace()
+
+
+@annotated_scenario(FEATURE, 'Environment details are logged')
+def test_environment_details_are_logged():
+    pass
+
+class QueueLogHandler(logging.Handler):
+    def __init__(self, queue):
+        super().__init__()
+        self.queue = queue
+
+    def emit(self, record):
+        self.queue.put((
+            record.name,
+            record.levelname,
+            self.format(record)
+        ))
+
+@given('the service has started')
+def given_the_service_has_started(context, service):
+    def start_the_service(q, stop_event):
+        def handle_shutdown(signum, frame):
+            service.stop()
+
+        signal.signal(signal.SIGINT, handle_shutdown)
+        signal.signal(signal.SIGTERM, handle_shutdown)
+
+        f = io.StringIO()
+        with redirect_stdout(f), redirect_stderr(f):
+            try:
+                import threading
+
+                def run_app():
+                    service.start()
+
+                log_handler = QueueLogHandler(q)
+                log_handler.setFormatter(logging.Formatter('%(message)s'))
+                root_logger = logging.getLogger()
+                root_logger.addHandler(log_handler)
+                root_logger.setLevel(logging.INFO)
+
+                thread = threading.Thread(target=run_app)
+                thread.start()
+
+                while not stop_event.is_set():
+                    time.sleep(0.2)
+
+            except Exception:
+                pass
+        q.put(f.getvalue())
+
+    context.queue = Queue()
+    context.stop_event = Event()
+    context.process = Process(target=start_the_service, args=(context.queue, context.stop_event))
+    context.process.start()
+
+    time.sleep(1.0)
+
+
+@when('I look at the log')
+def when_i_look_at_the_console(context):
+    context.stop_event.set()
+    context.process.join(timeout=5)
+
+    log_entries = []
+
+    try:
+        while True:
+            log_entries.append(context.queue.get_nowait())
+    except Exception:
+        pass
+    # context.queue.close()
+    # context.queue.join_thread()
+    context.log_entries = log_entries
+
+
+@then('I see the environment details')
+def then_i_see_the_environment_details(context):
+    print(context.log_entries)
+    logs = context.log_entries
+    print('\n\n=====')
+    for log in logs:
+        print(log)
+    print('=====\n\n')
+
+    assert_that(len(context.log_entries)).is_greater_than(0)

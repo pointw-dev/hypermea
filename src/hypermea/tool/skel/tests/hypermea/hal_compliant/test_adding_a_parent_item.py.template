@@ -7,7 +7,7 @@ from tests.hypermea.hal_compliant import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 @annotated_scenario(FEATURE, 'adding a parent item')
 def test_adding_a_parent_item():

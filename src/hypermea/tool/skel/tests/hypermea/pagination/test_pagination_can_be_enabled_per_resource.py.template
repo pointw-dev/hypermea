@@ -6,7 +6,7 @@ from tests.hypermea.pagination import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Pagination can be enabled per resource')

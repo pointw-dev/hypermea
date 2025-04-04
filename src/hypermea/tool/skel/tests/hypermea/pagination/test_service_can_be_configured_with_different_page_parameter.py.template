@@ -6,7 +6,7 @@ from tests.hypermea.pagination import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Service can be configured with a different page query string parameter')
@@ -27,10 +27,10 @@ def when_a_client_requests_this_collection_using_the_new_page_parameter(api, con
         f'/people?max_results&pg=2',
     )
     assert_that(response.status_code).is_equal_to(200)
-    context['people'] = response.json
+    context.people = response.json
 
 
 @then("the collection in the response contains the correct page")
 def then_the_collection_in_the_response_contains_the_correct_page(context):
-    meta = context['people']['_meta']
+    meta = context.people['_meta']
     assert_that(meta['pg']).is_equal_to(2)

@@ -6,7 +6,7 @@ from tests.hypermea.pagination import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Client can request a page in a limited collection')
@@ -22,7 +22,7 @@ def when_a_client_requests_page_page_of_this_collection_with_a_limit_of_limit(ap
         f'/people?max_results={limit}&page={page}'
     )
     assert_that(response.status_code).is_equal_to(200)
-    context['people'] = response.json
+    context.people = response.json
 
 # Then the collection in the response has <limit> items
 # And the next link relation is <next_link>

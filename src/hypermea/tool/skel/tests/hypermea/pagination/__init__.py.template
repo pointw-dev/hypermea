@@ -30,12 +30,12 @@ def when_a_client_requests_this_collection_with_a_limit_of_limit(api, context, l
         f'/people?max_results={limit}',
     )
     assert_that(response.status_code).is_equal_to(200)
-    context['people'] = response.json
+    context.people = response.json
 
 
 @then(parsers.parse('the collection in the response has {limit:d} items'))
 def then_the_collection_in_the_response_has_limit_items(context, limit):
-    item_count = len(context['people']['_embedded']['people'])
+    item_count = len(context.people['_embedded']['people'])
     if limit > item_count:
         limit = item_count
     assert_that(item_count).is_equal_to(limit)
@@ -43,19 +43,19 @@ def then_the_collection_in_the_response_has_limit_items(context, limit):
 
 @then(parsers.parse('the next link relation is {next_link}'))
 def then_the_next_link_relation_is_nextlink(context, next_link):
-    actual_next_link = 'present' if 'next' in context['people']['_links'] else 'absent'
+    actual_next_link = 'present' if 'next' in context.people['_links'] else 'absent'
     assert_that(actual_next_link).is_equal_to(next_link)
 
 
 @then(parsers.parse('the prev link relation is {prev_link}'))
 def then_the_prev_link_relation_is_prevlink(context, prev_link):
-    actual_prev_link = 'present' if 'prev' in context['people']['_links'] else 'absent'
+    actual_prev_link = 'present' if 'prev' in context.people['_links'] else 'absent'
     assert_that(actual_prev_link).is_equal_to(prev_link)
 
 
 @then(parsers.parse('the value of the last page is {last_page}'))
 def then_the_value_of_the_last_page_is_lastpage(context, last_page):
-    last_link = 'absent' if 'last' not in context['people']['_links'] else context['people']['_links']['last']['href']
+    last_link = 'absent' if 'last' not in context.people['_links'] else context.people['_links']['last']['href']
     if last_link == 'absent':
         actual_last_page = 'absent'
     else:

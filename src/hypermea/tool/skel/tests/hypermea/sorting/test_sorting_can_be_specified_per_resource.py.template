@@ -6,7 +6,7 @@ from tests.hypermea.sorting import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Sorting can be specified per resource')

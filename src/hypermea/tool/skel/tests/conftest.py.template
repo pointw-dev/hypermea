@@ -1,4 +1,5 @@
 import sys
+import logging
 from pathlib import Path
 
 # Add src/service to sys.path to allow `from configuration import ...` to work
@@ -7,7 +8,6 @@ sys.path.insert(0, str(service_dir))
 
 import os
 from typing import Any
-import logging
 import pytest
 from pymongo import MongoClient
 from hypermea.core.utils import is_mongo_running
@@ -15,7 +15,6 @@ from tests import load_settings_from_file
 from hypermea_service import HypermeaService
 
 
-LOG = logging.getLogger('pytest')
 logger = logging.getLogger()
 handler = [x for x in logger.handlers if x.name == 'console'][0]
 handler.setLevel(getattr(logging, 'WARNING'))
@@ -50,7 +49,7 @@ def settings_py() -> dict[str, Any]:
 
 
 @pytest.fixture(scope='function')
-def api(hypermea_settings, settings_py):
+def service(hypermea_settings, settings_py):
     # allow step definitions to change hypermea settings
     for key, value in hypermea_settings.items():
         os.environ[key.upper()] = value
@@ -61,8 +60,8 @@ def api(hypermea_settings, settings_py):
     for key, value in settings_py.items():
         test_settings[key.upper()] = value
 
-    service = HypermeaService(host='0.0.0.0', debug='Enabled', settings=test_settings)
-    service.dump_settings()
+    service = HypermeaService(host='0.0.0.0', debug='Disabled', settings=test_settings, threaded='Disabled', use_reloader='Disabled')
+    # service.dump_settings()
     app = service._app
 
     def setup_database():
@@ -78,6 +77,12 @@ def api(hypermea_settings, settings_py):
     cleanup_database()
     setup_database()
 
-    yield app.test_client()
+    yield service
 
     cleanup_database()
+
+
+@pytest.fixture(scope='function')
+def api(service):
+    with service._app.test_client() as api:
+        yield api

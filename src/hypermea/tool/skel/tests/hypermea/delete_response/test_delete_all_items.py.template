@@ -7,7 +7,7 @@ from tests.hypermea.delete_response import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 @annotated_scenario(FEATURE, 'Delete all items')
 def test_delete_all_items():

@@ -6,7 +6,7 @@ from tests.hypermea.pagination import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 LIMIT = 5
 
@@ -28,10 +28,10 @@ def when_a_client_requests_this_collection_using_the_new_limit_parameter(api, co
         f'/people?limit={LIMIT}',
     )
     assert_that(response.status_code).is_equal_to(200)
-    context['people'] = response.json
+    context.people = response.json
 
 
 @then("the collection in the response is limited accordingly")
 def then_the_collection_in_the_response_is_limited_accordingly(context):
-    item_count = len(context['people']['_embedded']['people'])
+    item_count = len(context.people['_embedded']['people'])
     assert_that(item_count).is_equal_to(LIMIT)

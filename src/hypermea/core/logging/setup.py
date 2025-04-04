@@ -113,22 +113,6 @@ def _configure_logger():
 
     LOG = logging.getLogger('configuration')
 
-    longest = len(api_name) if len(api_name) > len('hypermea-core') else len('hypermea-core')
-
-    def log_version(component, version):
-        spaces = longest - len(component) + 1
-        LOG.info(f'{component} version{' ' * spaces}{version}')
-
-    log_version(api_name, VERSION)
-    log_version('hypermea-core', hypermea_core_version)
-    log_version('eve', eve_version)
-    log_version('cerberus', cerberus_version)
-    log_version('python', platform.sys.version)
-    log_version('os_system', platform.system())
-    log_version('os_release', platform.release())
-    log_version('os_version', platform.version())
-    log_version('os_platform', platform.platform())
-
     if smtp_warnings:
         for warning in smtp_warnings:
             LOG.warning(warning)
@@ -141,10 +125,14 @@ def _configure_logger():
 
         email_format += f'''
         {api_name} version:       {VERSION}
-        Eve version:           {eve_version}
-        Cerberus version:      {cerberus_version}
-        hypermea-core version: {hypermea_core_version}
-        Python version:        {platform.sys.version}
+        hypermea.core version: {hypermea_core_version}
+        eve version:           {eve_version}
+        cerberus version:      {cerberus_version}
+        python version:        {platform.sys.version}
+        os_system:             {platform.system()}      
+        os_release:            {platform.release()}
+        os_version:            {platform.version()}    
+        os_platform:           {platform.platform()}  
 
         '''
 

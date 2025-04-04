@@ -7,7 +7,7 @@ from tests.hypermea.embedding import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Embedding multiple resources at once')
@@ -110,19 +110,19 @@ def given_the_resources_are_populated(api, context):
     assert_that(response.status_code).is_equal_to(201)
 
 
-    context['person_id'] = person["_id"]
+    context.person_id = person["_id"]
 
 
 @when('a client requests that resource asking for each to be embedded')
 def when_a_client_requests_that_resource_asking_for_each_to_be_embedded(api, context):
-    response = api.get(f'/people/{context['person_id']}?embed=jobs&embed=cars')
+    response = api.get(f'/people/{context.person_id}?embed=jobs&embed=cars')
     assert_that(response.status_code).is_equal_to(200)
-    context['resource'] = response.json
+    context.resource = response.json
 
 
 @then('the item has both embedded resources')
 def then_the_item_has_both_embedded_resources(context):
-    assert_that(context['resource']).contains_key('_embedded')
-    embedded = context['resource']['_embedded']
+    assert_that(context.resource).contains_key('_embedded')
+    embedded = context.resource['_embedded']
     assert_that(embedded).contains_key('jobs')
     assert_that(embedded).contains_key('cars')

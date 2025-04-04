@@ -8,7 +8,7 @@ from tests.hypermea.sorting import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Client can sort collections using the sort query string parameter')

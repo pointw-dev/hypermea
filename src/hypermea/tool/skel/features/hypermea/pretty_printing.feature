@@ -3,7 +3,7 @@
 
 Feature: Resource representations can be pretty-printed
     As a developer
-    I want to to be able to request JSON responses to be in pretty-print form (i.e. indented)
+    I want to be able to request JSON responses to be in pretty-print form (i.e. indented)
     So that they are easier for me to read
 
     By default the JSON emitted for a resource is compact.  If you wish, you can

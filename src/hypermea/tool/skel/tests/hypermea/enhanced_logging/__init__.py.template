@@ -1,0 +1,6 @@
+from tests import *
+from pytest_bdd import given, when, then, parsers
+from assertpy import assert_that
+
+FEATURE = 'hypermea/enhanced_logging.feature'
+

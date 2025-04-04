@@ -200,8 +200,8 @@ function getSidebar() {
                 link: '/features/runtime-capabilities/forms',
               },
               {
-                text: 'Logging',
-                link: '/features/runtime-capabilities/logging',
+                text: 'Enhanced Logging',
+                link: '/features/runtime-capabilities/enhanced-logging',
               },
               {
                 text: 'Authentication',

@@ -6,7 +6,7 @@ from tests.hypermea.embedding import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Embedded collection comes with pagination controls if larger than configured limit')
@@ -16,6 +16,6 @@ def test_embedded_collection_comes_with_pagination_controls_if_larger_than_confi
 
 @then('the parent links contain page controls for the embedded child collection')
 def then_the_parent_links_contain_page_controls_for_the_embedded_child_collection(context):
-    links = context['resource']['_links']
+    links = context.resource['_links']
     assert_that(links).contains_key('cars:next')
     assert_that(links).contains_key('cars:last')

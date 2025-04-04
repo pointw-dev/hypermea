@@ -6,7 +6,7 @@ from tests.hypermea.sorting import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Service can be configured with a different sort query string parameter')
@@ -27,6 +27,6 @@ def when_a_client_requests_this_collection_using_the_new_sort_parameter(api, con
         '/people?order_by=name'
     )
     assert_that(response.status_code).is_equal_to(200)
-    context['people'] = response.json['_embedded']['people']
+    context.people = response.json['_embedded']['people']
 
 # Then the collection in the response is sorted accordingly

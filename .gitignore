@@ -1,5 +1,6 @@
 node_modules/
 __toxtest__/
+cache/
 
 ## Python
 ##

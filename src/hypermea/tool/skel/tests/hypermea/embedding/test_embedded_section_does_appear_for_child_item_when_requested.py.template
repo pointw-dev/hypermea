@@ -6,7 +6,7 @@ from tests.hypermea.embedding import *
 
 @pytest.fixture(scope='module')
 def context():
-    return {}
+    return SimpleNamespace()
 
 
 @annotated_scenario(FEATURE, 'Embedded section does appear for child item when requested')
@@ -16,6 +16,6 @@ def test_embedded_section_does_appear_for_child_item_when_requested():
 
 @then("the child's parent item appears in embedded property")
 def then_the_childs_parent_item_appears_in_embedded_property(context):
-    assert_that(context['resource']).contains_key('_embedded')
-    assert_that(context['resource']['_embedded']).contains_key('people')
-    assert_that(context['resource']['_embedded']['people']).is_type_of(dict)
+    assert_that(context.resource).contains_key('_embedded')
+    assert_that(context.resource['_embedded']).contains_key('people')
+    assert_that(context.resource['_embedded']['people']).is_type_of(dict)
