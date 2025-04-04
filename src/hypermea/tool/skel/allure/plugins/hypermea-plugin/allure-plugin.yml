@@ -1,0 +1,5 @@
+id: hypermea-plugin
+name: hypermea-plugin
+description: Hypermea plugin for Allure Reports
+cssFiles:
+  - styles.css

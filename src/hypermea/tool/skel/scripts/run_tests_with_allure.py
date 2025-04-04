@@ -29,7 +29,7 @@ executor.json
 
 def create_executor_json():
     executor = {
-        'name': 'allure_with_history.py',
+        'name': 'run_tests_with_allure.py',
         'type': 'python script',
         'buildName': 'manually built'
     }
@@ -54,7 +54,7 @@ def create_environment_properties():
         f.write(f'cerberus = {cerberus_version}\n')
         f.write(f'python = {platform.sys.version}\n')
         f.write(f'os_system = {platform.system()}\n')
-        f.write(f'os_releaase = {platform.release()}\n')
+        f.write(f'os_release = {platform.release()}\n')
         f.write(f'os_version = {platform.version()}\n')
         f.write(f'os_platform = {platform.platform()}\n')
 

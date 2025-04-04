@@ -1,0 +1,27 @@
+.side-nav__brand {
+  background: url('hypermea-api.svg') no-repeat left center !important;
+  background-size: contain !important;
+  padding-left: 180px !important; 
+  margin-left: 60px;
+}
+
+
+.side-nav {
+  background-color: #1B1B1F !important;
+  border-right: 4px solid #308C88 !important;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.side-nav__link_active {
+  background-color: #1B1B1F !important;
+  border-right: 4px solid #CF7377 !important;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+
+.widget__title {
+    font-family: 'Segoe UI', sans-serif !important;
+    text-transform: none !important;
+    font-weight: 500 !important;
+}
+
