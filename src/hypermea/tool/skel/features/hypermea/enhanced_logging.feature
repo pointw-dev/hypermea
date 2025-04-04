@@ -1,5 +1,4 @@
 # https://pointw-dev.github.io/hypermea/features/runtime-capabilities/logging.html
-
 Feature: Hypermea services create useful logs, configurable to how, what, and where you want to log
     As a DevOps engineer
     I want the logs emitted by the service to provide useful information
@@ -34,7 +33,7 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
   Scenario: Environment details are logged
     Given the service has started
     When I look at the log
-    Then I see the environment details
+    Then I see the versions of important stack components
 
 
   Scenario: Base hypermea settings are logged

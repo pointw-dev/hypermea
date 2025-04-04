@@ -7,10 +7,19 @@ from tests.hypermea.enhanced_logging import *
 
 import io
 from multiprocessing import Process, Queue, Event
-import sys
 import signal
 import time
 from contextlib import redirect_stdout, redirect_stderr
+
+from configuration import SETTINGS
+
+
+def prepare_logger(q):
+    log_handler = QueueLogHandler(q)
+    log_handler.setFormatter(logging.Formatter('%(message)s'))
+    root_logger = logging.getLogger()
+    root_logger.addHandler(log_handler)
+    root_logger.setLevel(logging.INFO)
 
 
 @pytest.fixture(scope='module')
@@ -39,6 +48,9 @@ def given_the_service_has_started(context, service):
     def start_the_service(q, stop_event):
         def handle_shutdown(signum, frame):
             service.stop()
+            if context.process.is_alive():
+                context.process.terminate()
+                context.process.join()
 
         signal.signal(signal.SIGINT, handle_shutdown)
         signal.signal(signal.SIGTERM, handle_shutdown)
@@ -51,34 +63,44 @@ def given_the_service_has_started(context, service):
                 def run_app():
                     service.start()
 
-                log_handler = QueueLogHandler(q)
-                log_handler.setFormatter(logging.Formatter('%(message)s'))
-                root_logger = logging.getLogger()
-                root_logger.addHandler(log_handler)
-                root_logger.setLevel(logging.INFO)
-
+                prepare_logger(q)
                 thread = threading.Thread(target=run_app)
                 thread.start()
 
+                # Wait for Flask to fully start
+                ready_phrases = ["* Serving Flask app", "* Debug mode:"]
+                max_wait = 10
+                start_time = time.time()
+
+                while time.time() - start_time < max_wait:
+                    out = f.getvalue()
+                    if all(phrase in out for phrase in ready_phrases):
+                        q.put(('status', 'READY'))
+                        break
+                    time.sleep(0.1)
+                else:
+                    q.put(('status', 'TIMEOUT'))
+                    return
+
+                # start listening for the stop signal
                 while not stop_event.is_set():
                     time.sleep(0.2)
 
             except Exception:
                 pass
+
         q.put(f.getvalue())
 
     context.queue = Queue()
     context.stop_event = Event()
-    context.process = Process(target=start_the_service, args=(context.queue, context.stop_event))
+    context.process = Process(target=start_the_service, args=(context.queue, context.stop_event), daemon=True)
     context.process.start()
-
-    time.sleep(1.0)
 
 
 @when('I look at the log')
 def when_i_look_at_the_console(context):
     context.stop_event.set()
-    context.process.join(timeout=5)
+    context.process.join(timeout=0.2)
 
     log_entries = []
 
@@ -87,18 +109,23 @@ def when_i_look_at_the_console(context):
             log_entries.append(context.queue.get_nowait())
     except Exception:
         pass
-    # context.queue.close()
-    # context.queue.join_thread()
+
     context.log_entries = log_entries
 
 
-@then('I see the environment details')
-def then_i_see_the_environment_details(context):
-    print(context.log_entries)
-    logs = context.log_entries
-    print('\n\n=====')
-    for log in logs:
-        print(log)
-    print('=====\n\n')
-
+@then('I see the versions of important stack components')
+def then_i_see_the_versions_of_important_stack_components(context):
     assert_that(len(context.log_entries)).is_greater_than(0)
+
+    for line in context.log_entries:
+        print(line)
+
+    stack_lines = [line for line in context.log_entries if line[0] == 'environment']
+    assert_that(len(stack_lines)).is_greater_than(0)
+
+    api_name = SETTINGS.get("HY_API_NAME", "api")
+    missing = [
+        component for component in [api_name, 'eve', 'cerberus', 'python', 'os_system', 'os_release', 'os_version', 'os_platform']
+        if not any(msg.startswith(component) for _, _, msg in stack_lines)
+    ]
+    assert_that(missing).described_as("Missing version logs for").is_empty()

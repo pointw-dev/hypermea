@@ -61,7 +61,6 @@ def service(hypermea_settings, settings_py):
         test_settings[key.upper()] = value
 
     service = HypermeaService(host='0.0.0.0', debug='Disabled', settings=test_settings, threaded='Disabled', use_reloader='Disabled')
-    # service.dump_settings()
     app = service._app
 
     def setup_database():

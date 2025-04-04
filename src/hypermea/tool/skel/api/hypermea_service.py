@@ -1,9 +1,9 @@
 import os
 import logging
+
 import hypermea.core.logging.setup    # do not remove this import
 from hypermea.core import HypermeaEve
 from hypermea.core.gateway import register
-from configuration import SETTINGS
 from flask_cors import CORS
 import hooks
 
@@ -17,6 +17,7 @@ from eve import __version__ as eve_version
 from cerberus import __version__ as cerberus_version
 from hypermea.core import VERSION as hypermea_core_version
 from configuration import SETTINGS, VERSION as api_version
+
 
 def dump_operating_environment():
     logger = logging.getLogger("environment")
