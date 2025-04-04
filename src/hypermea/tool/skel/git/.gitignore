@@ -1,5 +1,7 @@
 node_modules/
 __toxtest__/
+allure-results/
+allure-report/
 
 ## Python
 ##

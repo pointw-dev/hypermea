@@ -120,11 +120,14 @@ def _configure_logger():
         LOG.info(f'{component} version{' ' * spaces}{version}')
 
     log_version(api_name, VERSION)
-    log_version('OS', platform.platform())
-    log_version('Python', platform.sys.version)
-    log_version('Eve', eve_version)
-    log_version('Cerberus', cerberus_version)
     log_version('hypermea-core', hypermea_core_version)
+    log_version('eve', eve_version)
+    log_version('cerberus', cerberus_version)
+    log_version('python', platform.sys.version)
+    log_version('os_system', platform.system())
+    log_version('os_release', platform.release())
+    log_version('os_version', platform.version())
+    log_version('os_platform', platform.platform())
 
     if smtp_warnings:
         for warning in smtp_warnings:
