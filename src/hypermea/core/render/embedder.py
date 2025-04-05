@@ -1,6 +1,7 @@
 import requests
 from flask import current_app, request
-from hypermea.core.utils import get_resource_rel, get_id_field, get_api, get_my_base_url
+from hypermea.core.utils import get_api
+from hypermea.core.href import get_resource_rel, get_id_field, get_my_base_url
 
 
 class HalEmbedder:

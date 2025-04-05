@@ -1,13 +1,18 @@
 import logging
 from flask import request, g, make_response, jsonify
-from hypermea.core.utils import is_mongo_running, make_error_response, get_db, get_my_base_url
+from hypermea.core.utils import is_mongo_running, get_db
+from hypermea.core.response import make_error_response
+from hypermea.core.href import get_my_base_url
 from hypermea.core.logging import trace
+
 import hooks._gateway
 import hooks._error_handlers
 import hooks._settings
 import hooks._logs
+
 import affordances
 from configuration import SETTINGS
+
 
 LOG = logging.getLogger('hypermea')
 

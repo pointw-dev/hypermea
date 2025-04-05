@@ -1,5 +1,5 @@
 from flask import request, current_app
-from hypermea.core.utils import get_my_base_url, get_id_field, get_resource_rel
+from hypermea.core.href import get_my_base_url, get_id_field, get_resource_rel
 
 
 class ResourceContext:

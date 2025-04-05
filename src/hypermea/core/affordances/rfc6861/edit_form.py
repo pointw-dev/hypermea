@@ -5,7 +5,9 @@ import logging
 import json
 from flask import make_response, current_app, request
 from bson.objectid import ObjectId
-from hypermea.core.utils import make_error_response, unauthorized_message, get_resource_id, get_id_field, get_my_base_url, get_db
+from hypermea.core.response import make_error_response, unauthorized_message
+from hypermea.core.utils import get_db
+from hypermea.core.href import get_resource_id, get_id_field, get_my_base_url
 from ._common import generate_hal_form, get_allowed_methods
 from configuration import SETTINGS
 

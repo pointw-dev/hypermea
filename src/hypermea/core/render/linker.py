@@ -1,5 +1,5 @@
 from flask import request, current_app
-from hypermea.core.utils import clean_href, add_search_link, get_resource_id, get_resource_rel, get_my_base_url
+from hypermea.core.href import clean_href, add_search_link, get_resource_id, get_resource_rel, get_my_base_url
 from configuration import SETTINGS
 
 

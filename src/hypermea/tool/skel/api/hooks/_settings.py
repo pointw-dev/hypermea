@@ -5,7 +5,7 @@ This module defines functions used by the other hooks modules, and some hooks of
 import logging
 import platform
 from flask import current_app, abort
-from hypermea.core.utils import make_error_response
+from hypermea.core.response import make_error_response
 from configuration import SETTINGS, VERSION
 from eve import __version__ as eve_version
 from cerberus import __version__ as cerberus_version

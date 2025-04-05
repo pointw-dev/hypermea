@@ -160,7 +160,7 @@ import json
 from flask import g, after_this_request, request as current_request
 from hypermea.core.logging import trace
 from configuration import SETTINGS
-from hypermea.core.utils import get_resource_id, add_etag_header_to_post
+from hypermea.core.href import get_resource_id, add_etag_header_to_post
 from hypermea.core.gateway import get_href_from_gateway
 import affordances
 

@@ -6,7 +6,7 @@ import logging
 import json
 from flask import make_response, jsonify, request as flask_request
 from hypermea.core.logging import trace, log_request, log_response
-from hypermea.core.utils import make_error_response
+from hypermea.core.response import make_error_response
 from configuration import SETTINGS
 
 LOG = logging.getLogger('hooks.logging')

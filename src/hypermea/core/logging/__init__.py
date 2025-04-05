@@ -5,7 +5,7 @@ from .trace.decorators import trace
 from configuration import SETTINGS
 from .operating_environment import log_operating_environment
 
-from ..utils import get_resource_rel
+from hypermea.core.href import get_resource_rel
 
 TRUNCATED = '...\n  [Body truncated. Set logging to TRACE for full body, or increase HY_LOG_MAX_BODY_SIZE.]'
 
