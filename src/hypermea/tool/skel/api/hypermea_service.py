@@ -1,14 +1,13 @@
+import hypermea.core.logging.setup    # do not remove this import
+
 import os
 import logging
-
-import hypermea.core.logging.setup    # do not remove this import
 from hypermea.core import HypermeaEve
 from hypermea.core.gateway import register
-from hypermea.core.utils import dump_operating_environment
+from hypermea.core.logging import log_operating_environment
 from flask_cors import CORS
 import hooks
 from configuration import SETTINGS
-
 
 LOG = logging.getLogger('service')
 
@@ -43,8 +42,6 @@ class HypermeaService:
         # port
         # cert                  Specify a certificate file to use HTTPS
         # key                   The key file to use when specifying a cert
-        # reload [y/n]          Enable or disable the reloader
-        # debugger [y/n]        Enable or disable the debugger
         # eager-loading [y/n]
         # extra-files           ; sep list of files that trigger reload
         # exclude-pattern       ; sep list of fnmatch pattersn
@@ -52,7 +49,7 @@ class HypermeaService:
 
     def start(self):
         self.starting_banner()
-        dump_operating_environment()
+        log_operating_environment()
 
         try:
             register(self._app)

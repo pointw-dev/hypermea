@@ -3,6 +3,7 @@ import json
 from .trace.trace_level import TRACE_LEVEL
 from .trace.decorators import trace
 from configuration import SETTINGS
+from .operating_environment import log_operating_environment
 
 from ..utils import get_resource_rel
 
