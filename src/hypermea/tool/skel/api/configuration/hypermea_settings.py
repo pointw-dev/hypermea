@@ -17,24 +17,30 @@ SETTINGS.create('HY', {
     'PAGINATION_LIMIT': 3000,
     'PAGINATION_DEFAULT': 1000,
     'ADD_ECHO': 'Disabled',
-    'LOG_TO_FOLDER': 'Disabled',
+    'LOG_TO_FOLDER': '',
     'SEND_ERROR_EMAILS': 'Disabled',
     'LOG_MAX_BODY_SIZE': 1024,
 })
 
 # optional settings...
-SETTINGS.create('HY', 'DISABLE_RFC6861', is_optional=True)
 SETTINGS.create('HY', 'USE_ABSOLUTE_URLS', is_optional=True)
 SETTINGS.create('HY', 'BASE_PATH', is_optional=True)
 SETTINGS.create('HY', 'BASE_URL', is_optional=True)
 SETTINGS.create('HY', 'GATEWAY_URL', is_optional=True)
 SETTINGS.create('HY', 'NAME_ON_GATEWAY', is_optional=True)
 SETTINGS.create('HY', 'URL_PREFIX', is_optional=True)
+
+SETTINGS.create('HY', 'DISABLE_RFC6861', is_optional=True)
+
 SETTINGS.create('HY', 'CACHE_CONTROL', is_optional=True)
 SETTINGS.create('HY', 'CACHE_EXPIRES', is_optional=True, default_value=0)
+
+SETTINGS.create('HY', 'FOLDER_TO_LOG_TO', is_optional=True)
+
 SETTINGS.create('HY', 'MONGO_USERNAME', is_optional=True)
 SETTINGS.create('HY', 'MONGO_PASSWORD', is_optional=True)
 SETTINGS.create('HY', 'MONGO_AUTH_SOURCE', is_optional=True)
+
 SETTINGS.create('HY', 'MEDIA_BASE_URL', is_optional=True)
 SETTINGS.create('HY', 'PUBLIC_RESOURCES', is_optional=True)
 

@@ -6,6 +6,7 @@ from cerberus import __version__ as cerberus_version
 from hypermea.core import VERSION as hypermea_core_version
 from configuration import SETTINGS, VERSION as api_version
 
+
 def log_operating_environment():
     logger = logging.getLogger("environment")
     logger.info("== dump operating environment ==")

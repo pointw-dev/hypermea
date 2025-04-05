@@ -54,16 +54,19 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
     When I look at the log
     Then I do not see the secret values
 
+  Scenario: My application fails to handle an exception
 
-  Scenario: Turn logging to file on
-  Scenario: Choose the file to log to
+  Scenario: Enable logging to file
+  Scenario: Choose the folder to log to
   Scenario: Override file rolling strategy and its parameters
+
   Scenario: Change the size after which logged response and request bodies are truncated
   Scenario: TRACE logging ignores max body size
+
   Scenario: Configure ERROR logs to be sent by email
   Scenario: Configure ERROR logs to be sent to webhook
   Scenario: Adding my own logging.yml file overrides and extends the built-in logging behaviour
-  Scenario: My application fails to handle an exception
+
 
 # May need to postpone integration settings logging until after #90
   Scenario: Integration settings are logged

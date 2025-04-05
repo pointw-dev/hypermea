@@ -54,7 +54,9 @@ def _configure_logger():
     }
 
     if SETTINGS.has_enabled('HY_LOG_TO_FOLDER'):
-        log_folder = f'/var/log/{secure_filename(api_name)}'
+        log_folder = SETTINGS.get('FOLDER_TO_LOG_TO')
+        if not log_folder:
+            log_folder = f'/var/log/{secure_filename(api_name)}'
         if not os.path.exists(log_folder):
             os.makedirs(log_folder)
 

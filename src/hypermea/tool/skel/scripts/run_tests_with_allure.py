@@ -60,6 +60,7 @@ def create_environment_properties():
 
 
 def main():
+    os.makedirs(f'{ALLURE_RESULTS_DIR}/history', exist_ok=True)
     os.system(f'cp -ruvT {ALLURE_REPORT_DIR}/history/ {ALLURE_RESULTS_DIR}/history/')
     os.system(f'pytest --alluredir {ALLURE_RESULTS_DIR}')
     create_environment_properties()
