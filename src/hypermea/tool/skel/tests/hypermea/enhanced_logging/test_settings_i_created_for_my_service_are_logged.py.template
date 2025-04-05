@@ -1,0 +1,44 @@
+import pytest
+from pytest_bdd import given, when, then, parsers
+from assertpy import assert_that
+from tests.hypermea import *
+from tests.hypermea.enhanced_logging import *
+
+
+@pytest.fixture(scope='module')
+def context():
+    return SimpleNamespace()
+
+
+@annotated_scenario(FEATURE, 'Settings I created for my service are logged')
+def test_settings_i_created_for_my_service_are_logged():
+    pass
+
+
+@given('I have configured settings that custom to my service')
+def given_i_have_configured_settings_that_custom_to_my_service():
+    from hypermea.core.settings_manager import SettingsManager
+
+    PREFIX = 'API'
+    SETTINGS = SettingsManager.instance()
+    SETTINGS.set_prefix_description(PREFIX, 'Settings for dev-hypermea-api')
+    SETTINGS.create(PREFIX, {
+        'INTEGER_SETTING': 3,
+        'STRING_SETTING': 'string',
+    })
+
+    SETTINGS.create(PREFIX, 'OPTIONAL_SETTING', is_optional=True)
+    SETTINGS.create(PREFIX, 'OPTIONAL_SETTING_WITH_DEFAULT', is_optional=True, default_value=0)
+
+
+@then('I see my service custom settings')
+def then_i_see_my_service_custom_settings(context):
+    custom_setting = [entry for entry in context.log_entries if entry[0] == 'service' and entry[2].startswith('API_')]
+    assert_that(len(custom_setting)).is_greater_than(0)
+
+    missing = [
+        setting for setting in ['API_INTEGER_SETTING', 'API_STRING_SETTING']
+        if not any(msg.startswith(setting) for _, _, msg in custom_setting)
+    ]
+    assert_that(missing).described_as("Missing version logs for").is_empty()
+

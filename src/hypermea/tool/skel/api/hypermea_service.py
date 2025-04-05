@@ -4,49 +4,13 @@ import logging
 import hypermea.core.logging.setup    # do not remove this import
 from hypermea.core import HypermeaEve
 from hypermea.core.gateway import register
+from hypermea.core.utils import dump_operating_environment
 from flask_cors import CORS
 import hooks
+from configuration import SETTINGS
 
 
 LOG = logging.getLogger('service')
-
-import logging
-import platform
-
-from eve import __version__ as eve_version
-from cerberus import __version__ as cerberus_version
-from hypermea.core import VERSION as hypermea_core_version
-from configuration import SETTINGS, VERSION as api_version
-
-
-def dump_operating_environment():
-    logger = logging.getLogger("environment")
-    LOG.info("== dump operating environment ==")
-    LOG.info("== stack versions")
-
-    api_name = SETTINGS.get("HY_API_NAME", "api")
-
-    components = {
-        api_name: api_version,
-        "hypermea.core": hypermea_core_version,
-        "eve": eve_version,
-        "cerberus": cerberus_version,
-        "python": platform.sys.version,
-        "os_system": platform.system(),
-        "os_release": platform.release(),
-        "os_version": platform.version(),
-        "os_platform": platform.platform(),
-    }
-
-    max_key_length = max(len(k) for k in components.keys())
-
-    for name, version in components.items():
-        padding = " " * (max_key_length - len(name) + 1)
-        logger.info(f"{name}{padding}{version}")
-
-    SETTINGS.dump(callback=LOG.info)
-
-    LOG.info("=========== end dump ===========")
 
 
 class HypermeaService:

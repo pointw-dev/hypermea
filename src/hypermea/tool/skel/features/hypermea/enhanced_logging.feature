@@ -37,7 +37,24 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
 
 
   Scenario: Base hypermea settings are logged
+    Given the service has started
+    When I look at the log
+    Then I see the base settings for hypermea
+
   Scenario: Settings I created for my service are logged
+    Given I have configured settings that custom to my service
+    And the service has started
+    When I look at the log
+    Then I see my service custom settings
+
+# which is it, not logged or obscured?
+  Scenario: Sensitive settings are not logged or are obscured
+    Given I have configured a setting for a password
+    And the service has started
+    When I look at the log
+    Then I do not see the secret values
+
+
   Scenario: Turn logging to file on
   Scenario: Choose the file to log to
   Scenario: Override file rolling strategy and its parameters

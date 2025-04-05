@@ -10,6 +10,7 @@ def context():
     return SimpleNamespace()
 
 
-@annotated_scenario(FEATURE, 'Environment details are logged')
-def test_environment_details_are_logged():
+@annotated_scenario(FEATURE, 'Base hypermea settings are logged')
+def test_base_hypermea_settings_are_logged():
     pass
+
