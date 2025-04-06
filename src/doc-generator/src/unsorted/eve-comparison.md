@@ -185,6 +185,9 @@ tr.header {
             "href": "/_logging",
             "_note": "logging verbosity: GET, PUT"
         },
+        "settings": {
+          "href": "/_settings"
+        },
         "person": {
             "href": "/people",
             "_note": "add ?links_only qs to GET without the collection"

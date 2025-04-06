@@ -156,8 +156,6 @@ class HalLinker:
             add_links_only = False
             if link['title'].startswith('_'):
                 rel = link['title'][1:]
-                if rel == 'settings':  # disabled until #159
-                    continue
             else:
                 rel = get_resource_rel(link['title'])
                 add_links_only = True
