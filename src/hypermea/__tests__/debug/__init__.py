@@ -1,1 +1,0 @@
-FEATURE = 'tool/debug.feature'

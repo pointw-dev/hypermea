@@ -67,7 +67,8 @@ def main():
     os.system(f'cp -ruvT {ALLURE_REPORT_DIR}/history/ {ALLURE_RESULTS_DIR}/history/')
     os.system(f'pytest --alluredir {ALLURE_RESULTS_DIR}')
     create_environment_properties()
-    create_executor_json()    
+    create_executor_json()
+    os.system(f'cp favicon.ico {ALLURE_REPORT_DIR}')    
     os.system(f'allure generate -o {ALLURE_REPORT_DIR} --clean --name {$project_name}')
 
 
