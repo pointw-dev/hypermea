@@ -80,16 +80,15 @@ The base variables are prefixed with HY_ .  The environment variables you can se
 
 Optional environment variables
 
-| Variable             | Description                             |
-| -------------------- | --------------------------------------- |
-| HY_MONGO_USERNAME    | (required if HY_MONGO_ATLAS is enabled) |
-| HY_MONGO_PASSWORD    | (required if HY_MONGO_ATLAS is enabled) |
-| HY_MONGO_AUTH_SOURCE | Eve pass-through                        |
-| HY_MEDIA_BASE_URL    | Eve pass-through                        |
-| HY_PUBLIC_RESOURCES  | not yet implemented                     |
-| HY_URL_PREFIX        | If the API will be deployed behind a URL with a path, use this variable to set that path.  For example, if you deploy the API behind https://example.com/api/my_service, then set HY_URL_PREFIX to "api/my_service" |
-| HY_CACHE_CONTROL     | Sets the Cache-Control header (e.g. `no-cache, no-store, must-revalidate`) |
-| HY_CACHE_EXPIRES     | Sets the Cache-Expires header (value is in secods)           |
+| Variable             | Description                                                                                                                                                                                                                                                                                                                          |
+| -------------------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| HY_MONGO_USERNAME    | (required if HY_MONGO_ATLAS is enabled)                                                                                                                                                                                                                                                                                              |
+| HY_MONGO_PASSWORD    | (required if HY_MONGO_ATLAS is enabled)                                                                                                                                                                                                                                                                                              |
+| HY_MONGO_AUTH_SOURCE | Eve pass-through                                                                                                                                                                                                                                                                                                                     |
+| HY_MEDIA_BASE_URL    | Eve pass-through                                                                                                                                                                                                                                                                                                                     |
+| HY_URL_PREFIX        | If the API will be deployed behind a URL with a path, use this variable to set that path.  For example, if you deploy the API behind https://example.com/api/my_service, then set HY_URL_PREFIX to "api/my_service"                                                                                                                  |
+| HY_CACHE_CONTROL     | Sets the Cache-Control header (e.g. `no-cache, no-store, must-revalidate`)                                                                                                                                                                                                                                                           |
+| HY_CACHE_EXPIRES     | Sets the Cache-Expires header (value is in secods)                                                                                                                                                                                                                                                                                   |
 | HY_ADD_ECHO          | If enabled, an undocumented endpoint will be created whose relative path is `/_echo`.  PUT {"message": {}, "status_code: int"} to this endpoint and it will be echoed back to you and logged (`.info` if < 400, `.warning` if < 500, else `.error`).  Useful to test the behaviour of error codes (e.g. with logging configurations) |
 
 

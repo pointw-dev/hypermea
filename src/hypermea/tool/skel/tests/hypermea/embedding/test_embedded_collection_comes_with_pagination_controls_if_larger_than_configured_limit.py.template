@@ -18,4 +18,4 @@ def test_embedded_collection_comes_with_pagination_controls_if_larger_than_confi
 def then_the_parent_links_contain_page_controls_for_the_embedded_child_collection(context):
     links = context.resource['_links']
     assert_that(links).contains_key('cars:next')
-    assert_that(links).contains_key('cars:last')
+    assert_that(links).described_as('will fail if OPTIMIZE_PAGINATION_FOR_SPEED is True').contains_key('cars:last')

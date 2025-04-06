@@ -1,10 +1,6 @@
 import logging
-import platform
-
-from eve import __version__ as eve_version
-from cerberus import __version__ as cerberus_version
-from hypermea.core import VERSION as hypermea_core_version
-from configuration import SETTINGS, VERSION as api_version
+from hypermea.core.utils import get_operating_environment
+from configuration import SETTINGS
 
 
 def log_operating_environment():
@@ -12,23 +8,11 @@ def log_operating_environment():
     logger.info("== dump operating environment ==")
     logger.info("== stack versions")
 
-    api_name = SETTINGS.get("HY_API_NAME", "api")
+    operating_environment = get_operating_environment()
 
-    components = {
-        api_name: api_version,
-        "hypermea.core": hypermea_core_version,
-        "eve": eve_version,
-        "cerberus": cerberus_version,
-        "python": platform.sys.version,
-        "os_system": platform.system(),
-        "os_release": platform.release(),
-        "os_version": platform.version(),
-        "os_platform": platform.platform(),
-    }
+    max_key_length = max(len(k) for k in operating_environment['versions'].keys())
 
-    max_key_length = max(len(k) for k in components.keys())
-
-    for name, version in components.items():
+    for name, version in operating_environment['versions'].items():
         padding = " " * (max_key_length - len(name) + 1)
         logger.info(f"{name}{padding}{version}")
 

@@ -31,12 +31,16 @@ class ResourceContext:
         parent = None
         child = None
 
-        if '_' in resource_name:
-            parent, child = resource_name.split('_', 1)
-            resource_name = child
+        if resource_name.startswith('_'):
+            id_field = parent = child = resource_rel = None
+            scope = 'generated'
+        else:
+            if '_' in resource_name:
+                parent, child = resource_name.split('_', 1)
+                resource_name = child
 
-        id_field = get_id_field(resource_name) if scope != 'root' else None
-        resource_rel = get_resource_rel(resource_name)
+            id_field = get_id_field(resource_name) if scope != 'root' else None
+            resource_rel = get_resource_rel(resource_name)
 
         return cls(method, resource_name, scope, base_url, query_args, domain, schema, id_field, parent, child, resource_rel)
 

@@ -3,6 +3,8 @@ import json
 from assertpy import assert_that
 from pytest_bdd import given, when, parsers
 
+from service.configuration import SETTINGS
+
 
 @given(parsers.parse('the service is configured with a limit of {items_per_page:d} items per page'))
 def given_the_service_is_configured_with_a_limit_of_itemsperpage_items_per_page(hypermea_settings, items_per_page):

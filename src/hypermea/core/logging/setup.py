@@ -125,6 +125,7 @@ def _configure_logger():
         %(asctime)s - %(levelname)s - File: %(filename)s - %(funcName)s() - Line: %(lineno)d -  %(message)s
         '''
 
+        # TODO: refactor with SETTINGS.sanitized_settings / core.utils.get_operating_environment
         email_format += f'''
         {api_name} version:       {VERSION}
         hypermea.core version: {hypermea_core_version}

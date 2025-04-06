@@ -149,16 +149,33 @@ class SettingsManager:
 
         return self.settings.get(prefix, {}).get(setting_name, default_value)
 
+    def sanitized_settings(self):
+        rtn = {}
+        for prefix in self.settings:
+            rtn[prefix] = {
+                'settings': []
+            }
+            if prefix in self.prefix_descriptions:
+                rtn[prefix]['description'] = self.prefix_descriptions[prefix]
+            for setting_name in sorted(self.settings[prefix]):
+                value = self.settings[prefix][setting_name]
+                if ('PASSWORD' in setting_name) or ('SECRET' in setting_name) or ('PRIVATE' in setting_name):
+                    value = '***'
+                rtn[prefix][setting_name] = value
+        return rtn
+
     def dump(self, prefix=None, callback: Optional[Callable[[str], None]] = None):
         self._set_from_environment()
         if not callback:
             callback = print
 
-        if prefix:
-            self._dump_prefix(prefix, callback)
-        else:
-            for prefix in self.settings:
-                self._dump_prefix(prefix, callback)
+        settings = self.sanitized_settings()
+        for prefix in settings:
+            if 'description' in settings[prefix]:
+                callback(f"== {prefix}: {settings[prefix]['description']}")
+            for setting_name in sorted(settings[prefix]):
+                value = settings[prefix][setting_name]
+                callback(f'{prefix}_{setting_name}: {value}')
 
         if self.settings.get('HY_BASE_URL') and self.settings.get('HY_BASE_PATH'):
             LOG.warning('HY_BASE_URL and HY_BASE_PATH cannot both be set.  Ignoring HY_BASE_PATH.')
@@ -218,13 +235,5 @@ class SettingsManager:
         setting_name = setting_name[first_underscore + 1:]
         return prefix, setting_name
 
-    def _dump_prefix(self, prefix, callback):
-        if prefix in self.prefix_descriptions:
-            callback(f"== {prefix}: {self.prefix_descriptions[prefix]}")
-        for setting_name in sorted(self.settings[prefix]):
-            value = self.settings[prefix][setting_name]
-            if ('PASSWORD' in setting_name) or ('SECRET' in setting_name) or ('PRIVATE' in setting_name):
-                value = '***'
-            callback(f'{prefix}_{setting_name}: {value}')
 
 # TODO: handle cancellable values

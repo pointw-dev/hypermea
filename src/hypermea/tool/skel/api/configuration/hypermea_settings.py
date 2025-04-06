@@ -42,7 +42,6 @@ SETTINGS.create('HY', 'MONGO_PASSWORD', is_optional=True)
 SETTINGS.create('HY', 'MONGO_AUTH_SOURCE', is_optional=True)
 
 SETTINGS.create('HY', 'MEDIA_BASE_URL', is_optional=True)
-SETTINGS.create('HY', 'PUBLIC_RESOURCES', is_optional=True)
 
 SETTINGS.create('HY', 'RATE_LIMIT', is_optional=True)
 SETTINGS.create('HY', 'RATE_LIMIT_GET', is_optional=True)
@@ -59,4 +58,4 @@ if SETTINGS.has_enabled('HY_SEND_ERROR_EMAILS'):
 
 # cancellable settings...
 # if SETTINGS.get('HY_CANCELLABLE') == '':
-#     del SETTINGS['HY_CANCELLABLE']
+#     del SETTINGS['HY_CANCELLABLE'] / SETTINGS['HY_CANCELLABLE'].pop()

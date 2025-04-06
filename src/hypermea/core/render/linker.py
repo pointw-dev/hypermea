@@ -22,9 +22,15 @@ class HalLinker:
             for item in data['_items']:
                 HalLinker._remove_unnecessary_links(links=item.get('_links', {}))
 
-        if self.resource.scope == 'item':
+        if self.resource.scope == 'generated':
+            data['_links'] = {
+                'self': {
+                    'href': f"{self.resource.base_url}/{self.resource.name}"
+                }
+            }
+        elif self.resource.scope == 'item':
             self._add_links_to_item(data)
-        if self.resource.scope == 'collection':
+        elif self.resource.scope == 'collection':
             self._add_links_to_collection(data)
 
     def _add_links_to_item(self, item):
@@ -140,7 +146,7 @@ class HalLinker:
 
         new_links = {
             'self': {'href': f'{base_url}/', '_note': f'Home resource for {SETTINGS["HY_API_NAME"]}'},
-            'logging': {'href': f'{base_url}/_logging'}
+            'logging': {'href': f'{base_url}/_logging', '_note': 'logging verbosity: GET, PUT'}
         }
 
         for link in old:
@@ -150,14 +156,18 @@ class HalLinker:
             add_links_only = False
             if link['title'].startswith('_'):
                 rel = link['title'][1:]
+                if rel == 'settings':  # disabled until #159
+                    continue
             else:
                 rel = get_resource_rel(link['title'])
                 add_links_only = True
 
             link['href'] = f'{base_url}/{link["href"]}'
             if add_links_only:
-                link['href'] += '{?links_only}'
-                link['templated'] = True
+                #115, disabling this for now - may have setting to re-enable
+                    # link['href'] += '{?links_only}'
+                    # link['templated'] = True
+                link['_note'] = 'add ?links_only qs to GET without the collection'
             link.pop('title', None)
             new_links[rel] = link
 

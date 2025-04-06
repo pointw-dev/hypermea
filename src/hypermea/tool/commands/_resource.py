@@ -122,7 +122,7 @@ Defines the {plural} resource.
 ''')
 
         if add_common:
-            file.write('from domain._common import COMMON_FIELDS\n\n\n')
+            file.write('from service.domain._common import COMMON_FIELDS\n\n\n')
 
         file.write('''SCHEMA = {
     'name': {

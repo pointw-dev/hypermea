@@ -45,7 +45,9 @@ def hypermea_settings() -> dict[str, str]:
 
 @pytest.fixture(scope='module')
 def settings_py() -> dict[str, Any]:
-    return {}
+    return {
+        'OPTIMIZE_PAGINATION_FOR_SPEED': False
+    }
 
 
 @pytest.fixture(scope='function')
