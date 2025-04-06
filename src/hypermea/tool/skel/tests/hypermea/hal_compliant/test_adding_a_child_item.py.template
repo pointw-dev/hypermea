@@ -10,7 +10,7 @@ def context():
     return SimpleNamespace()
 
 
-@annotated_scenario(FEATURE, 'adding a child item')
+@annotated_scenario(FEATURE, 'Adding a child item')
 def test_adding_a_child_item():
     pass
 

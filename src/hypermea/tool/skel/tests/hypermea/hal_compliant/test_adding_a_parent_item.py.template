@@ -9,7 +9,8 @@ from tests.hypermea.hal_compliant import *
 def context():
     return SimpleNamespace()
 
-@annotated_scenario(FEATURE, 'adding a parent item')
+
+@annotated_scenario(FEATURE, 'Adding a parent item')
 def test_adding_a_parent_item():
     pass
 

@@ -3,8 +3,8 @@
 
 Feature: Resource collections can be retrieved in sorted order
   As a client of the service
-  I want the ability to ask that collections of resources I fetch be sorted
-  So that I don't have to, and can just display or work with the sorted collection when I need it
+  I want to request a sorted resource collections
+  So that I don't have to do the sorting myself
 
   The sorting feature is enabled by default and can be disabled both globally and/or at resource level.
   Globally with `SORTING` setting (defaults to True)

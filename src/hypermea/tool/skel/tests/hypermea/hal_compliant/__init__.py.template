@@ -41,29 +41,29 @@ def validate_no_unacceptable_links(resource, datatable):
 
 
 
-@given('the client has fetched the home resource')
-def given_the_client_has_fetched_the_home_resource(api, context):
+@given('the client requests the home resource')
+def given_the_client_requests_the_home_resource(api, context):
     response = api.get('/')
     context.home = response.json
 
 
 
-@when(parsers.parse('a client fetches the {rel} resource collection'))
-def when_a_client_fetches_the_rel_resource_collection(api, context, rel):
+@when(parsers.parse('a client requests the {rel} resource collection'))
+def when_a_client_requests_the_rel_resource_collection(api, context, rel):
     context.rel = rel
     url = href_from_resource(context.home, rel)
     response = api.get(url)
     context.resource = response.json
 
-@when(parsers.parse('a client fetches a single {rel} resource'))
-def when_a_client_fetches_a_single_rel_resource(api, context, rel):
+@when(parsers.parse('a client requests a single {rel} resource'))
+def when_a_client_requests_a_single_rel_resource(api, context, rel):
     context.rel = rel
     my_id = context.first_person_id if rel == 'people' else context.first_car_id
     response = api.get(f'/{rel}/{my_id}')
     context.resource = response.json
 
-@when('a client fetches the cars belonging to one of the people collection')
-def when_a_client_fetches_the_cars_belonging_to_one_of_the_people_collection(api, context):
+@when('a client requests the cars belonging to one of the people collection')
+def when_a_client_requests_the_cars_belonging_to_one_of_the_people_collection(api, context):
     response = api.get(f'/people/{context.first_person_id}/cars')
     context.resource = response.json
 

@@ -3,7 +3,7 @@
 
 Feature: Resources can be embedded, for resource collection by default, by request for related resources
   As a client
-  I want to request that a resource I fetch also includes related resources
+  I want to request that a resource, including related resources
   So that I can reduce the number of network calls I need to make
 
   See https://datatracker.ietf.org/doc/html/draft-kelly-json-hal-11#name-example-document for an example

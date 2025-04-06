@@ -9,7 +9,8 @@ from tests.hypermea.hal_compliant import *
 def context():
     return SimpleNamespace()
 
-@annotated_scenario(FEATURE, 'fetching a parent collection resource from the home resource')
-def test_fetching_a_parent_collection_resource_from_the_home_resource():
+
+@annotated_scenario(FEATURE, 'Request a parent collection resource from the home resource')
+def test_request_a_parent_collection_resource_from_the_home_resource():
     pass
 

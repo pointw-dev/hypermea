@@ -10,7 +10,7 @@ def context():
     return SimpleNamespace()
 
 
-@annotated_scenario(FEATURE, 'fetching a child collection resource from the home resource')
-def test_fetching_a_child_collection_resource_from_the_home_resource():
+@annotated_scenario(FEATURE, "Request a resource item's related resource collection")
+def test_request_a_resource_item_s_related_resource_collection():
     pass
 

@@ -10,8 +10,8 @@ def context():
     return SimpleNamespace()
 
 
-@annotated_scenario(FEATURE, 'Sensitive settings are not logged or are obscured')
-def test_sensitive_settings_are_not_logged_or_are_obscured():
+@annotated_scenario(FEATURE, 'Sensitive settings are redacted in the log')
+def test_sensitive_settings_are_redacted_in_the_log():
     pass
 
 

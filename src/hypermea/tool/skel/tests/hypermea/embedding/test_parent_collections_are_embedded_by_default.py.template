@@ -3,6 +3,7 @@ from pytest_bdd import given, when, then, parsers
 from tests.hypermea import *
 from tests.hypermea.embedding import *
 
+
 @pytest.fixture(scope='module')
 def context():
     return SimpleNamespace()

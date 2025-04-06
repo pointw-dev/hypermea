@@ -4,7 +4,7 @@
 Feature: Resource collections can be filtered
   As a client
   I want to filter resource collections
-  So I can fetch only those items I am interested and save bandwidth by not fetching the items I am not interested in
+  So I get only those items I am interested and save bandwidth by not fetching the items I am not interested in
 
 
 

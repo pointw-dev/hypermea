@@ -9,6 +9,7 @@ from tests.hypermea.delete_response import *
 def context():
     return SimpleNamespace()
 
+
 @annotated_scenario(FEATURE, 'Delete all items')
 def test_delete_all_items():
     pass

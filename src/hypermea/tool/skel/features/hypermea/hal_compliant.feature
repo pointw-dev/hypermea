@@ -3,10 +3,10 @@ Feature: Resources are represented as application/hal+json
   Background:
     Given a parent and a child resource are configured
     And each resource has multiple items
-    And the client has fetched the home resource
+    And the client requests the home resource
 
-  Scenario: fetching a parent collection resource from the home resource
-    When a client fetches the people resource collection
+  Scenario: Request a parent collection resource from the home resource
+    When a client requests the people resource collection
     Then its _links property includes
       | rel    | expected_href                               | is_templated |
       | self   | /people                                     | false        |
@@ -31,8 +31,8 @@ Feature: Resources are represented as application/hal+json
       | child   |
 
 
-  Scenario: fetching a parent resource item
-    When a client fetches a single people resource
+  Scenario: Request a parent resource item
+    When a client requests a single people resource
     Then its _links property includes
       | rel        | expected_href          | is_templated |
       | self       | /people/[[my_id]]      | false        |
@@ -45,8 +45,8 @@ Feature: Resources are represented as application/hal+json
       | child   |
     And the resource has no embedded property
 
-  Scenario: fetching a resource item's related resource collection
-    When a client fetches the cars belonging to one of the people collection
+  Scenario: Request a resource item's related resource collection
+    When a client requests the cars belonging to one of the people collection
     Then its _links property includes
       | rel    | expected_href                                                        | is_templated |
       | self   | /people/[[first_person_id]]/cars                                     | false        |
@@ -70,8 +70,8 @@ Feature: Resources are represented as application/hal+json
       | related |
       | child   |
 
-  Scenario: fetching a child collection resource from the home resource
-    When a client fetches the cars resource collection
+  Scenario: Request a child collection resource from the home resource
+    When a client requests the cars resource collection
     Then its _links property includes
       | rel    | expected_href                             | is_templated |
       | self   | /cars                                     | false        |
@@ -95,8 +95,8 @@ Feature: Resources are represented as application/hal+json
       | child   |
 
 
-  Scenario: fetching a child resource item
-    When a client fetches a single cars resource
+  Scenario: Request a child resource item
+    When a client requests a single cars resource
     Then its _links property includes
       | rel        | expected_href                    | is_templated |
       | self       | /cars/[[my_id]]                  | false        |
@@ -109,7 +109,7 @@ Feature: Resources are represented as application/hal+json
     And the resource has no embedded property
 
 
-  Scenario: adding a parent item
+  Scenario: Adding a parent item
     When a client adds a single people resource
     Then its _links property includes
       | rel        | expected_href          | is_templated |
@@ -123,7 +123,7 @@ Feature: Resources are represented as application/hal+json
       | child   |
     And the resource has no embedded property
 
-  Scenario: adding a child item
+  Scenario: Adding a child item
     When a client adds to the cars belonging to one of the people collection
     Then its _links property includes
       | rel        | expected_href                    | is_templated |

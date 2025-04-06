@@ -49,16 +49,23 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
     Then I see my service custom settings
 
 # which is it, not logged or obscured?
-  Scenario: Sensitive settings are not logged or are obscured
+  Scenario: Sensitive settings are redacted in the log
     Given I have configured a setting for a password
     And the service has started
     When I look at the log
     Then I do not see the secret values
 
-  Scenario: My application fails to handle an exception
-
   Scenario: Enable logging to file
+    Given the service is configured with file logging enabled
+    When the client requests the home resource
+    Then the log is written to the default location
+
   Scenario: Choose the folder to log to
+    Given the service is configured with file logging enabled
+    And the log folder is specified
+    When the client requests the home resource
+    Then the log is written to the specified location
+
   Scenario: Override file rolling strategy and its parameters
 
   Scenario: Change the size after which logged response and request bodies are truncated
