@@ -21,8 +21,8 @@ Then the item has both embedded resources
 """
 
 @given('a resource is configured having relations to two other resources')
-def given_a_resource_is_configured_having_relations_to_two_other_resources(settings_py):
-    settings_py['DOMAIN'] = {
+def given_a_resource_is_configured_having_relations_to_two_other_resources(static_settings):
+    static_settings['DOMAIN'] = {
         "people": {
             "schema": {
                 "name": {"type": "string"},

@@ -16,8 +16,8 @@ def test_test_sorting_can_be_specified_per_resource():
 
 # Given sorting is disabled globally
 @given('a resource is configured to allow sorting collection exists')
-def given_a_resource_is_configured_to_allow_sorting_collection_exists(settings_py):
-    settings_py['DOMAIN'] = {
+def given_a_resource_is_configured_to_allow_sorting_collection_exists(static_settings):
+    static_settings['DOMAIN'] = {
         'people': {
             'schema': {
                 'name': {'type': 'string'}

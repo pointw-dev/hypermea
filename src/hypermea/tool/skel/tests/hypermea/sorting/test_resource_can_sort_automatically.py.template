@@ -14,8 +14,8 @@ def test_resource_can_sort_automatically():
 
 
 @given('a resource is configured to sort automatically')
-def given_a_resource_is_configured_to_sort_automatically(settings_py):
-    settings_py['DOMAIN'] = {
+def given_a_resource_is_configured_to_sort_automatically(static_settings):
+    static_settings['DOMAIN'] = {
         'people': {
             'schema': {
                 'name': {'type': 'string'}

@@ -12,8 +12,8 @@ def given_the_service_is_configured_with_a_limit_of_itemsperpage_items_per_page(
 
 
 @given('a resource is configured')
-def given_a_resource_is_configured(settings_py):
-    settings_py['DOMAIN'] = {
+def given_a_resource_is_configured(static_settings):
+    static_settings['DOMAIN'] = {
         'people': {
             'schema': {
                 'name': {'type': 'string'}
@@ -36,8 +36,8 @@ def given_that_resource_has_multiple_items_in_its_collection(api, context):
 
 
 @given('a resource is configured with multiple keys')
-def given_a_resource_is_configured_with_multiple_keys(settings_py):
-    settings_py['DOMAIN'] = {
+def given_a_resource_is_configured_with_multiple_keys(static_settings):
+    static_settings['DOMAIN'] = {
         'widgets': {
             'schema': {
                 'name': {'type': 'string'},
@@ -62,8 +62,8 @@ def given_that_resource_has_an_item_in_its_collection(api, context):
     context.widget_id = response.json['_id']
 
 @given('a parent and a child resource are configured')
-def given_a_parent_and_a_child_resource_are_configured(settings_py):
-    settings_py['DOMAIN'] = {
+def given_a_parent_and_a_child_resource_are_configured(static_settings):
+    static_settings['DOMAIN'] = {
         "people": {
             "schema": {
                 "name": {"type": "string"},

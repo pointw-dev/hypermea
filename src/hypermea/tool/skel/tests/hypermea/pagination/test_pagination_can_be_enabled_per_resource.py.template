@@ -16,8 +16,8 @@ def test_pagination_can_be_enabled_per_resource():
 
 # Given pagination is disabled globally
 @given('a resource is configured to allow pagination')
-def given_a_resource_is_configured_to_allow_pagination(settings_py):
-    settings_py['DOMAIN'] = {
+def given_a_resource_is_configured_to_allow_pagination(static_settings):
+    static_settings['DOMAIN'] = {
         'people': {
             'schema': {
                 'name': {'type': 'string'}

@@ -7,8 +7,8 @@ FEATURE = 'hypermea/sorting.feature'
 
 
 @given('sorting is disabled globally')
-def given_sorting_is_disabled_globally(settings_py):
-    settings_py['SORTING'] = False
+def given_sorting_is_disabled_globally(static_settings):
+    static_settings['SORTING'] = False
 
 
 # shared When step definitions
