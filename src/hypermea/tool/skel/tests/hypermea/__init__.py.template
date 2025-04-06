@@ -144,6 +144,18 @@ def given_each_resource_has_multiple_items(api, context):
     context.first_car_id = first_car_id
 
 
+@given('the client requests the home resource')
+@when('the client requests the home resource')
+def given_the_client_requests_the_home_resource(api, context):
+    response = api.get('/')
+    context.home = response.json
+
+
+@when('the client does something that causes log events to occur')
+def given_the_client_does_something_that_causes_log_events_to_occur(api):
+    api.get('/')
+
+
 @when('a client requests a child item asking for related parent')
 def when_a_client_requests_a_child_item_asking_for_related_parent(api, context):
     response = api.get(f"/cars/{context.first_car_id}?embed=people")

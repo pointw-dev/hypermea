@@ -16,7 +16,7 @@ try:
     import integration
 except ImportError:
     pass
-from configuration import SETTINGS, VERSION
+from configuration import SETTINGS, VERSION, additional_log_configuration
 
 
 # TODO: refactor lengthy method
@@ -148,5 +148,6 @@ def _configure_logger():
         smtp_handler = [x for x in handlers if x.name == 'smtp'][0]
         smtp_handler.setFormatter(logging.Formatter(email_format))
 
+    additional_log_configuration()
 
 _configure_logger()

@@ -41,13 +41,6 @@ def validate_no_unacceptable_links(resource, datatable):
 
 
 
-@given('the client requests the home resource')
-def given_the_client_requests_the_home_resource(api, context):
-    response = api.get('/')
-    context.home = response.json
-
-
-
 @when(parsers.parse('a client requests the {rel} resource collection'))
 def when_a_client_requests_the_rel_resource_collection(api, context, rel):
     context.rel = rel

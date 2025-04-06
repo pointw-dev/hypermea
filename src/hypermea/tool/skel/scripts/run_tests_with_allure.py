@@ -68,8 +68,8 @@ def main():
     os.system(f'pytest --alluredir {ALLURE_RESULTS_DIR}')
     create_environment_properties()
     create_executor_json()
-    os.system(f'cp favicon.ico {ALLURE_REPORT_DIR}')    
     os.system(f'allure generate -o {ALLURE_REPORT_DIR} --clean --name {$project_name}')
+    os.system(f'cp favicon.ico {ALLURE_REPORT_DIR}')
 
 
 if __name__ == '__main__':

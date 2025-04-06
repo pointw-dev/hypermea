@@ -4,6 +4,7 @@ from tests import *
 from pytest_bdd import given, when, then, parsers
 from assertpy import assert_that
 
+
 import io
 from multiprocessing import Process, Queue, Event
 import signal
@@ -34,7 +35,6 @@ def prepare_logger(q):
     root_logger = logging.getLogger()
     root_logger.addHandler(log_handler)
     root_logger.setLevel(logging.INFO)
-
 
 
 @given('the service has started')
@@ -89,6 +89,11 @@ def given_the_service_has_started(context, service):
     context.stop_event = Event()
     context.process = Process(target=start_the_service, args=(context.queue, context.stop_event), daemon=True)
     context.process.start()
+
+
+@given('the service is configured with file logging enabled')
+def given_the_service_is_configured_with_file_logging_enabled(hypermea_settings):
+    hypermea_settings['HY_LOG_TO_FOLDER'] = 'Enabled'
 
 
 @when('I look at the log')
