@@ -146,7 +146,8 @@ class HalLinker:
 
         new_links = {
             'self': {'href': f'{base_url}/', '_note': f'Home resource for {SETTINGS["HY_API_NAME"]}'},
-            'logging': {'href': f'{base_url}/_logging', '_note': 'logging verbosity: GET, PUT'}
+            'logging': {'href': f'{base_url}/_logging', '_note': 'logging verbosity: GET, PUT'},
+            'settings': {'href': f'{base_url}/_settings', '_note': 'versions and settings: GET'},
         }
 
         for link in old:
@@ -165,7 +166,7 @@ class HalLinker:
                 #115, disabling this for now - may have setting to re-enable
                     # link['href'] += '{?links_only}'
                     # link['templated'] = True
-                link['_note'] = 'add ?links_only qs to GET without the collection'
+                link['_note'] = 'add ?links_only query string to GET _links without the collection'
             link.pop('title', None)
             new_links[rel] = link
 

@@ -17,7 +17,7 @@ SETTINGS.create('HY', {
     'PAGINATION_LIMIT': 3000,
     'PAGINATION_DEFAULT': 1000,
     'ADD_ECHO': 'Disabled',
-    'LOG_TO_FOLDER': '',
+    'LOG_TO_FOLDER': 'Disabled',
     'SEND_ERROR_EMAILS': 'Disabled',
     'LOG_MAX_BODY_SIZE': 1024,
 })

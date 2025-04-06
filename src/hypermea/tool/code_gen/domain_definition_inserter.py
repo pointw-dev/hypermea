@@ -39,41 +39,64 @@ class DomainDefinitionInserter(FileTransformer):
             body=new_body
         )
 
-    def visit_Assign(self, node):
-        if not node.targets[0].target.value == 'DOMAIN_DEFINITIONS':
+    def visit_SimpleStatementLine(self, node):
+        if not isinstance(node.body[0], Assign):
             return False
 
-    def leave_Dict(self, original_node, updated_node):
-        """ Adds the following to domain/__init_.py's DOMAIN_DEFINITIONS:
-            'resource': resource.DEFINITION,
-        """
+        if not node.body[0].targets[0].target.value == 'DOMAIN_DEFINITIONS':
+            return False
 
-        key = SimpleString(f"'{self.resource}'")
-        value = Attribute(
-            value=Name(f'{self.resource}'),
-            dot=Dot(),
-            attr=Name('DEFINITION')
-        )
+        return True
 
-        comma = Comma(
-            whitespace_before=SimpleWhitespace(
-                value='',
+    def leave_Assign(self, original_node, updated_node):
+        # TODO: refactor with domain_relations_inserter
+        # TODO: remove trailing comma after last element
+        new_elements = []
+        if original_node.value.elements:
+            for item in original_node.value.elements[:-1]:
+                new_elements.append(item)
+            new_elements.append(original_node.value.elements[-1].with_changes (comma=code_gen.COMMA))
+        new_elements.append(self.make_domain_defintion())
+
+        definitions = Dict(
+            elements=new_elements,
+            lbrace=LeftCurlyBrace(
+                whitespace_after=ParenthesizedWhitespace(
+                    first_line=code_gen.TWNL,
+                    indent=True,
+                    last_line=SimpleWhitespace('    ')
+                )
             ),
-            whitespace_after=ParenthesizedWhitespace(
-                first_line=code_gen.TWNL,
-                indent=True,
-                last_line=SimpleWhitespace('    ')
+            rbrace=RightCurlyBrace(
+                whitespace_before=ParenthesizedWhitespace(
+                    first_line=code_gen.TWNL,
+                    indent=True,
+                )
             )
         )
 
-        addition = DictElement(key, value)
+        return updated_node.with_changes(value=definitions)
 
-        new_elements = []
-        last_element = updated_node.elements[-1].with_changes(comma=comma)
-
-        for item in itertools.chain(updated_node.elements[0:-1], [last_element, addition]):
-            new_elements.append(item)
-
-        return updated_node.with_changes(
-            elements=new_elements
+    def make_domain_defintion(self):
+        """ Adds the following to domain/__init_.py's DOMAIN_DEFINITIONS:
+            'resource': resource.DEFINITION,
+        """
+        return DictElement(
+            key=SimpleString(f"'{self.resource}'"),
+            whitespace_after_colon=SimpleWhitespace(' '),
+            value=Attribute(
+                value=Name(f'{self.resource}'),
+                dot=Dot(),
+                attr=Name('DEFINITION'),
+            ),
+            comma=Comma(
+                whitespace_before=SimpleWhitespace(
+                    value='',
+                ),
+                whitespace_after=ParenthesizedWhitespace(
+                    first_line=code_gen.TWNL,
+                    indent=True,
+                    last_line=SimpleWhitespace('    ')
+                )
+            )
         )

@@ -57,9 +57,9 @@ def get_operating_environment():
         "os_platform": platform.platform(),
     }
 
-    rtn['settings'] = []
+    rtn['settings_groups'] = []
     for prefix in SETTINGS.settings:
-        section = {
+        group = {
             'description': f'{SETTINGS.prefix_descriptions.get(prefix, "")}',
             'settings': {}
         }
@@ -67,7 +67,7 @@ def get_operating_environment():
             value = SETTINGS.settings[prefix][setting]
             if ('PASSWORD' in setting) or ('SECRET' in setting) or ('PRIVATE' in setting):
                 value = '***'
-            section['settings'][f'{prefix}_{setting}'] = value
-        rtn['settings'].append(section)
+            group['settings'][f'{prefix}_{setting}'] = value
+        rtn['settings_groups'].append(group)
 
     return rtn

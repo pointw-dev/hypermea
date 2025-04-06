@@ -1,5 +1,28 @@
 # Eve Comparison
 
+<style>
+table.side-by-side {
+  width: 875px;
+  margin-left: -75px !important;
+}
+td.json {
+  font-family: monospace;
+  vertical-align: top;
+}
+td.large-json {
+  font-size: 9pt;
+  vertical-align: top;
+}
+td.larger-json {
+  font-size: 8.5pt;
+  vertical-align: top;
+}
+tr.header {
+  font-weight: bold;
+}
+</style>
+
+
 :::warning Work in progress
 <centered-image src="/img/work-in-progress.png" />
 This warning will be removed once this page has passed testing.
@@ -103,31 +126,93 @@ Clients written to consume an eve based API will require changes before they wil
 
 By default, the value of eve's `RENDERERS` setting is `['eve.render.JSONRenderer','eve.render.XMLRenderer]`  In hypermea this is set to `['hypermea.core.render.HALRenderer']`
 
-To see the difference, imagine a DOMAIN with `people` and `cars` such that an item in the `people` resource is associated with any number of items in the `cars` resource - what eve calls "sub-resources".
+### Domain Model
+To see the difference, we will work with a DOMAIN with `people` and `cars`.  An item in the `people` resource is associated with any number of items in the `cars` resource - what eve calls "sub-resources".
 
-When you `GET /` with eve you get:
+<centered-image src="/img/people-cars.svg" rounded width="250">A simple domain model</centered-image>
 
-<style>
-table.side-by-side {
-  width: 875px;
-  margin-left: -75px !important;
+
+<table class="side-by-side">
+<thead>
+<tr class="header">
+<td>to create this in eve</td>
+<td>to create this in hypermea</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+
+<td class="json">
+
+```python
+DOMAIN = {
+  "people" : {
+    "schema" : {
+      "name" : {
+        "type" : "string",
+        "required" : True
+      }
+    },
+  },
+  "cars" : {
+    "schema" : {
+      "name" : {
+        "type" : "string",
+        "required" : True
+      },
+      "_people_ref" : {
+        "type" : "objectid",
+        "data_relation" : {
+          "resource" : "people",
+          "embeddable" : True,
+          "field" : "_id"
+        }
+      }
+    },
+  "people_cars" : {
+    "schema" : {
+      "name" : {
+        "type" : "string",
+        "required" : true
+      },
+      "_people_ref" : {
+        "type" : "objectid",
+        "data_relation" : {
+          "resource" : "people",
+          "embeddable" : True,
+          "field" : "_id"
+        }
+      }
+    },
+    "url" : "people/<regex(\"[a-f0-9]{24}\"):_people_ref>/cars",
+    "resource_title" : "cars",
+    "datasource" : {
+      "source" : "cars"
+      }
+    }    
+  }
 }
-td.json {
-  font-family: monospace;
-  vertical-align: top;
-}
-td.large-json {
-  font-size: 9pt;
-  vertical-align: top;
-}
-td.larger-json {
-  font-size: 8.5pt;
-  vertical-align: top;
-}
-tr.header {
-  font-weight: bold;
-}
-</style>
+```
+</td>
+
+<td class="json">
+
+```bash
+hy resource create person
+hy resource create car
+hy link create person car
+```
+</td>
+
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
 
 ### home resource
 <table class="side-by-side">
@@ -176,27 +261,28 @@ tr.header {
 
 ```json
 {
-    "_links": {
-        "self": {
-            "href": "/",
-            "_note": "Home resource for dev-hypermea-api"
-        },
-        "logging": {
-            "href": "/_logging",
-            "_note": "logging verbosity: GET, PUT"
-        },
-        "settings": {
-          "href": "/_settings"
-        },
-        "person": {
-            "href": "/people",
-            "_note": "add ?links_only qs to GET without the collection"
-        },
-        "car": {
-            "href": "/cars",
-            "_note": "add ?links_only qs to GET without the collection"
-        }
+  "_links": {
+    "self": {
+      "href": "/",
+      "_note": "Home resource for dev-hypermea-api"
+    },
+    "logging": {
+      "href": "/_logging",
+      "_note": "logging verbosity: GET, PUT"
+    },
+    "settings": {
+      "href": "/_settings",
+      "_note": "versions and settings: GET"
+    },
+    "person": {
+      "href": "/people",
+      "_note": "add ?links_only query string to GET _links without the collection"
+    },
+    "car": {
+      "href": "/cars",
+      "_note": "add ?links_only query string to GET _links without the collection"
     }
+  }
 }
 ```
 </td>

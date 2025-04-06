@@ -117,12 +117,12 @@ def _get_resource_list():
 def _create_resource_domain_file(singular, plural, add_common):
     with open(f'domain/{plural}.py', 'w') as file:
         file.write(f'''"""
-Defines the {plural} resource.
+Defines the "{singular}" resource, and its "{plural}" resource collection.
 """
 ''')
 
         if add_common:
-            file.write('from service.domain._common import COMMON_FIELDS\n\n\n')
+            file.write('from ._common import COMMON_FIELDS\n\n\n')
 
         file.write('''SCHEMA = {
     'name': {

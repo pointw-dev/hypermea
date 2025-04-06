@@ -18,6 +18,7 @@ class DomainRelationsInserter(FileTransformer):
         return True
 
     def leave_Assign(self, original_node, updated_node):
+        # TODO: refactor with domain_definition_inserter
         new_elements = []
         if original_node.value.elements:
             for item in original_node.value.elements[:-1]:
