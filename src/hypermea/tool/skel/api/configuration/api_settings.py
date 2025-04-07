@@ -1,4 +1,4 @@
-from hypermea.core.settings_manager import SettingsManager
+from hypermea.core.settings import SettingsManager
 
 PREFIX = 'API'
 SETTINGS = SettingsManager.instance()

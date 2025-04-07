@@ -1,7 +1,7 @@
 import logging
 import os
 from typing import Optional, Callable
-from hypermea.core.settings_manager import Singleton
+from hypermea.core.utils import Singleton
 
 LOG = logging.getLogger('settings.manager')
 

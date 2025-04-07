@@ -1,7 +1,7 @@
 """
 Settings to configure Eve's behaviours.
 """
-from hypermea.core.settings_manager import SettingPromoter
+from hypermea.core.settings import SettingPromoter
 import domain
 from configuration import SETTINGS
 

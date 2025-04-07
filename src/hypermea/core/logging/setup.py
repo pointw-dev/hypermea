@@ -135,7 +135,7 @@ class LogConfigurator:
             %(asctime)s - %(levelname)s - File: %(filename)s - %(funcName)s() - Line: %(lineno)d -  %(message)s
             '''
 
-            # TODO: refactor with SETTINGS.sanitized_settings / core.utils.get_operating_environment
+            # TODO: refactor with SETTINGS.sanitized_settings / core.settings.starting_environment
             email_format += f'''
             {self.api_name} version:       {VERSION}
             hypermea.core version: {hypermea_core_version}

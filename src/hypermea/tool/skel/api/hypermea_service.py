@@ -4,9 +4,10 @@ import os
 import logging
 from hypermea.core import HypermeaEve
 from hypermea.core.gateway import register
-from hypermea.core.logging import log_operating_environment
+from hypermea.core.logging import log_starting_environment
 from flask_cors import CORS
 import hooks
+from hypermea.core.logging import log_starting_environment
 from configuration import SETTINGS
 
 LOG = logging.getLogger('service')
@@ -49,7 +50,7 @@ class HypermeaService:
 
     def start(self):
         self.starting_banner()
-        log_operating_environment()
+        log_starting_environment()
 
         try:
             register(self._app)

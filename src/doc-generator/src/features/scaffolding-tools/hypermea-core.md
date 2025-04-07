@@ -60,7 +60,7 @@ background explanation, mention the addition to the standard python logging
 
 reference how to adjust the logging verbosity level in the hypermea docs
 
-#### settings_manager
+#### settings
 
 details: singleton, pulls from environment variables, overridable with `_env.conf`, etc. (note no underscores in prefix)
 

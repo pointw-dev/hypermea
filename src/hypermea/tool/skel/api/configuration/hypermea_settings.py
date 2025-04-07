@@ -1,5 +1,5 @@
 import socket
-from hypermea.core.settings_manager import SettingsManager
+from hypermea.core.settings import SettingsManager
 
 SETTINGS = SettingsManager.instance()
 SETTINGS.set_prefix_description('HY', 'HypermeaService base configuration')

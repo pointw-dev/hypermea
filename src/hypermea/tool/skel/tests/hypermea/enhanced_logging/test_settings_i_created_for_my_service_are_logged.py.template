@@ -17,7 +17,7 @@ def test_settings_i_created_for_my_service_are_logged():
 
 @given('I have configured settings that custom to my service')
 def given_i_have_configured_settings_that_custom_to_my_service():
-    from hypermea.core.settings_manager import SettingsManager
+    from hypermea.core.settings import SettingsManager
 
     PREFIX = 'API'
     SETTINGS = SettingsManager.instance()

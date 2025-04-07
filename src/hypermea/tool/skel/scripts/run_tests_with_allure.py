@@ -9,7 +9,7 @@ from pathlib import Path
 service_dir = Path(__file__).resolve().parents[1] / "service"
 sys.path.insert(0, str(service_dir))
 
-from hypermea.core.utils import get_operating_environment
+from hypermea.core.settings import starting_environment
 
 ALLURE_RESULTS_DIR = './allure-results'
 ALLURE_REPORT_DIR = "./allure-report"
@@ -50,12 +50,12 @@ def create_environment_properties():
     python_version = Python 3.10.9
     """
 
-    op_env = get_operating_environment()
+    start_env = starting_environment()
     with open(f'{ALLURE_RESULTS_DIR}/environment.properties', 'w', encoding='utf8') as f:
-        for component, version in op_env['versions'].items():
+        for component, version in start_env['versions'].items():
             f.write(f'{component} = {version}\n')
 
-        for group in op_env['settings_groups']:
+        for group in start_env['settings_groups']:
             for setting, value in group['settings'].items():
                 f.write(f'{setting} = {value}\n')
 
