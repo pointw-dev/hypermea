@@ -56,7 +56,17 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
 
 
   Scenario: Change the size after which response and request bodies are truncated in the log
+    Given that resource has 100 items in its collection
+    And the server has its logging verbosity set to DEBUG
+    When a client requests that resource
+    Then the log entry does not exceed the default size
+    And includes the count of the resource collection
+
   Scenario: TRACE logging ignores max body size
+    Given that resource has 100 items in its collection
+    And the server has its logging verbosity set to DEBUG
+    When a client requests that resource
+    Then the entire response body appears in the log
 
 
   @wip
