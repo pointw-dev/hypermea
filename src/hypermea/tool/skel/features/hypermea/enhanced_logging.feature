@@ -55,17 +55,26 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
     Then I do not see the secret values
 
 
-
-  Scenario: Change the size after which logged response and request bodies are truncated
+  Scenario: Change the size after which response and request bodies are truncated in the log
   Scenario: TRACE logging ignores max body size
 
+
+  @wip
   Scenario: Configure logs to be sent by email
+  @wip
   Scenario: Configure logs to be sent to webhook
-  Scenario: Adding my own logging.yml file overrides and extends the built-in logging behaviour
 
 
-# May need to postpone integration settings logging until after #90
+# This scenario has passed integration testing. The feature tests needs to wait
+# until hy integration create has stabilized
   Scenario: Integration settings are logged
+
+
+# This scenario has passed integration testing, but is postponed until the last
+# two are wired with a mock filesystem.  Modify additional_log_configuration()
+# in configuration/custom_logging_configuration.py.  The step functions will
+# need to rewrite that file to test the behaviour.
+  Scenario: Additional custom log configuration
 
 
 # The scenario functions for the last two are named SKIP_* so they won't fire
