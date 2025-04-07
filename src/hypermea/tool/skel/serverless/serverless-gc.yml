@@ -12,7 +12,7 @@ provider:
   environment:
     HY_INSTANCE_NAME: "{$project_name} development serverless (google)"
     HY_LOG_TO_FOLDER: Disabled
-    HY_SEND_ERROR_EMAILS: Disabled
+    HY_LOG_TO_EMAIL: Disabled
     ## NEED MONGO CONNECTION DETAILS HERE
 
 

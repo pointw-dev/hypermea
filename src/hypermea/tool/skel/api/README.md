@@ -73,7 +73,7 @@ The base variables are prefixed with HY_ .  The environment variables you can se
 | HY_PAGINATION_LIMIT       | Eve pass-through                                             | 3000                                                        |
 | HY_PAGINATION_DEFAULT     | Eve pass-through                                             | 1000                                                        |
 | HY_LOG_TO_FOLDER          | (disable if deploying as serverless as there is no folder to log to) | Enabled                                                     |
-| HY_SEND_ERROR_EMAILS      | (only works if the following values are set)                 | Enabled                                                     |
+| HY_LOG_TO_EMAIL      | (only works if the following values are set)                 | Enabled                                                     |
 | HY_SMTP_HOST              |                                                              | internal.cri.com                                            |
 | HY_SMTP_PORT              |                                                              | 25                                                          |
 | HY_ERROR_EMAIL_RECIPIENTS |                                                              | michael@pointw.com                                          |

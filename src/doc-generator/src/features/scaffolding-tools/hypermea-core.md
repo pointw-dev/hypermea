@@ -53,7 +53,7 @@ background explanation, mention the addition to the standard python logging
 
 * configures
     * standard formatting,
-    * logging errors to SMTP (`HY_SEND_ERROR_EMAILS`),
+    * logging errors to SMTP (`HY_LOG_TO_EMAIL`),
     * logging to folder (`HY_LOG_TO_FOLDER`) - doco details (timed rotation at midnight, etc.)
 * the TRACE level accessible with `LOG.trace()`
 * the `@trace` decorator (enabled by default, disable by setting `HY_TRACE_LOGGING` to disable)

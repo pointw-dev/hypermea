@@ -99,13 +99,13 @@ class LogConfigurator:
 
     def _setup_smtp_logging(self):
         self.smtp_warnings = []
-        if SETTINGS.has_enabled('HY_SEND_ERROR_EMAILS'):
+        if SETTINGS.has_enabled('HY_LOG_TO_EMAIL'):
             requires = ['HY_SMTP_HOST', 'HY_SMTP_PORT', 'HY_ERROR_EMAIL_RECIPIENTS', 'HY_ERROR_EMAIL_FROM']
             good_to_go = True
             for item in requires:
                 if item not in SETTINGS:
                     self.smtp_warnings.append(
-                        f'HY_SEND_ERROR_EMAILS is enabled, but {item} is missing - no error emails will be sent')
+                        f'HY_LOG_TO_EMAIL is enabled, but {item} is missing - no error emails will be sent')
                     good_to_go = False
 
             if good_to_go:
@@ -128,7 +128,7 @@ class LogConfigurator:
         if self.smtp_warnings:
             for warning in self.smtp_warnings:
                 LOG.warning(warning)
-        elif SETTINGS.has_enabled('HY_SEND_ERROR_EMAILS'):  # TODO: can this be moved up to logging_config setup?
+        elif SETTINGS.has_enabled('HY_LOG_TO_EMAIL'):  # TODO: can this be moved up to logging_config setup?
             instance_name = SETTINGS.get('HY_INSTANCE_NAME')
             email_format = f'''%(levelname)s sent from {self.api_name} instance "{instance_name}" (hostname: {socket.gethostname()})
     

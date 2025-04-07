@@ -50,7 +50,7 @@ SETTINGS.create('HY', 'RATE_LIMIT_PATCH', is_optional=True)
 SETTINGS.create('HY', 'RATE_LIMIT_DELETE', is_optional=True)
 
 
-if SETTINGS.has_enabled('HY_SEND_ERROR_EMAILS'):
+if SETTINGS.has_enabled('HY_LOG_TO_EMAIL'):
     SETTINGS.create('HY', 'SMTP_PORT', default_value=25)
     SETTINGS.create('HY', 'SMTP_HOST', is_optional=True)
     SETTINGS.create('HY', 'ERROR_EMAIL_RECIPIENTS', is_optional=True)
