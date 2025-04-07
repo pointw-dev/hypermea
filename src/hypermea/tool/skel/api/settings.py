@@ -1,16 +1,18 @@
 """
 Settings to configure Eve's behaviours.
 """
-from hypermea.core.utils import set_eve_setting_from_hypermea_base_setting
+from hypermea.core.settings_manager import SettingPromoter
 import domain
 from configuration import SETTINGS
+
+promote = SettingPromoter(globals())
 
 ########################################################################
 DOMAIN = domain.DOMAIN
 
-########################################################################
-# change Eve default setting values, keeping them "static"
 
+########################################################################
+# change Eve default setting values, keeping them as dev-time
 RENDERERS = ['hypermea.core.render.HALRenderer']
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
@@ -50,20 +52,28 @@ AUTH_FIELD = '_owner'
 
 
 ########################################################################
-# "elevate" Eve settings to deploy-time hypermea base settings
-set_eve_setting_from_hypermea_base_setting('PAGINATION_LIMIT', globals())
-set_eve_setting_from_hypermea_base_setting('PAGINATION_DEFAULT', globals())
-set_eve_setting_from_hypermea_base_setting('URL_PREFIX', globals())
-set_eve_setting_from_hypermea_base_setting('CACHE_CONTROL', globals())
-set_eve_setting_from_hypermea_base_setting('CACHE_EXPIRES', globals())
-set_eve_setting_from_hypermea_base_setting('MEDIA_BASE_URL', globals())
+# promote Eve settings to deploy-time, hypermea base settings (HY_)
+promote.all_to_deploy_time([
+    'PAGINATION_LIMIT',
+    'PAGINATION_DEFAULT'
+])
 
-set_eve_setting_from_hypermea_base_setting('MONGO_HOST', globals())
-set_eve_setting_from_hypermea_base_setting('MONGO_PORT', globals())
-set_eve_setting_from_hypermea_base_setting('MONGO_DBNAME', globals())
-set_eve_setting_from_hypermea_base_setting('MONGO_AUTH_SOURCE', globals())
-set_eve_setting_from_hypermea_base_setting('MONGO_USERNAME', globals())
-set_eve_setting_from_hypermea_base_setting('MONGO_PASSWORD', globals())
+promote.all_to_deploy_time([
+    'CACHE_CONTROL',
+    'CACHE_EXPIRES'
+])
+
+promote.to_deploy_time('URL_PREFIX')
+promote.to_deploy_time('MEDIA_BASE_URL')
+
+promote.all_to_deploy_time([
+    'MONGO_HOST',
+    'MONGO_PORT',
+    'MONGO_DBNAME',
+    'MONGO_AUTH_SOURCE',
+    'MONGO_USERNAME',
+    'MONGO_PASSWORD'
+])
 
 if SETTINGS.has_enabled('HY_MONGO_ATLAS'):
     MONGO_URI = f'mongodb+srv://{SETTINGS.get("HY_MONGO_USERNAME")}:{SETTINGS.get("HY_MONGO_PASSWORD")}@{SETTINGS["HY_MONGO_HOST"]}/{SETTINGS["HY_MONGO_DBNAME"]}?retryWrites=true&w=majority'
@@ -75,9 +85,11 @@ if 'HY_RATE_LIMIT' in SETTINGS:
     RATE_LIMIT_PATCH = rate
     RATE_LIMIT_DELETE = rate
 
-set_eve_setting_from_hypermea_base_setting('RATE_LIMIT_GET', globals())
-set_eve_setting_from_hypermea_base_setting('RATE_LIMIT_POST', globals())
-set_eve_setting_from_hypermea_base_setting('RATE_LIMIT_PATCH', globals())
-set_eve_setting_from_hypermea_base_setting('RATE_LIMIT_DELETE', globals())
+promote.all_to_deploy_time(
+    ['RATE_LIMIT_GET',
+    'RATE_LIMIT_POST',
+    'RATE_LIMIT_PATCH',
+    'RATE_LIMIT_DELETE'
+])
 
 ########################################################################

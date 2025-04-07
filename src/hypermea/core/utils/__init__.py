@@ -1,6 +1,8 @@
 import logging
 import platform
 import socket
+from typing import Dict
+
 from flask import current_app
 from flask.testing import FlaskClient
 from pymongo.database import Database
@@ -33,15 +35,7 @@ def is_mongo_running() -> bool:
         return False
 
 
-def set_eve_setting_from_hypermea_base_setting(eve_setting, globals):
-    if f'HY_{eve_setting}' in SETTINGS:
-        value = SETTINGS[f'HY_{eve_setting}']
-        if eve_setting.startswith('RATE_LIMIT_'):
-            value = eval(value)
-        globals[eve_setting] = value
-
-
-def get_operating_environment():
+def get_operating_environment() -> Dict:
     rtn = {}
     api_name = SETTINGS.get("HY_API_NAME", "api")
 
