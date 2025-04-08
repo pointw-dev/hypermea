@@ -6,23 +6,7 @@ Learn more about the python logger here:
 https://docs.python.org/3/howto/logging.html
 """
 import logging
-
-
-LEVEL_EMOJIS = {
-    'TRACE': '🐾',
-    'DEBUG': '🔍',
-    'INFO': 'ℹ️',
-    'WARNING': '⚠️',
-    'ERROR': '❌',
-    'CRITICAL': '🚨'
-}
-
-
-class EmojiFormatter(logging.Formatter):
-    def format(self, record):
-        emoji = LEVEL_EMOJIS.get(record.levelname, '')
-        record.msg = f' {emoji}  {record.msg}'
-        return super().format(record)
+from hypermea.core.utils import EmojiFormatter
 
 
 def additional_log_configuration():

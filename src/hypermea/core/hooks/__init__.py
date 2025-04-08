@@ -24,7 +24,7 @@ def add_hypermea_hooks(app):
     @app.before_request
     def before_request():
         if not is_mongo_running():
-            LOG.error('MongoDB is not accessible with current settings.')
+            LOG.critical('MongoDB is not accessible with current settings.')
             return make_error_response('MongoDB is not running or is not properly configured', 503)
 
     @app.after_request

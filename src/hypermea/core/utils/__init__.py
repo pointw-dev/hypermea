@@ -1,13 +1,10 @@
-import logging
 import socket
 
 from flask import current_app
 from flask.testing import FlaskClient
 from pymongo.database import Database
 from .singleton import Singleton
-
-
-LOG = logging.getLogger('hypermea')
+from .emoji import LEVEL_EMOJIS, EmojiFormatter
 
 
 def get_db() -> Database:
