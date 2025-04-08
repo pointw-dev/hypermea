@@ -20,6 +20,7 @@ class LogConfigurator:
         self._setup_file_logging()
         self._setup_smtp_logging()
         self._prepare_logger()
+        self._setup_email_format()
 
     def _prepare_logger(self):
         logging.config.dictConfig(self.logging_config)
@@ -119,12 +120,12 @@ class LogConfigurator:
         }
 
         self.logging_config['root']['handlers'] += ['smtp']
-        self._setup_email_format()
 
 
     def _setup_email_format(self):
         if not SETTINGS.has_enabled('HY_LOG_TO_EMAIL'):
             return
+
         LOG = logging.getLogger('configuration')
 
         if self.smtp_warnings:
