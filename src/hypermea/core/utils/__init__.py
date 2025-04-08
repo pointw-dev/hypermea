@@ -6,8 +6,6 @@ from flask.testing import FlaskClient
 from pymongo.database import Database
 from .singleton import Singleton
 
-from configuration import SETTINGS, VERSION as api_version
-
 
 LOG = logging.getLogger('hypermea')
 
@@ -21,6 +19,8 @@ def get_api() -> FlaskClient:
 
 
 def is_mongo_running() -> bool:
+    from configuration import SETTINGS
+
     host = SETTINGS['HY_MONGO_HOST']
     port = SETTINGS['HY_MONGO_PORT']
     # TODO: ensure this works with atlas, or other permutations

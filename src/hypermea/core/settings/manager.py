@@ -138,7 +138,7 @@ class SettingsManager:
         for prefix in settings:
             if 'description' in settings[prefix]:
                 callback(f"== {prefix}: {settings[prefix]['description']}")
-            for setting_name in sorted(settings[prefix]):
+            for setting_name in [setting for setting in sorted(settings[prefix]) if setting not in ['description', 'settings']]:
                 value = settings[prefix][setting_name]
                 callback(f'{prefix}_{setting_name}: {value}')
 

@@ -36,6 +36,7 @@ def hypermea_settings() -> dict[str, str]:
     }
 
 
+
 @pytest.fixture(scope='module')
 def static_settings() -> dict[str, Any]:
     return {
@@ -45,22 +46,7 @@ def static_settings() -> dict[str, Any]:
 
 @pytest.fixture(scope='function')
 def service(hypermea_settings, static_settings):
-    # allow step definitions to change hypermea settings
-    for key, value in hypermea_settings.items():
-        os.environ[key.upper()] = value
-
-    # allow step definitions to change eve settings
-    settings_filename = os.path.join(os.path.dirname(__file__), '../service/settings.py')
-    test_settings = load_settings_from_file(settings_filename)
-    for key, value in static_settings.items():
-        test_settings[key.upper()] = value
-
-    from hypermea_service import HypermeaService
-    logger = logging.getLogger()
-    handler = [x for x in logger.handlers if x.name == 'console'][0]
-    handler.setLevel(getattr(logging, 'WARNING'))
-
-    service = HypermeaService(host='0.0.0.0', debug='Disabled', settings=test_settings, threaded='Disabled', use_reloader='Disabled')
+    service = service_with_test_starting_environment(hypermea_settings, static_settings)
     app = service._app
 
     def setup_database():
@@ -79,6 +65,30 @@ def service(hypermea_settings, static_settings):
     yield service
 
     cleanup_database()
+
+
+def service_with_test_starting_environment(hypermea_settings, static_settings):
+    # allow step definitions to change hypermea settings
+    for key, value in hypermea_settings.items():
+        os.environ[key.upper()] = value
+
+    # allow step definitions to change eve settings
+    settings_filename = os.path.join(os.path.dirname(__file__), '../service/settings.py')
+    settings_file_contents = load_settings_from_file(settings_filename)
+
+    for key, value in static_settings.items():
+        settings_file_contents[key.upper()] = value
+
+    from hypermea_service import HypermeaService
+
+    logger = logging.getLogger()
+    handler = [x for x in logger.handlers if x.name == 'console'][0]
+    handler.setLevel(getattr(logging, 'WARNING'))
+
+    service = HypermeaService(host='0.0.0.0', debug='Disabled', settings=settings_file_contents, threaded='Disabled',
+                              use_reloader='Disabled')
+
+    return service
 
 
 @pytest.fixture(scope='function')

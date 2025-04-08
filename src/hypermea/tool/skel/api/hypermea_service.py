@@ -7,7 +7,6 @@ from hypermea.core.gateway import register
 from hypermea.core.logging import log_starting_environment
 from flask_cors import CORS
 import hooks
-from hypermea.core.logging import log_starting_environment
 from configuration import SETTINGS
 
 LOG = logging.getLogger('service')

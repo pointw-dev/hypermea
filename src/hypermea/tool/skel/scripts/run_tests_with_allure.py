@@ -5,7 +5,7 @@ import json
 import sys
 from pathlib import Path
 
-# Add src/service to sys.path to allow `from configuration import ...` to work
+# Add src/service to sys.path
 service_dir = Path(__file__).resolve().parents[1] / "service"
 sys.path.insert(0, str(service_dir))
 

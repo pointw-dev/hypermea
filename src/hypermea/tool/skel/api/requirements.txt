@@ -2,8 +2,11 @@ Eve==2.2.0
 Flask-Cors==5.0.0
 requests==2.32.3
 hypermea-core==0.9.50
+
 pytest~=8.3.5
 pytest-bdd==8.1.0
+pytest-mock==3.14.0
+# pyfakefs==5.8.0
 allure-pytest==2.14.0
 assertpy==1.1
 uritemplate==4.1.1

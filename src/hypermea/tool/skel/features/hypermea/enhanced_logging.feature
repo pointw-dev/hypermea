@@ -55,6 +55,7 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
     Then I do not see the secret values
 
 
+  # these have passed integration testing, awaiting BDD treatment
   Scenario: Change the size after which response and request bodies are truncated in the log
     Given that resource has 100 items in its collection
     And the server has its logging verbosity set to DEBUG
@@ -69,8 +70,8 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
     Then the entire response body appears in the log
 
 
-  @wip
-  Scenario: Configure logs to be sent by email
+
+
   @wip
   Scenario: Configure logs to be sent to webhook
 
@@ -87,9 +88,9 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
   Scenario: Additional custom log configuration
 
 
-# The scenario functions for the last two are named SKIP_* so they won't fire
-# it turns out wiring up a fs mock is tricky given how the log setup is currently
-# implemented.  These two scenarios have passed integration testing, but for now
+# The scenario functions for the last three are named SKIP_* so they won't fire
+# it turns out wiring up a fs/smtp mock is tricky given how the log setup is currently
+# implemented.  The scenarios have passed integration testing, but for now
 # they will not be tested in this feature suite.  You can still view the step
 # definitions - but as they are currently defined they will write to your hard
 # drive if you run them.
@@ -104,4 +105,15 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
     When the client does something that causes log events to occur
     Then the log is written to the specified location
 
+  Scenario Outline: Log entries can be sent by email
+    Given the service is configured to send emails on <verbosity> logs
+    When a ERROR entry is logged
+    And a WARNING entry is logged
+    And a INFO entry is logged
+    Then the number of emails sent will be <emails_sent>
+
+    Examples:
+      | verbosity | emails_sent |
+      | ERROR     | 1           |
+      | WARNING   | 2           |
 

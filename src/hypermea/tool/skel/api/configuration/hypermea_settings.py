@@ -1,24 +1,26 @@
 import socket
+from email.policy import default
+
 from hypermea.core.settings import SettingsManager
 
 SETTINGS = SettingsManager.instance()
 SETTINGS.set_prefix_description('HY', 'HypermeaService base configuration')
 SETTINGS.create('HY', {
-    'API_NAME': '{$project_name}',
+    'API_NAME': 'dev-hypermea-api',
     'API_PORT': 2112,
     'INSTANCE_NAME': socket.gethostname(),
 
     'MONGO_ATLAS': 'Disabled',
     'MONGO_HOST': 'localhost',
     'MONGO_PORT': 27017,
-    'MONGO_DBNAME': '{$project_name}',
+    'MONGO_DBNAME': 'dev-hypermea-api',
 
     'TRACE_LOGGING': 'Enabled',
     'PAGINATION_LIMIT': 3000,
     'PAGINATION_DEFAULT': 1000,
     'ADD_ECHO': 'Disabled',
     'LOG_TO_FOLDER': 'Disabled',
-    'SEND_ERROR_EMAILS': 'Disabled',
+    'LOG_TO_EMAIL': 'Disabled',
     'LOG_MAX_BODY_SIZE': 1024,
 })
 
@@ -50,11 +52,10 @@ SETTINGS.create('HY', 'RATE_LIMIT_PATCH', is_optional=True)
 SETTINGS.create('HY', 'RATE_LIMIT_DELETE', is_optional=True)
 
 
-if SETTINGS.has_enabled('HY_LOG_TO_EMAIL'):
-    SETTINGS.create('HY', 'SMTP_PORT', default_value=25)
-    SETTINGS.create('HY', 'SMTP_HOST', is_optional=True)
-    SETTINGS.create('HY', 'ERROR_EMAIL_RECIPIENTS', is_optional=True)
-    SETTINGS.create('HY', 'ERROR_EMAIL_FROM', is_optional=True)
+SETTINGS.create('HY', 'LOG_EMAIL_VERBOSITY', is_optional=True, default_value='ERROR')
+# SETTINGS.create('HY', 'LOG_EMAIL_PATTERN', default='*')
+SETTINGS.create('HY', 'LOG_EMAIL_RECIPIENTS', is_optional=True)
+SETTINGS.create('HY', 'LOG_EMAIL_FROM', is_optional=True, default_value=f'{SETTINGS.get("HY_API_NAME")} <no-reply@example.com>')
 
 # cancellable settings...
 # if SETTINGS.get('HY_CANCELLABLE') == '':
