@@ -2,7 +2,7 @@ import logging
 from flask import request, g, make_response, jsonify
 from hypermea.core.utils import is_mongo_running, get_db
 from hypermea.core.response import make_error_response
-from hypermea.core.href import get_my_base_url
+from hypermea.core.href import get_my_base_url, get_self_href_from_request
 from hypermea.core.logging import trace
 
 import hooks._gateway
@@ -13,8 +13,8 @@ import hooks._logs
 import affordances
 from configuration import SETTINGS
 
-
 LOG = logging.getLogger('hypermea')
+
 
 @trace
 def add_hypermea_hooks(app):
@@ -33,9 +33,7 @@ def add_hypermea_hooks(app):
             delete_count = 0
             if hasattr(g, 'delete_count'):
                 delete_count = g.delete_count
-            self_href = get_my_base_url() + request.full_path
-            if self_href.endswith('?'):
-                self_href = self_href[:-1]
+            self_href = get_self_href_from_request()
             body = {
                 '_status': 'deleted',
                 'delete_count': delete_count,

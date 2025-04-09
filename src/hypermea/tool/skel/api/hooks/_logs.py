@@ -7,6 +7,7 @@ import json
 from flask import make_response, jsonify, request as flask_request
 from hypermea.core.logging import trace
 from hypermea.core.logging.hooks import log_request, log_response
+from hypermea.core.href import get_self_href_from_request
 from hypermea.core.response import make_error_response
 from configuration import SETTINGS
 
@@ -35,6 +36,14 @@ def add_hooks(app):
             return make_error_response('Please provide proper credentials', 401)
 
         return _get_logging_config()
+
+    @app.route('/_logging/edit-form', methods=['GET'])
+    def get_logging_edit_form():
+        """Returns the current verbosity levels for logging handlers."""
+        if app.auth and not app.auth.authorized(None, '_logging', 'GET'):
+            return make_error_response('Please provide proper credentials', 401)
+
+        return _get_logging_edit_form()
 
     @app.route('/_logging', methods=['PUT'])
     def put_logging_config():
@@ -66,8 +75,53 @@ def _get_logging_config():
         handler.name: logging.getLevelName(handler.level)
         for handler in logger.handlers
     }
+    payload['_links'] = {
+        'self': { 'href': get_self_href_from_request() },
+        'edit-form': { 'href': get_self_href_from_request()+'/edit-form' }
+    }
 
     response = make_response(jsonify(payload), 200)
+    _log_request('_logging', flask_request, response)
+    return response
+
+
+@trace
+def _get_logging_edit_form():
+    logger = logging.getLogger()
+
+    properties = []
+    for handler in logger.handlers:
+        properties.append({
+            'name': handler.name,
+            'prompt': f'Verbosity level for {handler.name}',
+            'required': False,
+            'value': logging.getLevelName(handler.level),
+            'type': 'string',
+            'options': {
+                'inline': [
+                    'TRACE',
+                    'DEBUG',
+                    'INFO',
+                    'WARNING',
+                    'ERROR',
+                    'CRITICAL'
+                ],
+                'maxItems': 1
+            }
+        })
+
+    rtn = {
+        '_links': {'self': {'href': get_self_href_from_request()}},
+        '_templates': {
+            'default': {
+                'method': 'PUT',
+                'contentType': 'application/json',
+                'properties': properties
+            }
+        }
+    }
+
+    response = make_response(jsonify(rtn), 200)
     _log_request('_logging', flask_request, response)
     return response
 

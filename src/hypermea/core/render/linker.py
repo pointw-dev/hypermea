@@ -1,5 +1,5 @@
 from flask import request, current_app
-from hypermea.core.href import clean_href, add_search_link, get_resource_id, get_resource_rel, get_my_base_url
+from hypermea.core.href import clean_href, add_search_link, get_resource_id, get_resource_rel, get_my_base_url, get_self_href_from_request
 from configuration import SETTINGS
 
 
@@ -49,12 +49,7 @@ class HalLinker:
                 self._add_links_to_item(item)
 
 
-        self_href = f'{self.resource.base_url}{request.full_path}'
-        if self_href.endswith('?'):
-            self_href = self_href[:-1]
-
-
-        self_href = self_href
+        self_href = get_self_href_from_request()
         data['_links'] = data.get('_links', {})
         data['_links']['self'] = {
             'href': self_href

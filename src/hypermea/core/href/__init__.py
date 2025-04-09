@@ -15,6 +15,14 @@ from bson import ObjectId
 
 from configuration import SETTINGS
 
+
+def get_self_href_from_request():
+    self_href = get_my_base_url() + request.full_path
+    if self_href.endswith('?'):
+        self_href = self_href[:-1]
+    return self_href
+
+
 def get_id_field(collection_name: str) -> str:
     return current_app.config['DOMAIN'][collection_name]['id_field']
 
