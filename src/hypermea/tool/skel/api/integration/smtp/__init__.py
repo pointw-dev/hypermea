@@ -17,5 +17,5 @@ SETTINGS.create('SMTP', 'USERNAME', is_optional=True)
 SETTINGS.create('SMTP', 'PASSWORD', is_optional=True)
 
 
-def send_email(recipients: list[str], subject: str, message: str, sender: str = None):
-    EmailSender().send(recipients, subject, message, sender)
+def send_email(recipients: list[str], subject: str, html_message: str, sender: str = None):
+    EmailSender().send(recipients, subject, html_message, sender)

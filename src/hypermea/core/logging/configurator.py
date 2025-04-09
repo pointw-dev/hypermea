@@ -1,5 +1,6 @@
 import logging.config
 import os
+import html
 
 from werkzeug.utils import secure_filename
 from hypermea.core.settings import starting_environment
@@ -124,14 +125,48 @@ class LogConfigurator:
         }
 
     def _get_smtp_formater(self):
-        # start_env = starting_environment()
+        env_table = self._build_starting_environment_section()
+        code_block_style = 'style="background: #f9f9f9; padding: 10px; border-radius: 4px; font-family: monospace;"'
 
         return {
             'datefmt': DATE_FORMAT,
             'style': '{',
-            'format': f'''{{asctime}} - {{name}} - {{levelname}} - {{message}}            
-{{filename}}:{{lineno}} - {{funcName}}()
- 
-{{pathname}}
+            'format': f'''<h2>{{icon}} {{levelname}} - problem encountered</h2>
+<div {code_block_style}>{{message}}</div>
+
+<h3>Log Entry</h3>
+<div {code_block_style}>{{asctime}} - {{name}} - {{levelname}} - {{message}}</div>
+
+<h3>Code Location</h3>
+<div {code_block_style}>
+  <p>{{filename}}:{{lineno}} - {{funcName}}()</p>
+  <p>{{pathname}}</p>
+</div>
+
+<h3>Starting Environment</h3>
+{env_table}
 '''
         }
+
+    @staticmethod
+    def _build_starting_environment_section():
+        start_env = starting_environment()
+
+        table_style = 'style="font-size: 13px; color: #666; margin-top: 10px;"'
+        name_style = 'style="font-family: monospace; background: #f9f9f9; padding: 5px;"'
+        value_style = 'style="padding: 5px;"'
+
+        env_table = f'<h4>Component versions</h4><table {table_style}><tbody>'
+
+        for component, version in start_env['versions'].items():
+            env_table += f'<tr><td {name_style}>{component}</td><td {value_style}>{version}</td></tr>'
+        env_table += '</tbody></table>'
+        for group in [g for g in start_env['settings_groups'] if g['settings']]:
+            env_table += f'<h4>{group["description"]}</h4><table {table_style}><tbody>'
+            for setting, value in group['settings'].items():
+                if setting == 'HY_LOG_EMAIL_FROM':
+                    print(f'\n=======================\n\n\n{value}\n{html.escape(value)}\n\n=======================\n\n')
+                escaped_value = html.escape(str(value))
+                env_table += f'<tr><td {name_style}>{setting}</td><td {value_style}>{escaped_value}</td></tr>'
+            env_table += '</tbody></table>'
+        return env_table

@@ -1,3 +1,4 @@
+import logging
 import socket
 
 from flask import current_app
@@ -5,7 +6,6 @@ from flask.testing import FlaskClient
 from pymongo.database import Database
 from .singleton import Singleton
 from .emoji import LEVEL_EMOJIS, EmojiFormatter
-
 
 def get_db() -> Database:
     return current_app.data.driver.db
@@ -28,3 +28,6 @@ def is_mongo_running() -> bool:
         return False
 
 
+def get_logging_handler_by_name(name: str) -> logging.Handler:
+    handler_map = {h.name: h for h in logging.getLogger().handlers if hasattr(h, 'name')}
+    return handler_map[name]

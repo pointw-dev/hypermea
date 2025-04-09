@@ -29,7 +29,7 @@ def make_error_response(message: str, code: int, issues: Optional[List[Dict]] = 
 
     if 'exception' in kwargs:
         ex = kwargs.get('exception')
-        LOG.exception(message, ex)
+        LOG.error(message, exc_info=ex, stack_info=True)
 
         tb = traceback.TracebackException.from_exception(ex)
         site_packages_stack = []

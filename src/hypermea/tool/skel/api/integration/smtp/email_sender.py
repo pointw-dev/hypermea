@@ -1,6 +1,7 @@
 import logging
 import re
 import smtplib
+import html2text
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from configuration import SETTINGS
@@ -21,12 +22,12 @@ class EmailSender:
         if self.host == "not configured":
             raise RuntimeError("SMTP_HOST is not configured")
 
-    def send(self, recipients: list[str], subject: str, message: str, sender: str = None):
+    def send(self, recipients: list[str], subject: str, html_message: str, sender: str = None):
         sender = sender or self.sender
         if not sender:
             raise RuntimeError("No sender provided and SMTP_FROM is not configured")
 
-        mime_message = self._build_mime_message(recipients, sender, subject, message)
+        mime_message = self._build_mime_message(recipients, sender, subject, html_message)
         self._send_mime_message(mime_message, recipients, sender)
 
     def _send_mime_message(self, mime_message, recipients, sender):
@@ -71,18 +72,18 @@ class EmailSender:
         mime_message['To'] = ', '.join(recipients)
 
         text = self._strip_html(message)
-        html = self._convert_to_html(message)
+        html = self._embed_message(message)
 
         mime_message.attach(MIMEText(text, 'plain'))
         mime_message.attach(MIMEText(html, 'html'))
 
         return mime_message
 
-    def _convert_to_html(self, message):
-        body = message.replace('\n', '<br/>')
+    def _embed_message(self, message):
         return f'''<html>
   <body>
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #102E2D; padding: 10px; border-radius: 8px;">
+      <tbody>
       <tr>
         <td style="padding: 0; width: 1%; white-space: nowrap;">
           <img src="https://www.pointw.com/img/hypermea-api.png" alt="{self.api_name}" style="height: 40px; display: block; margin: 0;">
@@ -93,12 +94,17 @@ class EmailSender:
           </span>
         </td>
       </tr>
+      </tbody>
     </table>
     <div style="font-family: Calibri, Verdana, Tahoma, Arial, sans-serif; font-size:14px; margin-top:10px; margin-left:10px;">
-      {body}
+      {message}
     </div>
   </body>
 </html>'''
 
     def _strip_html(self, message):
-        return re.sub(r'<.*?>', '', message)
+        h = html2text.HTML2Text()
+        h.pad_tables = True
+        text = h.handle(message)
+        text = re.sub(r'\s\s\s\s\n', '', text)
+        return text
