@@ -11,7 +11,7 @@ def _create(integration, name, prefix):
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
     if integration == 'empty' and name is None:
-        print('You must supply a name when choosing the "empty" integration.')
+        print('You must supply a name when choosing the "custom" integration.')
         hypermea.tool.jump_back_to(starting_folder)
         sys.exit(902)
 

@@ -8,6 +8,8 @@ import requests
 from PIL import Image
 from PIL.ExifTags import TAGS
 
+from . import settings
+
 logging.getLogger('PIL').setLevel(logging.ERROR)
 logging.getLogger('urllib3').setLevel(logging.ERROR)
 
@@ -60,7 +62,7 @@ def _get_image_info(href):
 
 def get_metadata(href):
     rtn = {}
-    content_type = mimetypes.guess_type(href)[0] if mimetypes.guess_type(href)[0] else 'application/octet-stream'
+    content_type = mimetypes.guess_type(href)[0] if mimetypes.guess_type(href)[0] else SETTINGS['{$prefix}_FALLBACK_MEDIA_TYPE']
     major_type = content_type.split('/')[0]
 
     type_map = {

@@ -133,7 +133,7 @@ COMMON_FIELDS = {
 
   90x - integration
   901 - integration already exists
-  902 - name required when choosing empty integration
+  902 - name required when choosing custom integration
 
 100x - affordances
 1001 - affordance already exists

@@ -6,7 +6,7 @@ import hypermea.tool
 
 def _get_integrations():
     integrations_folder = os.path.join(os.path.dirname(hypermea.tool.__file__), 'skel/integration')
-    integrations = [name for name in os.listdir(integrations_folder) ]
+    integrations = [name for name in os.listdir(integrations_folder) if not name.startswith('_') ]
     return integrations
 
 
@@ -24,7 +24,7 @@ def commands():
 @click.argument('integration', type=click.Choice(_get_integrations(), case_sensitive=False), metavar='<integration>')
 @click.option('--name', '-n',
               help='Set or change the name of the integration.  If you do not supply a name, the name of '
-                   'the integration will be used (e.g. s3).  If you choose "empty" you must supply a name.',
+                   'the integration will be used (e.g. s3).  If you choose "custom" you must supply a name.',
               metavar='[name]')
 @click.option('--prefix', '-p',
               help='Set the prefix used in settings this integration may require.',

@@ -4,7 +4,7 @@ import html
 
 from werkzeug.utils import secure_filename
 from hypermea.core.settings import starting_environment
-from .html_smtp import HTMLSMTPHandler
+from .smtp_handler import HTMLSMTPHandler
 from integration.smtp import EmailSender
 from configuration import SETTINGS, VERSION
 
@@ -124,8 +124,9 @@ class LogConfigurator:
             }
         }
 
-    def _get_smtp_formater(self):
-        env_table = self._build_starting_environment_section()
+    @staticmethod
+    def _get_smtp_formater():
+        env_table = LogConfigurator._build_starting_environment_section()
         code_block_style = 'style="background: #f9f9f9; padding: 10px; border-radius: 4px; font-family: monospace;"'
 
         return {

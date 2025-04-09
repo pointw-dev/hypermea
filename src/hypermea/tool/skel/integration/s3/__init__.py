@@ -1,16 +1,9 @@
 import logging
 import boto3
-from configuration import SETTINGS
+from . import settings
 
 LOG = logging.getLogger('{$integration}')
 
-SETTINGS.set_prefix_description('{$prefix}', 'Settings to connect to an AWS S3 bucket')
-SETTINGS.create('{$prefix}', {
-    'AWS_ACCESS_KEY_ID': '{$access_key}',
-    'AWS_SECRET_ACCESS_KEY': '{$secret_key}',
-    'AWS_REGION': '{$region}',
-    'BUCKET_NAME': '{$bucket}'
-})
 
 botocore_log = logging.getLogger('botocore')
 botocore_log.setLevel(logging.ERROR)
