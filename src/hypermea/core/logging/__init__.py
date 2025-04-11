@@ -3,7 +3,7 @@ from .trace.trace_level import TRACE_LEVEL
 from .trace.decorators import trace
 from hypermea.core.settings import starting_environment
 
-from configuration import SETTINGS
+import settings
 
 
 @trace
@@ -21,6 +21,6 @@ def log_starting_environment():
         logger.info(f"{name}{padding}{version}")
 
     logger = logging.getLogger("service")
-    SETTINGS.dump(callback=logger.info)
+    # SETTINGS.dump(callback=logger.info)
 
     logger.info("=========== end dump ===========")

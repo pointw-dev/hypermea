@@ -7,7 +7,7 @@ from hypermea.core.gateway import register
 from hypermea.core.logging import log_starting_environment
 from flask_cors import CORS
 import hooks
-from configuration import SETTINGS
+import settings
 
 LOG = logging.getLogger('service')
 
@@ -15,11 +15,13 @@ LOG = logging.getLogger('service')
 class HypermeaService:
     def __init__(self, **kwargs):
         self._grab_kwargs(kwargs)
-        self._name = SETTINGS.get('HY_API_NAME', default_value='dev-hypermea-api')
-        settings = os.path.join(os.path.dirname(__file__), 'settings.py')
+        self._name = settings.hypermea.api_name
+
+        eve_settings = os.path.join(os.path.dirname(__file__), 'static_settings.py')
         if 'settings' in kwargs:
-            settings = kwargs['settings']
-        self._app = HypermeaEve(import_name=self._name, settings=settings)
+            eve_settings = kwargs['settings']
+        self._app = HypermeaEve(import_name=self._name, settings=eve_settings)
+
         CORS(self._app)
         hooks.add_hooks(self._app)
         self.border = '-' * (23 + len(self._name))
@@ -53,7 +55,7 @@ class HypermeaService:
 
         try:
             register(self._app)
-            self._app.run(host=self.host, port=SETTINGS.get('HY_API_PORT'), threaded=self.threaded, debug=self.debug)
+            self._app.run(host=self.host, port=settings.hypermea.api_port, threaded=self.threaded, debug=self.debug)
         except Exception as ex:  # pylint: disable=broad-except
             LOG.exception(ex)
         finally:

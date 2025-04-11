@@ -11,7 +11,7 @@ import hooks._settings
 import hooks._logs
 
 import affordances
-from configuration import SETTINGS
+import settings
 
 LOG = logging.getLogger('hypermea')
 
@@ -50,7 +50,7 @@ def add_hypermea_hooks(app):
         return response
 
 
-    if SETTINGS.has_enabled('HY_ADD_ECHO'):
+    if settings.hypermea.add_echo:
         @app.route('/_echo', methods=['PUT'])
         def _echo_message():
             return echo_message()

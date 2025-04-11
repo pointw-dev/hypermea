@@ -9,7 +9,7 @@ from hypermea.core.logging import trace
 from hypermea.core.logging.hooks import log_request, log_response
 from hypermea.core.href import get_self_href_from_request
 from hypermea.core.response import make_error_response
-from configuration import SETTINGS
+import settings
 
 LOG = logging.getLogger('hooks.logging')
 

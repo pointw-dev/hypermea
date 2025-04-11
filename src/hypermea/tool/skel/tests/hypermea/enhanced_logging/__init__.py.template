@@ -10,7 +10,8 @@ from multiprocessing import Process, Queue, Event
 import signal
 import time
 from contextlib import redirect_stdout, redirect_stderr
-from service.configuration import SETTINGS
+
+import service.settings
 
 
 FEATURE = 'hypermea/enhanced_logging.feature'
@@ -92,8 +93,8 @@ def given_the_service_has_started(context, service):
 
 
 @given('the service is configured with file logging enabled')
-def given_the_service_is_configured_with_file_logging_enabled(hypermea_settings):
-    hypermea_settings['HY_LOG_TO_FOLDER'] = 'Enabled'
+def given_the_service_is_configured_with_file_logging_enabled(deploy_time_settings):
+    deploy_time_settings.logging.log_to_folder = True
 
 
 @when('I look at the log')
@@ -117,7 +118,7 @@ def then_i_see_the_versions_of_important_stack_components(context):
     stack_lines = [line for line in context.log_entries if line[0] == 'environment']
     assert_that(len(stack_lines)).is_greater_than(0)
 
-    api_name = SETTINGS.get("HY_API_NAME", "api")
+    api_name = settings.hypermea.api_name
     missing = [
         component for component in [api_name, 'eve', 'cerberus', 'python', 'os_system', 'os_release', 'os_version', 'os_platform']
         if not any(msg.startswith(component) for _, _, msg in stack_lines)
@@ -127,11 +128,11 @@ def then_i_see_the_versions_of_important_stack_components(context):
 
 @then('I see the base settings for hypermea')
 def then_i_see_the_base_settings_for_hypermea(context):
-    hypermea_settings = [entry for entry in context.log_entries if entry[0] == 'service' and entry[2].startswith('HY_')]
-    assert_that(len(hypermea_settings)).is_greater_than(0)
+    deploy_time_settings = [entry for entry in context.log_entries if entry[0] == 'service' and entry[2].startswith('HY_')]
+    assert_that(len(deploy_time_settings)).is_greater_than(0)
 
     missing = [
         setting for setting in ['HY_API_NAME', 'HY_MONGO_HOST', 'HY_PAGINATION_DEFAULT']
-        if not any(msg.startswith(setting) for _, _, msg in hypermea_settings)
+        if not any(msg.startswith(setting) for _, _, msg in deploy_time_settings)
     ]
     assert_that(missing).described_as("Missing version logs for").is_empty()

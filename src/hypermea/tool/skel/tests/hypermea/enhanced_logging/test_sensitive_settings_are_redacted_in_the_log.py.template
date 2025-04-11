@@ -1,4 +1,5 @@
 import pytest
+from pydantic import SecretStr
 from pytest_bdd import given, when, then, parsers
 from assertpy import assert_that
 from tests.hypermea import *
@@ -16,14 +17,14 @@ def test_sensitive_settings_are_redacted_in_the_log():
 
 
 @given('I have configured a setting for a password')
-def given_i_have_configured_a_setting_for_a_password(hypermea_settings):
-    hypermea_settings['HY_MONGO_PASSWORD'] = 'swordfish'
+def given_i_have_configured_a_setting_for_a_password(deploy_time_settings):
+    deploy_time_settings.mongo.password = SecretStr('swordfish')
 
 
 @then('I do not see the secret values')
 def then_i_do_not_see_the_secret_values(context):
-    hypermea_settings = [entry for entry in context.log_entries if entry[0] == 'service' and entry[2].startswith('HY_')]
-    assert_that(len(hypermea_settings)).is_greater_than(0)
+    deploy_time_settings = [entry for entry in context.log_entries if entry[0] == 'service' and entry[2].startswith('HY_')]
+    assert_that(len(deploy_time_settings)).is_greater_than(0)
 
     log_string = ''.join(str(context.log_entries))
 

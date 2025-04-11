@@ -99,18 +99,18 @@ def _create_tests_folder(project_name, skel):
 def _create_service_folder(project_name, skel):
     folder_name = 'service'
     _copy_api_skel(project_name, folder_name, skel)
-    _rename_api_settings(project_name, folder_name)
+    # _rename_api_settings(project_name, folder_name)
 
 def _rename_api_settings(project_name, folder_name):
     module_name = _sanitize_for_python_module_name(project_name)
-    config_init = os.path.join(folder_name, 'configuration/__init__.py')
+    config_init = os.path.join(folder_name, 'settings/__init__.py')
     with open(config_init, 'r', encoding='utf-8') as f:
         content = f.read()
     content = content.replace('api_settings', f'{module_name}_settings')
     with open(config_init, 'w', encoding='utf-8') as f:
         f.write(content)
-    os.rename(os.path.join(folder_name, 'configuration/api_settings.py'),
-              os.path.join(folder_name, f'configuration/{module_name}_settings.py'))
+    os.rename(os.path.join(folder_name, 'settings/api_settings.py'),
+              os.path.join(folder_name, f'settings/{module_name}_settings.py'))
 
 def _add_pytest_ini(skel):
     with open(f'{skel}/api/pytest.ini', 'r', encoding='utf-8') as f:
@@ -237,7 +237,7 @@ def _add_addins(which_addins, silent=False):
 
 def _show_or_set_version(new_version):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/service/configuration')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 

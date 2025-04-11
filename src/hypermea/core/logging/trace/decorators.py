@@ -5,7 +5,7 @@ Function decorators used in this project
 import logging
 from functools import wraps
 from typing import Any, Callable
-from configuration import SETTINGS
+import settings
 
 LOG = logging.getLogger('trace')
 
@@ -35,7 +35,7 @@ def _trace(target):
     return _wrapper
 
 
-if SETTINGS.has_enabled('HY_TRACE_LOGGING'):
+if settings.logging.trace_logging:
     trace = _trace
 else:
     trace: Callable[[Any], Any] = lambda fn: fn

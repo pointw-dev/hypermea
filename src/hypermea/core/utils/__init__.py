@@ -16,10 +16,10 @@ def get_api() -> FlaskClient:
 
 
 def is_mongo_running() -> bool:
-    from configuration import SETTINGS
+    import settings
 
-    host = SETTINGS['HY_MONGO_HOST']
-    port = SETTINGS['HY_MONGO_PORT']
+    host = settings.mongo.host
+    port = settings.mongo.port
     # TODO: ensure this works with atlas, or other permutations
     try:
         with socket.create_connection((host, port), timeout=0.5):  # TODO: configurable???

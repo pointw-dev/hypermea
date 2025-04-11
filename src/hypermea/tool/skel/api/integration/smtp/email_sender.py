@@ -4,22 +4,22 @@ import smtplib
 import html2text
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from configuration import SETTINGS
+
+import settings
 
 
 class EmailSender:
     def __init__(self):
-        self.host = SETTINGS.get("SMTP_HOST", "not configured")
-        self.port = SETTINGS.get("SMTP_PORT", 25)
-        self.username = SETTINGS.get("SMTP_USERNAME")
-        self.password = SETTINGS.get("SMTP_PASSWORD")
-        self.use_tls = SETTINGS.has_enabled("SMTP_USE_TLS")
-        self.sender = SETTINGS.get("SMTP_FROM")
-        self.api_name = SETTINGS.get("HY_API_NAME", "hypermea-service")
+        self.host = settings.smtp.host
+        self.port = settings.smtp.port
+        self.username = settings.smtp.username
+        self.password = settings.smtp.password
+        self.use_tls = settings.smtp.use_tls
+        self.sender = settings.smtp.sender
+        self.api_name = settings.hypermea.api_name
         self.log = logging.getLogger('email-sender')
 
-
-        if self.host == "not configured":
+        if self.host is None:
             raise RuntimeError("SMTP_HOST is not configured")
 
     def send(self, recipients: list[str], subject: str, html_message: str, sender: str = None):

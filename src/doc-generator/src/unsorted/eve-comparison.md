@@ -41,14 +41,18 @@ This page is for those coming to hypermea from eve.  Hypermea is powered by eve 
 ## Settings
 Eve has one dict for all settings.  Hypermea groups settings into four categories
 
-* fixed - defined and set in `settings.py`  
+* fixed - defined and set in `settings.py`   (aka dev-time)
   * The values of these settings are set before the app is deployed and can only be changed by re-deploying.
   * All eve settings are "fixed" unless "elevated" to a hypermea base setting  
-* base - these are defined by environment variables.  
-  * Some eve settings have been "elevated" to a base setting (e.g. HY_PAGINATION_LIMIT sets the eve setting PAGINATION_LIMIT) with the only differences being the name, and the fact that they can be changed without a re-deploy
-  * the other base settings have been added for use by all services created wtih hypermea
-* api - these are settings added to your API for purpose of the unique requirements of your service
-* integration - these settings are used to connect to anything outside your service, e.g. S3 (bucket name, credentials)
+* deploy-time
+  * base - these are defined by environment variables.  
+    * Some eve settings have been "elevated" to a base setting (e.g. HY_PAGINATION_LIMIT sets the eve setting PAGINATION_LIMIT) with the only differences being the name, and the fact that they can be changed without a re-deploy
+    * the other base settings have been added for use by all services created wtih hypermea
+  * api - these are settings added to your API for purpose of the unique requirements of your service
+  * integration - these settings are used to connect to anything outside your service, e.g. S3 (bucket name, credentials)
+* run-time
+  * logging verbosity per handler
+  * (more to come?)
 
 | Eve setting                   | Eve default           | Hypermea setting      | Hypermea default                    |
 |-------------------------------|-----------------------|-----------------------|-------------------------------------|

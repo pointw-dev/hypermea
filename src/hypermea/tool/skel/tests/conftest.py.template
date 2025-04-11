@@ -1,22 +1,28 @@
 import sys
+import os
 import logging
 from pathlib import Path
+from typing import Any
 
-# Add src/service to sys.path to allow `from configuration import ...` to work
+# Ensure src/service is on sys.path to enable 'from settings import ...'
 service_dir = Path(__file__).resolve().parents[1] / "service"
 sys.path.insert(0, str(service_dir))
 
-import os
-from typing import Any
 import pytest
 from pymongo import MongoClient
+
 from hypermea.core.utils import is_mongo_running
+
+from settings import HypermeaSettings, LoggingSettings, RateLimitSettings
+from settings.all_settings import AllSettings, inject_settings, reset_settings, build_settings
+from integration.mongo.settings import MongoSettings
+from integration.smtp.settings import SmtpSettings
+
+
 from tests import load_settings_from_file
 
-# def pytest_report_header(config):
-#     message = 'This message will display at the top of the pytest report'
-#     return f'🚩 {message}'
 
+os.environ["HYPERMEA_DISABLE_SETTINGS_AUTOLOAD"] = "1"
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
@@ -24,38 +30,48 @@ def pytest_sessionstart(session):
         pytest.exit("❌ Could not connect to MongoDB instance.  Aborting.")
 
 
-@pytest.fixture(scope='function')
-def hypermea_settings() -> dict[str, str]:
-    return {
-        'HY_API_PORT': '2113',
-        'HY_MONGO_DBNAME': 'pytest',
-        'HY_TRACE_LOGGING': 'Disabled',
-        'HY_CACHE_CONTROL': 'no-cache, no-store, must-revalidate',
-        'HY_CACHE_EXPIRES': '30',
-        'HY_PAGINATION_LIMIT': '3000'
-    }
-
-
-
 @pytest.fixture(scope='module')
-def static_settings() -> dict[str, Any]:
+def dev_time_settings() -> dict[str, Any]:
     return {
         'OPTIMIZE_PAGINATION_FOR_SPEED': False
     }
 
 
 @pytest.fixture(scope='function')
-def service(hypermea_settings, static_settings):
-    service = service_with_test_starting_environment(hypermea_settings, static_settings)
+def deploy_time_settings() -> AllSettings:
+    return build_settings(
+        hypermea=HypermeaSettings(pagination_default=999, api_port=2113),
+        mongo=MongoSettings(dbname="pytest")
+    )
+
+
+
+# @pytest.fixture(scope='function')
+# def deploy_time_settings() -> dict[str, str]:
+#     # These are deploy-time env vars that can now be used to construct
+#     # settings model instances instead of being pushed into os.environ
+#     return {
+#         'HY_API_PORT': '2113',
+#         'HY_MONGO_DBNAME': 'pytest',
+#         'HY_TRACE_LOGGING': 'Disabled',
+#         'HY_CACHE_CONTROL': 'no-cache, no-store, must-revalidate',
+#         'HY_CACHE_EXPIRES': '30',
+#         'HY_PAGINATION_LIMIT': '3000'
+#     }
+
+
+@pytest.fixture(scope='function')
+def service(deploy_time_settings: AllSettings, dev_time_settings):
+    inject_settings(deploy_time_settings)
+
+    service = service_with_test_starting_environment(dev_time_settings)
     app = service._app
 
     def setup_database():
-        pass
+        pass  # prepare initial state if needed
 
     def cleanup_database():
-        connection = MongoClient(
-            app.config.get('MONGO_HOST'), app.config.get('MONGO_PORT')
-        )
+        connection = MongoClient(app.config.get('MONGO_HOST'), app.config.get('MONGO_PORT'))
         connection.drop_database(app.config.get('MONGO_DBNAME'))
         connection.close()
 
@@ -65,28 +81,31 @@ def service(hypermea_settings, static_settings):
     yield service
 
     cleanup_database()
+    reset_settings()
 
 
-def service_with_test_starting_environment(hypermea_settings, static_settings):
-    # allow step definitions to change hypermea settings
-    for key, value in hypermea_settings.items():
-        os.environ[key.upper()] = value
-
-    # allow step definitions to change eve settings
-    settings_filename = os.path.join(os.path.dirname(__file__), '../service/settings.py')
+def service_with_test_starting_environment(dev_time_settings):
+    # Load Eve-specific settings
+    import os
+    settings_filename = os.path.join(os.path.dirname(__file__), '../service/static_settings.py')
     settings_file_contents = load_settings_from_file(settings_filename)
 
-    for key, value in static_settings.items():
+    for key, value in dev_time_settings.items():
         settings_file_contents[key.upper()] = value
 
     from hypermea_service import HypermeaService
 
     logger = logging.getLogger()
     handler = [x for x in logger.handlers if x.name == 'console'][0]
-    handler.setLevel(getattr(logging, 'WARNING'))
+    handler.setLevel(logging.WARNING)
 
-    service = HypermeaService(host='0.0.0.0', debug='Disabled', settings=settings_file_contents, threaded='Disabled',
-                              use_reloader='Disabled')
+    service = HypermeaService(
+        host='0.0.0.0',
+        debug='Disabled',
+        settings=settings_file_contents,
+        threaded='Disabled',
+        use_reloader='Disabled'
+    )
 
     return service
 

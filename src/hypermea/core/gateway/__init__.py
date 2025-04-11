@@ -4,23 +4,23 @@ import requests
 from requests.exceptions import ConnectionError
 from flask import current_app, request
 from hypermea.core.logging import trace
-from configuration import SETTINGS
+import settings
 
 LOG = logging.getLogger('gateway')
 REGISTRATIONS = {}
 
 
 def register(app):
-    if not SETTINGS['HY_GATEWAY_URL']:
+    if not settings.hypermea.gateway_url:
         return
 
-    if not SETTINGS['HY_BASE_URL']:
+    if not settings.hypermea.base_url:
         LOG.warning('HY_GATEWAY_URL is set, but cannot register because HY_BASE_URL is not set - cancelling')
         return
 
     url = get_href_from_gateway('gateway_registrations')
-    name = SETTINGS['HY_API_NAME'] if not SETTINGS['HY_NAME_ON_GATEWAY'] else SETTINGS['HY_NAME_ON_GATEWAY']
-    base_url = SETTINGS['HY_BASE_URL']
+    name = settings.hypermea.api_name if not settings.hypermea.name_on_gateway else settings.hypermea.name_on_gateway
+    base_url = settings.hypermea.base_url
     LOG.info(f'Registering with gateway as {name} at {base_url} to {url}')
     api = app.test_client()
     response = api.get('/')
@@ -62,7 +62,7 @@ def get_href_from_gateway(rel):
     # ASSERT: the gateway it points to is up and running
     # ASSERT: the rel is afforded on the gateway
     global REGISTRATIONS
-    url = f"{SETTINGS['HY_GATEWAY_URL']}/"
+    url = f"{settings.hypermea.gateway_url}/"
     etag = REGISTRATIONS.get('_etag')
     headers = {}
     if etag:
@@ -141,7 +141,7 @@ def embed_remote_parent_resource(resource, request, payload):
 
 @trace
 def _get_embedded_resource(remote_id, rel):
-    if not SETTINGS['HY_GATEWAY_URL']:
+    if not settings.hypermea.gateway_url:
         return
 
     url = f'{get_href_from_gateway(rel)}/{remote_id}'

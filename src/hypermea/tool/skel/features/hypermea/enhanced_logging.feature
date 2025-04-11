@@ -82,10 +82,10 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
 
 
 # This scenario has passed integration testing, but is postponed until the last
-# two are wired with a mock filesystem.  Modify additional_log_configuration()
-# in configuration/custom_logging_configuration.py.  The step functions will
+# two are wired with a mock filesystem.  Modify additional_log_setup()
+# in hooks/custom_logging.py.  The step functions will
 # need to rewrite that file to test the behaviour.
-  Scenario: Additional custom log configuration
+  Scenario: Additional custom log setup
 
 
 # The scenario functions for the last three are named SKIP_* so they won't fire

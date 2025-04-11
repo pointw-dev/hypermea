@@ -15,8 +15,8 @@ def test_sort_parameter_name_can_be_changed():
 
 
 @given('the service is configured with a different sort query string parameter')
-def given_the_service_is_configured_with_a_different_sort_query_string_parameter(static_settings):
-    static_settings['QUERY_SORT'] = 'order_by'
+def given_the_service_is_configured_with_a_different_sort_query_string_parameter(dev_time_settings):
+    dev_time_settings['QUERY_SORT'] = 'order_by'
 
 # And a resource is configured
 # And that resource has multiple items in its collection

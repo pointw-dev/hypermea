@@ -15,5 +15,5 @@ def test_the_default_page_size_can_be_changed():
     pass
 
 @given(parsers.parse('the service is configured with a default page size of {page_size:d}'))
-def given_the_service_is_configured_with_a_default_page_size_of_100(hypermea_settings, page_size):
-    hypermea_settings['HY_PAGINATION_DEFAULT'] = f'{page_size}'
+def given_the_service_is_configured_with_a_default_page_size_of_100(deploy_time_settings, page_size):
+    deploy_time_settings.hypermea.pagination_default = page_size

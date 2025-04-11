@@ -50,7 +50,7 @@ def modify_hypermea_service():
                 f.write("        self._socket = SocketIO(self._app, async_mode=None, path='/_ws/socket.io', cors_allowed_origins='*')\n")
                 f.write("        websocket.initialize(self._app, self._socket)\n")
             elif 'self._app.run' in line:
-                f.write("            self._socket.run(self._app, host='0.0.0.0', port=SETTINGS.get('HY_API_PORT'), allow_unsafe_werkzeug=True)\n")
+                f.write("            self._socket.run(self._app, host='0.0.0.0', port=settings.hypermea.api_port, allow_unsafe_werkzeug=True)\n")
             else:
                 f.write(line)
 

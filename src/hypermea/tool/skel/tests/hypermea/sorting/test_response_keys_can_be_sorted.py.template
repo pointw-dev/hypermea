@@ -15,8 +15,8 @@ def test_response_keys_can_be_sorted():
 
 
 @given('key sorting is enabled')
-def given_key_sorting_is_enabled(static_settings):
-    static_settings['JSON_SORT_KEYS'] = True
+def given_key_sorting_is_enabled(dev_time_settings):
+    dev_time_settings['JSON_SORT_KEYS'] = True
 
 # Given a resource is configured with multiple keys
 # Given that resource has an item in its collection

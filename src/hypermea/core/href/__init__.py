@@ -13,7 +13,7 @@ from eve.utils import document_etag
 from datetime import datetime
 from bson import ObjectId
 
-from configuration import SETTINGS
+import settings
 
 
 def get_self_href_from_request():
@@ -106,14 +106,14 @@ def url_join(*parts: str) -> str:
     return url
 
 def get_my_base_url() -> str:
-    if not SETTINGS.get('HY_GATEWAY_URL') and not SETTINGS.has_enabled('HY_USE_ABSOLUTE_URLS'):
+    if not settings.hypermea.gateway_url and not settings.hypermea.use_absolute_urls:
         return ''
 
-    if SETTINGS.get('HY_BASE_URL'):
-        return SETTINGS.get('HY_BASE_URL')
+    if settings.hypermea.base_url:
+        return settings.hypermea.base_url
 
     base_url = re.sub(r'(.*://)?([^/?]+).*', r'\g<1>\g<2>', request.base_url)
-    base_url = url_join(base_url, SETTINGS.get('HY_BASE_PATH', ''))
+    base_url = url_join(base_url, settings.hypermea.base_path)
 
     if base_url[-1] == '/':
         base_url = base_url[0:-1]

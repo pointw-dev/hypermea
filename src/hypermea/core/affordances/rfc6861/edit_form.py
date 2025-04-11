@@ -9,7 +9,7 @@ from hypermea.core.response import make_error_response, unauthorized_message
 from hypermea.core.utils import get_db
 from hypermea.core.href import get_resource_id, get_id_field, get_my_base_url
 from ._common import generate_hal_form, get_allowed_methods
-from configuration import SETTINGS
+import settings
 
 LOG = logging.getLogger("affordances.rfc6861.edit-form")
 
@@ -24,7 +24,7 @@ def add_affordance(app):
 
 
 def add_link(resource, collection_name):
-    if SETTINGS.has_enabled('HY_DISABLE_RFC6861'):
+    if settings.hypermea.disable_rfc6861:
         return
     allowed_methods = get_allowed_methods(current_app, collection_name)['item_methods']
     if not any(method in allowed_methods for method in ['PATCH', 'PUT']):

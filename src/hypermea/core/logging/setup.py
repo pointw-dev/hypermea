@@ -2,21 +2,14 @@
 Configure standard python logging
 """
 
-
-try:
-    # this ensures the integration SETTINGS (if they exist) are loaded before the dump
-    import integration
-except ImportError:
-    pass
-
-from configuration import SETTINGS, additional_log_configuration
-from hypermea.core.logging.configurator import LogConfigurator
+import settings
+from hooks.custom_logging import additional_log_setup
+from hypermea.core.logging.log_setup import LogSetup
 
 
-def configure_logger():
-    api_name = SETTINGS.get('HY_API_NAME')
-    LogConfigurator(api_name)
-    additional_log_configuration()
+def setup_logger():
+    LogSetup(settings.hypermea.api_name)
+    additional_log_setup()
 
 
-configure_logger()
+setup_logger()

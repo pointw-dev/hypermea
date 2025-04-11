@@ -19,17 +19,18 @@ def SKIP_test_logged_error_entries_are_sent_by_email():
 
 
 @given(parsers.parse('the service is configured to send emails on {verbosity} logs'))
-def given_the_service_is_configured_to_use_an_smtp_server(mocker, hypermea_settings, context, verbosity):
+def given_the_service_is_configured_to_use_an_smtp_server(mocker, deploy_time_settings, context, verbosity):
     smtp_mock_name = 'smtplib.SMTP'
     context.mock_smtp = mocker.MagicMock(name=smtp_mock_name)
     mocker.patch(smtp_mock_name, new=context.mock_smtp)
 
-    hypermea_settings['HY_LOG_TO_EMAIL'] = 'Enabled'
-    hypermea_settings['SMTP_HOST'] = 'mail.example.com'
-    hypermea_settings['HY_LOG_EMAIL_FROM'] = f'{SETTINGS["HY_API_NAME"]} <no-reply@example.com>'
-    hypermea_settings['HY_LOG_EMAIL_RECIPIENTS'] = 'michael@example.com'
-    hypermea_settings['HY_LOG_EMAIL_VERBOSITY'] = verbosity
-    hypermea_settings['HY_ADD_ECHO'] = 'Enabled'
+    deploy_time_settings.smtp.host = 'mail.example.com'
+
+    deploy_time_settings.logging.log_to_email = True
+    deploy_time_settings.logging.log_email_from = f'{deploy_time_settings.hypermea.api_name} <no-reply@example.com>'
+    deploy_time_settings.logging.log_email_recipients = 'michael@example.com'
+    deploy_time_settings.logging.log_email_verbosity = verbosity
+    deploy_time_settings.logging.add_echo = True
 
 
 @when(parsers.parse('a {level} entry is logged'))

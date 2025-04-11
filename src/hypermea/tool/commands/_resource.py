@@ -20,7 +20,7 @@ def _create(resource_name, no_common):
 
     add_common = not no_common
 
-    print(f'Creating {plural} resource')
+    print(f'Creating {singular} resource')
     if _resource_already_exists(plural):
         hypermea.tool.escape('This resource already exist', 702)
     else:
@@ -65,7 +65,7 @@ def _check(resource_name):
     click.echo(f'- singular: {singular}')
     click.echo(f'- plural:   {plural}')
 
-    click.echo(f'A resource named {plural} ' +
+    click.echo(f'A resource named {singular} ' +
                ('already exists' if _resource_already_exists(plural) else 'does not exist'))
 
 
@@ -153,13 +153,13 @@ def _create_resource_hook_file(singular, plural):
     with open(f'hooks/{plural}.py', 'w') as file:
         file.write(f'''"""
 hooks.{plural}
-This module defines functions to add link relations to {plural}.
+This module defines functions to add link relations to {singular}.
 """
 import logging
 import json
 from flask import g, after_this_request, request as current_request
 from hypermea.core.logging import trace
-from configuration import SETTINGS
+import settings
 from hypermea.core.href import get_resource_id, add_etag_header_to_post
 from hypermea.core.gateway import get_href_from_gateway
 import affordances
@@ -169,7 +169,7 @@ LOG = logging.getLogger('hooks.{plural}')
 
 @trace
 def add_hooks(app):
-    """Wire up the hooks for {plural}."""
+    """Wire up the hooks for {singular}."""
     app.on_post_POST_{plural} += add_etag_header_to_post
     app.on_fetched_item_{plural} += _add_links_to_{singular}
     app.on_fetched_resource_{plural} += _add_links_to_{plural}_collection
@@ -189,7 +189,7 @@ def _add_links_to_{singular}({singular}):
 
 @trace
 def _add_remote_children_links({singular}):
-    if not SETTINGS['HY_GATEWAY_URL']:
+    if not settings.hypermea.gateway_url:
         return
     {singular}_id = get_resource_id({singular}, '{plural}')
 
@@ -198,7 +198,7 @@ def _add_remote_children_links({singular}):
 
 @trace
 def _add_remote_parent_links({singular}):
-    if not SETTINGS['HY_GATEWAY_URL']:
+    if not settings.hypermea.gateway_url:
         return
     {singular}_id = get_resource_id({singular}, '{plural}')
 

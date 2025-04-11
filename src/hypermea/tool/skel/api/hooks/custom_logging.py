@@ -1,5 +1,5 @@
 """
-Customize the additional_log_configuration() function however you like.
+Customize the additional_log_setup() function however you like.
 The log setup will call that function as part of its initialization.
 
 Learn more about the python logger here:
@@ -9,10 +9,10 @@ import logging
 from hypermea.core.utils import get_logging_handler_by_name, EmojiFormatter
 
 
-def additional_log_configuration():
+def additional_log_setup():
     pass
 
-    # add any additional configuration to logging here
+    # add any additional setup to logging handlers, etc. here
     # e.g., to add emojis to the console log uncomment the following:
 
     # console_handler = get_logging_handler_by_name('console')

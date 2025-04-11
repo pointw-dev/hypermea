@@ -3,17 +3,15 @@ import json
 from assertpy import assert_that
 from pytest_bdd import given, when, parsers
 
-from service.configuration import SETTINGS
-
 
 @given(parsers.parse('the service is configured with a limit of {items_per_page:d} items per page'))
-def given_the_service_is_configured_with_a_limit_of_itemsperpage_items_per_page(hypermea_settings, items_per_page):
-    hypermea_settings['HY_PAGINATION_LIMIT'] = str(items_per_page)
+def given_the_service_is_configured_with_a_limit_of_items_per_page(deploy_time_settings, items_per_page):
+    deploy_time_settings.hypermea.pagination_limit = items_per_page
 
 
 @given('a resource is configured')
-def given_a_resource_is_configured(static_settings):
-    static_settings['DOMAIN'] = {
+def given_a_resource_is_configured(dev_time_settings):
+    dev_time_settings['DOMAIN'] = {
         'people': {
             'schema': {
                 'name': {'type': 'string'}
@@ -36,8 +34,8 @@ def given_that_resource_has_multiple_items_in_its_collection(api, context):
 
 
 @given('a resource is configured with multiple keys')
-def given_a_resource_is_configured_with_multiple_keys(static_settings):
-    static_settings['DOMAIN'] = {
+def given_a_resource_is_configured_with_multiple_keys(dev_time_settings):
+    dev_time_settings['DOMAIN'] = {
         'widgets': {
             'schema': {
                 'name': {'type': 'string'},
@@ -62,8 +60,8 @@ def given_that_resource_has_an_item_in_its_collection(api, context):
     context.widget_id = response.json['_id']
 
 @given('a parent and a child resource are configured')
-def given_a_parent_and_a_child_resource_are_configured(static_settings):
-    static_settings['DOMAIN'] = {
+def given_a_parent_and_a_child_resource_are_configured(dev_time_settings):
+    dev_time_settings['DOMAIN'] = {
         "people": {
             "schema": {
                 "name": {"type": "string"},

@@ -3,7 +3,7 @@ from .command_help_order import CommandHelpOrder
 
 
 @click.group(name='setting',
-             help='Manage the configuration/settings of the service and its addins.',
+             help='Manage the settings of the service and its addins.',
              cls=CommandHelpOrder)
 def commands():
     # This method is empty as it is a group in which the following commands are inserted

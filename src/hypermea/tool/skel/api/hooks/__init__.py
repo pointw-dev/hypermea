@@ -6,7 +6,7 @@ import hooks._error_handlers
 import hooks._settings
 import hooks._logs
 import affordances
-from configuration import SETTINGS
+import settings
 
 LOG = logging.getLogger('hooks')
 

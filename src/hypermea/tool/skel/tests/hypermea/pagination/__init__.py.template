@@ -3,6 +3,20 @@ from pytest_bdd import given, when, then, parsers
 from tests import *
 from tests.hypermea import *
 
+
+
+
+
+
+from flask import current_app
+
+
+
+
+
+
+
+
 FEATURE = 'hypermea/pagination.feature'
 
 
@@ -20,12 +34,12 @@ def given_that_resource_has_numberofitems_items_in_its_collection(api, number_of
 
 
 @given('pagination is disabled globally')
-def given_pagination_is_disabled_globally(static_settings):
-    static_settings['PAGINATION'] = False
+def given_pagination_is_disabled_globally(dev_time_settings):
+    dev_time_settings['PAGINATION'] = False
 
 @given(parsers.parse('the service is configured to limit page sizes to {limit:d}'))
-def given_the_service_is_configured_to_limit_page_sizes_to_100(hypermea_settings, limit):
-    hypermea_settings['HY_PAGINATION_LIMIT'] = f'{limit}'
+def given_the_service_is_configured_to_limit_page_sizes_to_100(deploy_time_settings, limit):
+    deploy_time_settings.hypermea.pagination_limit = limit
 
 
 @when('a client requests this resource with no pagination controls')

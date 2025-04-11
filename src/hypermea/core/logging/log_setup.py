@@ -6,12 +6,13 @@ from werkzeug.utils import secure_filename
 from hypermea.core.settings import starting_environment
 from .smtp_handler import HTMLSMTPHandler
 from integration.smtp import EmailSender
-from configuration import SETTINGS, VERSION
+import settings
+from .. import VERSION
 
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
-class LogConfigurator:
+class LogSetup:
     def __init__(self, api_name):
         self.api_name = api_name
         self.logging_config = self._set_base_logging_config()
@@ -22,10 +23,11 @@ class LogConfigurator:
     def _prepare_logger(self):
         logging.config.dictConfig(self.logging_config)
         logging.getLogger('werkzeug').setLevel(logging.ERROR)
+        logging.getLogger('pymongo').setLevel(logging.ERROR)
 
     def _setup_file_logging(self):
-        if SETTINGS.has_enabled('HY_LOG_TO_FOLDER'):
-            log_folder = SETTINGS.get('FOLDER_TO_LOG_TO') or f'/var/log/{secure_filename(self.api_name)}'
+        if settings.logging.log_to_folder:
+            log_folder = settings.logging.folder_to_log_to or f'/var/log/{secure_filename(self.api_name)}'
             os.makedirs(log_folder, exist_ok=True)
 
             log_handler = {
@@ -54,13 +56,13 @@ class LogConfigurator:
             self.logging_config['root']['handlers'] += ['all', 'warn', 'error']
 
     def _setup_smtp_logging(self):
-        if not SETTINGS.has_enabled('HY_LOG_TO_EMAIL'):
+        if not settings.logging.log_to_email:
             return
 
         self.smtp_warnings = []
         required = ['SMTP_HOST', 'SMTP_PORT', 'HY_LOG_EMAIL_RECIPIENTS']
         good_to_go = True
-        email_from = SETTINGS.get('HY_LOG_EMAIL_FROM', SETTINGS.get('SMTP_FROM', 'no-reply@service.local'))
+        email_from = settings.logging.log_email_from or settings.smtp.sender or 'no-reply@service.local'
 
         for key in required:
             if not SETTINGS.get(key) or SETTINGS.get(key) == 'not configured':
@@ -71,8 +73,8 @@ class LogConfigurator:
         if not good_to_go:
             return
 
-        recipients = [r.strip() for r in SETTINGS.get('HY_LOG_EMAIL_RECIPIENTS').split(',')]
-        verbosity = SETTINGS.get('HY_LOG_EMAIL_VERBOSITY', 'ERROR')
+        recipients = [r.strip() for r in settings.logging.email_recipients.split(',')]
+        verbosity = settings.hypermea.logging.email_verbosity
 
         email_sender = EmailSender()
 
@@ -91,7 +93,7 @@ class LogConfigurator:
         self.logging_config['root']['handlers'].append('smtp')
 
         for warning in self.smtp_warnings:
-            logging.getLogger('configuration').warning(warning)
+            logging.getLogger('log_setup').warning(warning)
 
     def _set_base_logging_config(self):
         return {
@@ -126,7 +128,7 @@ class LogConfigurator:
 
     @staticmethod
     def _get_smtp_formater():
-        env_table = LogConfigurator._build_starting_environment_section()
+        env_table = LogSetup._build_starting_environment_section()
         code_block_style = 'style="background: #f9f9f9; padding: 10px; border-radius: 4px; font-family: monospace;"'
 
         return {
@@ -162,12 +164,14 @@ class LogConfigurator:
         for component, version in start_env['versions'].items():
             env_table += f'<tr><td {name_style}>{component}</td><td {value_style}>{version}</td></tr>'
         env_table += '</tbody></table>'
-        for group in [g for g in start_env['settings_groups'] if g['settings']]:
-            env_table += f'<h4>{group["description"]}</h4><table {table_style}><tbody>'
-            for setting, value in group['settings'].items():
-                if setting == 'HY_LOG_EMAIL_FROM':
-                    print(f'\n=======================\n\n\n{value}\n{html.escape(value)}\n\n=======================\n\n')
-                escaped_value = html.escape(str(value))
-                env_table += f'<tr><td {name_style}>{setting}</td><td {value_style}>{escaped_value}</td></tr>'
-            env_table += '</tbody></table>'
+
+        # for group in [g for g in start_env['settings_groups'] if g['settings']]:
+        #     env_table += f'<h4>{group["description"]}</h4><table {table_style}><tbody>'
+        #     for setting, value in group['settings'].items():
+        #         if setting == 'HY_LOG_EMAIL_FROM':
+        #             print(f'\n=======================\n\n\n{value}\n{html.escape(value)}\n\n=======================\n\n')
+        #         escaped_value = html.escape(str(value))
+        #         env_table += f'<tr><td {name_style}>{setting}</td><td {value_style}>{escaped_value}</td></tr>'
+        #     env_table += '</tbody></table>'
+
         return env_table

@@ -4,7 +4,7 @@ import logging
 from hypermea.core.href import get_resource_rel
 from hypermea.core.logging import trace
 
-from configuration import SETTINGS
+import settings
 
 TRUNCATED = '...\n  [Body truncated. Set logging to TRACE for full body, or increase HY_LOG_MAX_BODY_SIZE.]'
 
@@ -32,7 +32,7 @@ def log_request(log, resource, request, lookup):
     else:
         request_body = request.data if request.data else "\"\""
 
-    max_body_size = SETTINGS['HY_LOG_MAX_BODY_SIZE']
+    max_body_size = settings.logging.max_body_size
     if current_console_level >= logging.DEBUG and len(request_body) > max_body_size:
         request_body = request_body[:max_body_size] + TRUNCATED
 
@@ -60,7 +60,7 @@ def log_response(log, resource, request, payload):
     else:
         response_body = payload.data
 
-    max_body_size = SETTINGS['HY_LOG_MAX_BODY_SIZE']
+    max_body_size = settings.logging.max_body_size
     if current_console_level >= 10 and len(response_body) > max_body_size:
         response_body = response_body[:max_body_size] + TRUNCATED
         if payload.is_json:

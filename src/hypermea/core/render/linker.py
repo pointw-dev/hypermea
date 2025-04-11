@@ -1,6 +1,6 @@
 from flask import request, current_app
 from hypermea.core.href import clean_href, add_search_link, get_resource_id, get_resource_rel, get_my_base_url, get_self_href_from_request
-from configuration import SETTINGS
+import settings
 
 
 class HalLinker:
@@ -140,7 +140,7 @@ class HalLinker:
         base_url = get_my_base_url()
 
         new_links = {
-            'self': {'href': f'{base_url}/', '_note': f'Home resource for {SETTINGS["HY_API_NAME"]}'},
+            'self': {'href': f'{base_url}/', '_note': f'Home resource for {settings.hypermea.api_name}'},
             'logging': {'href': f'{base_url}/_logging', '_note': 'logging verbosity: GET, PUT'},
             'settings': {'href': f'{base_url}/_settings', '_note': 'versions and settings: GET'},
         }

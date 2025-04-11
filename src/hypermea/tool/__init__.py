@@ -47,7 +47,7 @@ def get_settings():
 
 def get_api_version():
     try:
-        starting_folder, settings = jump_to_folder('src/service/configuration')
+        starting_folder, settings = jump_to_folder('src/service')
     except RuntimeError:
         return escape('This command must be run in a hypermea folder structure', 1)
 
