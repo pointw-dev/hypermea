@@ -5,7 +5,7 @@ import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 
 import { Tab, Tabs } from 'vue3-tabs-component'
-import { AskStackOverflow, CenteredImage, CommentsSection, Copyright, NotFound } from '@pointw/vitepress-component-bundle'
+import { AskStackOverflow, CenteredImage, CommentsSection, Copyright, FaqEntry, NotFound } from '@pointw/vitepress-component-bundle'
 
 import './tabs.css'
 import './style.css'
@@ -29,5 +29,6 @@ export default {
     
     app.component('CenteredImage', CenteredImage)
     app.component('CommentsSection', CommentsSection)
+    app.component('FaqEntry', FaqEntry)
   }
 } satisfies Theme

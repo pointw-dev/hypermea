@@ -1,5 +1,11 @@
 # Eve Comparison
 
+:::warning Work in progress
+<centered-image src="/img/work-in-progress.png" />
+This warning will be removed once this page has passed testing.
+:::
+
+
 <style>
 table.side-by-side {
   width: 875px;
