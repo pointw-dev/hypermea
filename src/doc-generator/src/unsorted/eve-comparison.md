@@ -63,12 +63,12 @@ Eve has one dict for all settings.  Hypermea groups settings into four categorie
 | RESOURCE_METHODS              | `['GET']`             | _unchanged_           | `['GET', 'POST', 'DELETE']`         |
 | ITEM_METHODS                  | `['GET']`             | _unchanged_           | `['GET', 'PATCH', 'DELETE', 'PUT']` |
 | AUTH_FIELD                    | `None`                | _unchanged_           | `_owner`                            | 
-| MONGO_HOST                    | `localhost`           | HY_MONGO_HOST         | _unchanged_                         |
-| MONGO_PORT                    | `27017`               | HY_MONGO_PORT         | _unchanged_                         |
-| MONGO_DBNAME                  | 'eve'                 | HY_MONGO_DBNAME       | the value of `HY_API_NAME`          |
-| MONGO_USERNAME                | `None`                | HY_MONGO_USERNAME     | _unchanged_                         |
-| MONGO_PASSWORD                | `None`                | HY_MONGO_PASSWORD     | _unchanged_                         |
-| MONGO_AUTHSOURCE              | `None`                | HY_MONGO_AUTHSOURCE   | _unchanged_                         |
+| MONGO_HOST                    | `localhost`           | MONGO_HOST         | _unchanged_                         |
+| MONGO_PORT                    | `27017`               | MONGO_PORT         | _unchanged_                         |
+| MONGO_DBNAME                  | 'eve'                 | MONGO_DBNAME       | the value of `HY_API_NAME`          |
+| MONGO_USERNAME                | `None`                | MONGO_USERNAME     | _unchanged_                         |
+| MONGO_PASSWORD                | `None`                | MONGO_PASSWORD     | _unchanged_                         |
+| MONGO_AUTHSOURCE              | `None`                | MONGO_AUTHSOURCE   | _unchanged_                         |
 | MONGO_QUERY_BLACKLIST         | `['$where','$regex']` | _unchanged_           | `['$where']`*                       |
 | URL_PREFIX                    | `None`                | HY_URL_PREFIX         | _unchanged_                         |
 | CACHE_CONTROL                 | `None`                | HY_CACHE_CONTROL      | _unchanged_                         |

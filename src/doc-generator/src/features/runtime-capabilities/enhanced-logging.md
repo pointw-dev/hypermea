@@ -32,10 +32,10 @@ This warning will be removed once this page has passed testing.
 2025-04-03 20:26:41,818 - service - INFO - HY_INSTANCE_NAME: opus
 2025-04-03 20:26:41,818 - service - INFO - HY_LOG_MAX_BODY_SIZE: 1024
 2025-04-03 20:26:41,818 - service - INFO - HY_LOG_TO_FOLDER: Disabled
-2025-04-03 20:26:41,818 - service - INFO - HY_MONGO_ATLAS: Disabled
-2025-04-03 20:26:41,818 - service - INFO - HY_MONGO_DBNAME: dev-hypermea-api
-2025-04-03 20:26:41,818 - service - INFO - HY_MONGO_HOST: localhost
-2025-04-03 20:26:41,818 - service - INFO - HY_MONGO_PORT: 27017
+2025-04-03 20:26:41,818 - service - INFO - MONGO_ATLAS: Disabled
+2025-04-03 20:26:41,818 - service - INFO - MONGO_DBNAME: dev-hypermea-api
+2025-04-03 20:26:41,818 - service - INFO - MONGO_HOST: localhost
+2025-04-03 20:26:41,818 - service - INFO - MONGO_PORT: 27017
 2025-04-03 20:26:41,818 - service - INFO - HY_PAGINATION_DEFAULT: 1000
 2025-04-03 20:26:41,818 - service - INFO - HY_PAGINATION_LIMIT: 3000
 2025-04-03 20:26:41,818 - service - INFO - HY_LOG_TO_EMAIL: Disabled
@@ -46,7 +46,7 @@ This warning will be removed once this page has passed testing.
 * Enable `HY_LOG_TO_FOLDER` and logs are created in `/var/logs/service-name`  (which the dev `docker-compose.yml` maps to local volume so you can view the logs even if the container is stopped)
 * You can be notified by email if the server sends a 5xx response
     * Enable `HY_LOG_TO_EMAIL`
-    * then configure `HY_SMTP_PORT`, `HY_SMTP_SERVER`, `HY_ERROR_EMAIL_RECIPIENTS`, and `HY_ERROR_EMAIL_FROM`
+    * then configure `SMTP_PORT`, `SMTP_HOST`, `HY_ERROR_EMAIL_RECIPIENTS`, and `HY_ERROR_EMAIL_FROM`
 * View and change the logging verbosity at runtime with a GET and/or PUT to `/_logging`  (provide details)
 
 * Easily extend the logging capabilities using the standard Python `logging` modules
