@@ -2,6 +2,7 @@ import os
 import sys
 
 import hypermea.tool
+from hypermea.tool.code_gen import SettingsInserter
 
 
 def _create(integration, name, prefix):
@@ -41,6 +42,8 @@ def _create(integration, name, prefix):
                                   replace=replace)
     with open(f'./integration/__init__.py', 'a') as f:
         f.write(f'from . import {name}\n')
+
+    SettingsInserter('integration', 'S3Settings').transform('./settings/__init__.py')
     # TODO: handle settings/prefix
     # TODO: ensure outer requirements.txt contains libraries required by the integration
     hypermea.tool.jump_back_to(starting_folder)
