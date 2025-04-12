@@ -43,13 +43,13 @@ class DockerManager:
                 os.system(f'docker image rm {old_image_id}')
 
     def _get_image_list(self):
-        api_images = []
+        service_images = []
         all_images_list = subprocess.getoutput('docker image ls --format="{{.Repository}}:{{.Tag}}"').split('\n')
         for image in all_images_list:
             parts = re.split('/|:', image)
             if self.image_name in parts:
-                api_images.append(image)
-        return api_images
+                service_images.append(image)
+        return service_images
 
     def list(self):
         images = self._get_image_list()

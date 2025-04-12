@@ -8,7 +8,7 @@ from hypermea.core.logging.log_setup import LogSetup
 
 
 def setup_logger():
-    LogSetup(settings.hypermea.api_name)
+    LogSetup(settings.hypermea.service_name)
     additional_log_setup()
 
 

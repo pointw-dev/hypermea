@@ -3,7 +3,7 @@ import glob
 import re
 
 import hypermea.tool
-import hypermea.tool.commands._api
+import hypermea.tool.commands._service
 from hypermea.tool.code_gen import \
     DomainChildrenDefinitionInserter, \
     DomainRelationsInserter, \
@@ -202,7 +202,7 @@ class LinkManager:
         )
 
         if self.remote_parent:
-            hypermea.tool.commands._api._add_addins({'add_validation': 'n/a'}, silent=True)
+            hypermea.tool.commands._service._add_addins({'add_validation': 'n/a'}, silent=True)
 
         # update child code
         if not self.remote_child:

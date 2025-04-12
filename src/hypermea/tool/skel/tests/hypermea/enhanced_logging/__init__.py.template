@@ -118,9 +118,9 @@ def then_i_see_the_versions_of_important_stack_components(context):
     stack_lines = [line for line in context.log_entries if line[0] == 'environment']
     assert_that(len(stack_lines)).is_greater_than(0)
 
-    api_name = settings.hypermea.api_name
+    service_name = settings.hypermea.service_name
     missing = [
-        component for component in [api_name, 'eve', 'cerberus', 'python', 'os_system', 'os_release', 'os_version', 'os_platform']
+        component for component in [service_name, 'eve', 'cerberus', 'python', 'os_system', 'os_release', 'os_version', 'os_platform']
         if not any(msg.startswith(component) for _, _, msg in stack_lines)
     ]
     assert_that(missing).described_as("Missing version logs for").is_empty()
@@ -132,7 +132,7 @@ def then_i_see_the_base_settings_for_hypermea(context):
     assert_that(len(deploy_time_settings)).is_greater_than(0)
 
     missing = [
-        setting for setting in ['HY_API_NAME', 'HY_API_PORT', 'HY_PAGINATION_DEFAULT']
+        setting for setting in ['HY_SERVICE_NAME', 'HY_SERVICE_PORT', 'HY_PAGINATION_DEFAULT']
         if not any(msg.startswith(setting) for _, _, msg in deploy_time_settings)
     ]
     assert_that(missing).described_as("Missing version logs for").is_empty()

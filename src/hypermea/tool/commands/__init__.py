@@ -1,6 +1,6 @@
 import click
 
-from . import api
+from . import service
 from . import resource
 from . import link
 from . import integration
@@ -25,7 +25,7 @@ def main():
 
 
 def initialize():
-    main.add_command(api.commands)
+    main.add_command(service.commands)
     main.add_command(resource.commands)
     main.add_command(link.commands)
     main.add_command(integration.commands)

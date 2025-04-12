@@ -15,7 +15,7 @@ LOG = logging.getLogger('service')
 class HypermeaService:
     def __init__(self, **kwargs):
         self._grab_kwargs(kwargs)
-        self._name = settings.hypermea.api_name
+        self._name = settings.hypermea.service_name
 
         eve_settings = os.path.join(os.path.dirname(__file__), 'static_settings.py')
         if 'settings' in kwargs:
@@ -55,7 +55,7 @@ class HypermeaService:
 
         try:
             register(self._app)
-            self._app.run(host=self.host, port=settings.hypermea.api_port, threaded=self.threaded, debug=self.debug)
+            self._app.run(host=self.host, port=settings.hypermea.service_port, threaded=self.threaded, debug=self.debug)
         except Exception as ex:  # pylint: disable=broad-except
             LOG.exception(ex)
         finally:

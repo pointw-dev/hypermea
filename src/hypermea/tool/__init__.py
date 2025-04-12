@@ -45,7 +45,7 @@ def get_settings():
     return settings
 
 
-def get_api_version():
+def get_service_version():
     try:
         starting_folder, settings = jump_to_folder('src/service')
     except RuntimeError:

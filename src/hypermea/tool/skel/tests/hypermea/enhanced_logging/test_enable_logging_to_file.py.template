@@ -18,6 +18,6 @@ def SKIP_test_enable_logging_to_file():
 
 @then('the log is written to the default location')
 def then_the_log_is_written_to_the_default_location():
-    api_name = settings.hypermea.api_name
-    log_exists = os.path.isfile(f'/var/log/{api_name}/all.log')
+    service_name = settings.hypermea.service_name
+    log_exists = os.path.isfile(f'/var/log/{service_name}/all.log')
     assert_that(log_exists).is_true()

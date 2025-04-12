@@ -16,7 +16,7 @@ class EmailSender:
         self.password = settings.smtp.password
         self.use_tls = settings.smtp.use_tls
         self.sender = settings.smtp.sender
-        self.api_name = settings.hypermea.api_name
+        self.service_name = settings.hypermea.service_name
         self.log = logging.getLogger('email-sender')
 
         if self.host is None:
@@ -86,11 +86,11 @@ class EmailSender:
       <tbody>
       <tr>
         <td style="padding: 0; width: 1%; white-space: nowrap;">
-          <img src="https://www.pointw.com/img/hypermea-api.png" alt="{self.api_name}" style="height: 40px; display: block; margin: 0;">
+          <img src="https://www.pointw.com/img/hypermea-service.png" alt="{self.service_name}" style="height: 40px; display: block; margin: 0;">
         </td>
         <td style="padding-left: 10px;">
           <span style="color: #CF7377; font-family: Calibri, Verdana, Tahoma, Arial, sans-serif; font-size: 20px;">
-            {self.api_name}
+            {self.service_name}
           </span>
         </td>
       </tr>

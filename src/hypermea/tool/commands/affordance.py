@@ -29,7 +29,7 @@ def create(affordance_name, resource_name):
 
 
 @commands.command(name='list',
-                  short_help='List the affordances in the API',
+                  short_help='List the affordances in the service',
                   help_priority=2)
 def list_affordances():
     """

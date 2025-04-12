@@ -19,7 +19,7 @@ def register(app):
         return
 
     url = get_href_from_gateway('gateway_registrations')
-    name = settings.hypermea.api_name if not settings.hypermea.name_on_gateway else settings.hypermea.name_on_gateway
+    name = settings.hypermea.service_name if not settings.hypermea.name_on_gateway else settings.hypermea.name_on_gateway
     base_url = settings.hypermea.base_url
     LOG.info(f'Registering with gateway as {name} at {base_url} to {url}')
     api = app.test_client()

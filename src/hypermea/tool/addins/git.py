@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Adds custom git to the API project.
+"""Adds custom git to the service project.
 
 If you provide a remote path, this will also add the remote to the local repository 
 then push the code

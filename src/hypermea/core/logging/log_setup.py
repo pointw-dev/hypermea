@@ -13,8 +13,8 @@ DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
 class LogSetup:
-    def __init__(self, api_name):
-        self.api_name = api_name
+    def __init__(self, service_name):
+        self.service_name = service_name
         self.logging_config = self._set_base_logging_config()
         self._setup_file_logging()
         self._setup_smtp_logging()
@@ -27,7 +27,7 @@ class LogSetup:
 
     def _setup_file_logging(self):
         if settings.logging.log_to_folder:
-            log_folder = settings.logging.folder_to_log_to or f'/var/log/{secure_filename(self.api_name)}'
+            log_folder = settings.logging.folder_to_log_to or f'/var/log/{secure_filename(self.service_name)}'
             os.makedirs(log_folder, exist_ok=True)
 
             log_handler = {
@@ -96,7 +96,7 @@ class LogSetup:
             "()": HTMLSMTPHandler,
             "email_sender": email_sender,
             "recipients": recipients,
-            "subject": f"Problem encountered with {self.api_name}",
+            "subject": f"Problem encountered with {self.service_name}",
             "email_from": email_from,
             "level": verbosity,
             "formatter": "smtp",

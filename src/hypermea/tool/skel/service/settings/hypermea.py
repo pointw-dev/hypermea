@@ -11,11 +11,11 @@ class HypermeaSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix='HY_')
 
     # service settings
-    api_name: Optional[str] = Field(
+    service_name: Optional[str] = Field(
         default='{$project_name}',
         description='The name of this service, used in reports, logs, and in the home resource.'
     )
-    api_port: int = Field(
+    service_port: int = Field(
         default=2112,
         description='The port this service is listening on.'
     )

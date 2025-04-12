@@ -14,8 +14,8 @@ def _prepare_for_docker_command():
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
     if 'docker' not in settings.get('addins', {}):
-        return hypermea.tool.escape('This api does not have the docker addin installed.\n'
-                               '- You can install docker with: hypermea api addin --add-docker', 2001)
+        return hypermea.tool.escape('This service does not have the docker addin installed.\n'
+                               '- You can install docker with: hypermea service addin --add-docker', 2001)
 
     # DO NOT hypermea.jump_back_to(starting_folder)  - part of the preparation is to jump here
     return settings
@@ -26,7 +26,7 @@ def _build(version, repository):
     image_name = settings['project_name']
 
     if not version:
-        version = hypermea.tool.get_api_version()
+        version = hypermea.tool.get_service_version()
 
     docker_manager = DockerManager(image_name)
     docker_manager.build(version, repository)
@@ -76,7 +76,7 @@ def _cycle(suffix):
     settings = _prepare_for_docker_command()
     image_name = settings['project_name']
     docker_manager = DockerManager(image_name)
-    version = hypermea.tool.get_api_version()
+    version = hypermea.tool.get_service_version()
     file_parameter = '' if suffix == 'none' else f'-f docker-compose.{suffix}.yml'
 
     click.echo(f"-- docker down {'' if suffix == 'none' else suffix + ' ' }--")

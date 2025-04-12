@@ -8,7 +8,7 @@ from hypermea_service import HypermeaService
 
 class HypermeaWindowsService(win32serviceutil.ServiceFramework):
     _svc_name_ = "{$project_name}"
-    _svc_display_name_ = "{$project_name} API"
+    _svc_display_name_ = "{$project_name} service"
     # _svc_description_ = "Service description goes here."  # TODO: replace with config or some such
 
     def __init__(self, args):

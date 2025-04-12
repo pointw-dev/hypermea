@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Adds authorization module to the API project.
+"""Adds authorization module to the service project.
 
 Usage:
     add-auth

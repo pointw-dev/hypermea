@@ -2,12 +2,12 @@
 
 The audience of this README is the **client developer**, i.e. someone who will **use** `{$project_name}`.
 
-If you are an **API developer** who will make changes to `{$project_name}` itself, please see [`src/{$project_name}/README.md`](./src/{$project_name}/README.md).
+If you are an **service developer** who will make changes to `{$project_name}` itself, please see [`src/{$project_name}/README.md`](./src/{$project_name}/README.md).
 
 
 ## General terms
 
-- **resource** - similar to an entity, it's the thing you GET.  It's the R in URL.  The set of resources comprise the domain the API is responsible for managing.  There are two basic kinds of resources:
+- **resource** - similar to an entity, it's the thing you GET.  It's the R in URL.  The set of resources comprise the domain the service is responsible for managing.  There are two basic kinds of resources:
   - **collection** - a special resource, which is a set of individual resources, e.g. if you GET a members collection you get a list of members
   - **item** - a resource that stands by itself, i.e. is not a collection
 - **hypermedia** - a media type used to create representations of a resource, whose type definition contains link relations.  
@@ -15,21 +15,21 @@ If you are an **API developer** who will make changes to `{$project_name}` itsel
   - JSON is not a hypermedia type - although it *can* contain links, there is no defined standard an application can know in advance.
   - [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language) is an extension of JSON which provides a standard definition for links and rels, so therefore is a hypermedia type.  
 - **link relation** - or **rel** for short:  provides the semantic meaning of a link.  
-  - There are [standardized](https://www.iana.org/assignments/link-relations/link-relations.xhtml) rels.  An API may define its rels either in compliance with a standard like IANA's or in its own scope.  
+  - There are [standardized](https://www.iana.org/assignments/link-relations/link-relations.xhtml) rels.  A service may define its rels either in compliance with a standard like IANA's or in its own scope.  
   - Once the rels are published, a new hypermedia type is effectively created (and can be registered with IANA, if general purpose enough).  
-  - Client developers must be aware of the API's hypermedia type(s) and link relations, as that forms the "contract".  The contract does not include the value of `href` behind a rel - those may change without notice and without breaking the "contract"
+  - Client developers must be aware of the service's hypermedia type(s) and link relations, as that forms the "contract".  The contract does not include the value of `href` behind a rel - those may change without notice and without breaking the "contract"
   - The href associated with a link relation can be an absolute reference (staring with http) or relative (usually starting with /).  
-  - If the href is relative, append it to `{BASE_API_URL}` to perform the operation - most http libraries can automate that for you.
+  - If the href is relative, append it to `{BASE_SERVICE_URL}` to perform the operation - most http libraries can automate that for you.
 
 - **affordance** - a link provided by hypermedia, identified by a rel, which allows the client to operate on the resource, either to navigate to related resources or to change the state of the application.
 
 
 
-## Hypermedia API
+## Hypermedia Service
 
 Hypermedia is the organizing principle behind `{$project_name}`  Its main goal is to avoid client coupling - allowing the API and UI to evolve independently.  At least in theory, the only URL a client application needs to know is `{BASE_API_URL}`.  The rest is discoverable by following link relations.  If you follow this principle, your client will never break (after v0.8.0) no matter how the server side architecture changes.
 
-This API uses a hypermedia type that is very similar to [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language), i.e. it is JSON that reserves the object name `_links` to provide link relations.
+This servoce uses a hypermedia type that is very similar to [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language), i.e. it is JSON that reserves the object name `_links` to provide link relations.
 
 Request: `GET {person_url}`
 
@@ -55,7 +55,7 @@ Response:
 To summarize with an pseudocode example, to get a resource:
 
 ```
-response = GET {BASE_API_URL}
+response = GET {BASE_SERVICE_URL}
 resource_url =  response.body._links.resource_rel.href
 GET {resource_url}
 ```
@@ -122,10 +122,10 @@ IANA standard [link relations](https://www.iana.org/assignments/link-relations/l
 * **item** - when GETting a collection, this rel provides a URI template to take you to a member of the collection, usually by expanding the template with an id. 
 * **collection** - the collection this resource belongs to (applies to collections and items)
 
-### api config affordances
+### service config affordances
 
 * **logging** - GET to see log handlers and their verbosity levels.  Modify and PUT back to change verbosity levels
-* **settings** - GET to see the value of environment variables and versions of the API and key components
+* **settings** - GET to see the value of environment variables and versions of the service and key components
 
 
 ### domain/collection affordances
@@ -148,7 +148,7 @@ for each brand in brands.body._items...
 
 
 
-## Using the API
+## Using the service
 
 `{$project_name}` is built with [Eve](https://docs.python-eve.org/en/stable/) and enhanced by [hypermea](https://github.com/pointw-dev/hypermea).  What follows is a list of some of the features provided by Eve.  You can learn more from its [feature documentation](https://docs.python-eve.org/en/stable/features.html).
 
@@ -189,7 +189,7 @@ for each brand in brands.body._items...
 * There are two types of where values
   * Python: create a conditional expression (e.g. `field==value`, `field!=value`, `field==value1 or field==value2`)
   * Mongo: use the mongo query definition language (e.g. `{ "_updated": {"$gte": "2021-10-01"}}` )
-    * Note:  When the API is behind an AWS API Gateway (as it currently is when running "serverless"), the **curly brackets must be urlencoded**.
+    * Note:  When the service is behind an AWS API Gateway (as it currently is when running "serverless"), the **curly brackets must be urlencoded**.
 * https://docs.python-eve.org/en/stable/features.html#filtering
 
 ### Sorting
@@ -226,7 +226,7 @@ for each brand in brands.body._items...
 
 * If you GET a resource with a value like this, you can add `embedded` to the query string, specifying which field to embed.  
 
-* This will cause the API to fetch both the resource AND the other resource, embedding the other resource where that in place of the id value.
+* This will cause the service to fetch both the resource AND the other resource, embedding the other resource where that in place of the id value.
 
   for example:
   GET {brand_href}

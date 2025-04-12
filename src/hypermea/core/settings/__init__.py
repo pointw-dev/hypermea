@@ -12,13 +12,13 @@ from .promoter import SettingPromoter
 def starting_environment() -> Dict:
     from settings.all_settings import get_settings, devops_settings_dump
     all_settings = get_settings()
-    from .. import VERSION as api_version
+    from .. import VERSION as service_version
 
     rtn = {}
-    api_name = all_settings.hypermea.api_name
+    service_name = all_settings.hypermea.service_name
 
     rtn['versions'] = {
-        api_name: api_version,
+        service_name: service_version,
         "hypermea.core": hypermea_core_version,
         "eve": eve_version,
         "cerberus": cerberus_version,

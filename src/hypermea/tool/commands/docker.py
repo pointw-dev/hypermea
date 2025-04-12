@@ -28,44 +28,44 @@ def build(version, repository):
 
 
 @commands.command(name='list',
-                  short_help=f'Lists the docker images built from this api.',
+                  short_help=f'Lists the docker images built from this service.',
                   help_priority=2)
 def list_images():
     """
-    Lists the docker images:tags built with this api.
+    Lists the docker images:tags built with this service.
     """
     from ._docker import _list_images
     return _list_images()
 
 
 @commands.command(name='wipe',
-                  short_help=f'Deletes all docker images built from this api.',
+                  short_help=f'Deletes all docker images built from this service.',
                   help_priority=3)
 def wipe():
     """
-    Deletes all docker images build from this api.
+    Deletes all docker images build from this service.
     """
     from ._docker import _wipe
     return _wipe()
 
 
 @commands.command(name='start',
-                  short_help=f'Starts the api container, leaving other containers running.',
+                  short_help=f'Starts the service container, leaving other containers running.',
                   help_priority=4)
 def start_container():
     """
-    Deletes all docker images build from this api.
+    Deletes all docker images build from this service.
     """
     from ._docker import _start
     return _start()
 
 
 @commands.command(name='stop',
-                  short_help=f'Stops the api container, leaving other containers running.',
+                  short_help=f'Stops the service container, leaving other containers running.',
                   help_priority=5)
 def stop_container():
     """
-    Deletes all docker images build from this api.
+    Deletes all docker images build from this service.
     """
     from ._docker import _stop
     return _stop()
@@ -77,7 +77,7 @@ def stop_container():
 @click.argument('suffix', metavar='[suffix]', default='none')
 def up(suffix):
     """
-    Runs `docker compose up -d` using this api's docker-compose.yml
+    Runs `docker compose up -d` using this service's docker-compose.yml
 
     pass a suffix to use docker-compose.{suffix}.yml instead.
     """
@@ -114,7 +114,7 @@ def cycle(suffix):
 
 
 @commands.command(name='logs',
-                  short_help=f'Shows docker logs for the running api.',
+                  short_help=f'Shows docker logs for the running service.',
                   help_priority=9)
 @click.option('--follow', '-f',
               is_flag=True, help='Follow log output')
@@ -122,7 +122,7 @@ def cycle(suffix):
               is_flag=True, help='Launch log in popup (assumes --follow)')
 def logs(follow, popup):
     """
-    Shows (and optionally follows) the docker log for the running api.
+    Shows (and optionally follows) the docker log for the running service.
     """
     from ._docker import _logs
     return _logs(follow, popup)

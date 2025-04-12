@@ -4,21 +4,21 @@ import signal
 from hypermea_service import HypermeaService
 
 
-def stop_api(signum, frame):  # pylint: disable=unused-argument
+def stop_service(signum, frame):  # pylint: disable=unused-argument
     """ Catches SIGTERM and issues SIGINT """
     if signum == signal.SIGTERM:
         os.kill(os.getpid(), signal.SIGINT)
 
 
 def main():
-    parser = argparse.ArgumentParser('{$project_name}', 'HypermeaService API')
-    parser.add_argument('--host', help='The interface to bind to.  Default is "0.0.0.0" which lets you call the API from a remote location.  Use "localhost" to only allow calls from this location', default='0.0.0.0')
+    parser = argparse.ArgumentParser('{$project_name}', 'Hypermea Service')
+    parser.add_argument('--host', help='The interface to bind to.  Default is "0.0.0.0" which lets you call the service from a remote location.  Use "localhost" to only allow calls from this location', default='0.0.0.0')
     parser.add_argument('-d', '--debug', help='Turn on debugger, which enables auto-reload.', action='store_true')
     parser.add_argument('-s', '--single-threaded', help='Disables multithreading.', action='store_true')
     # use_reloader
     args = parser.parse_args()
 
-    signal.signal(signal.SIGTERM, stop_api)
+    signal.signal(signal.SIGTERM, stop_service)
 
     kwargs = {
         'host': args.host

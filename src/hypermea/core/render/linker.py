@@ -140,7 +140,7 @@ class HalLinker:
         base_url = get_my_base_url()
 
         new_links = {
-            'self': {'href': f'{base_url}/', '_note': f'Home resource for {settings.hypermea.api_name}'},
+            'self': {'href': f'{base_url}/', '_note': f'Home resource for {settings.hypermea.service_name}'},
             'logging': {'href': f'{base_url}/_logging', '_note': 'logging verbosity: GET, PUT'},
             'settings': {'href': f'{base_url}/_settings', '_note': 'versions and settings: GET'},
         }

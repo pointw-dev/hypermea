@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-"""Adds files to facilitate deploying the API as a serverless function
+"""Adds files to facilitate deploying the service as a serverless function
    in either aws, azure, or google cloud
 
 Usage:
-    add-serverless [-h|--help] api_name
-      NOTE: Run this in the folder above the API project folder
+    add-serverless [-h|--help] service_name
+      NOTE: Run this in the folder above the service project folder
 
 Examples:
-    add-serverless my-api
+    add-serverless my-service
 
 License:
     MIT License
@@ -48,11 +48,11 @@ NOTE: this feature is still under development - use at your own risk!
 This script will
 - check for node/npm
 - install serverless globally
-- npm init the api folder
+- npm init the service folder
 - install serverless plugins
 - add  dnspython==2.1.0  to requirements.txt
 
-You can then run the API with
+You can then run the service with
     sls wsgi serve --config serverless-XXX.yml -p 2112
 
 Before you deploy

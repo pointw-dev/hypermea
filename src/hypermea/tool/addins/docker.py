@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Adds files to facilitate building the API as a docker container
+"""Adds files to facilitate building the service as a docker container
 
 Usage:
     add-docker

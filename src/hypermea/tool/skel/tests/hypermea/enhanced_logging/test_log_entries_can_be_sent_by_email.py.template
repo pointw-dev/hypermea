@@ -27,7 +27,7 @@ def given_the_service_is_configured_to_use_an_smtp_server(mocker, deploy_time_se
     deploy_time_settings.smtp.host = 'mail.example.com'
 
     deploy_time_settings.logging.log_to_email = True
-    deploy_time_settings.logging.log_email_from = f'{deploy_time_settings.hypermea.api_name} <no-reply@example.com>'
+    deploy_time_settings.logging.log_email_from = f'{deploy_time_settings.hypermea.service_name} <no-reply@example.com>'
     deploy_time_settings.logging.log_email_recipients = 'michael@example.com'
     deploy_time_settings.logging.log_email_verbosity = verbosity
     deploy_time_settings.logging.add_echo = True

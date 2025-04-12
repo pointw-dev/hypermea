@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Adds custom validation module to the API project.
+"""Adds custom validation module to the service project.
 
 This also adds two new validation rules
 - unique_to_parent

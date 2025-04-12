@@ -20,7 +20,7 @@ def _sanitize_for_python_module_name(name: str) -> str:
     if keyword.iskeyword(name):
         name = f'{name}_mod'
     if not name:
-        name = 'api'
+        name = 'service'
 
     return name
 
@@ -43,7 +43,7 @@ def _sanitize_for_mongo_db_name(name: str) -> str:
     return sanitized
 
 
-def _api_already_exist():
+def _service_already_exist():
     try:
         starting_folder, settings = hypermea.tool.jump_to_folder()
         hypermea.tool.jump_back_to(starting_folder)
@@ -52,20 +52,20 @@ def _api_already_exist():
         return False
 
 
-def _create_api(project_name):
+def _create_service(project_name):
     current_dir = os.getcwd()
     if project_name == '.':
         project_name = os.path.basename(os.getcwd())
-    if _api_already_exist():
+    if _service_already_exist():
         return hypermea.tool.escape('Please run in a folder that does not already contain an hypermea service', 2)
 
     project_name = _sanitize_for_mongo_db_name(project_name)
 
     if not _is_folder_ready(current_dir):
-        hypermea.tool.escape('Canceling api creation', 3)
+        hypermea.tool.escape('Canceling service creation', 3)
 
     os.chdir(current_dir)
-    click.echo(f'Creating {project_name} api')
+    click.echo(f'Creating {project_name} service')
     skel = os.path.join(os.path.dirname(hypermea.tool.__file__), 'skel')
 
     _create_hypermea_config_file(project_name)
@@ -98,22 +98,11 @@ def _create_tests_folder(project_name, skel):
 
 def _create_service_folder(project_name, skel):
     folder_name = 'service'
-    _copy_api_skel(project_name, folder_name, skel)
-    # _rename_api_settings(project_name, folder_name)
+    _copy_service_skel(project_name, folder_name, skel)
 
-def _rename_api_settings(project_name, folder_name):
-    module_name = _sanitize_for_python_module_name(project_name)
-    config_init = os.path.join(folder_name, 'settings/__init__.py')
-    with open(config_init, 'r', encoding='utf-8') as f:
-        content = f.read()
-    content = content.replace('api_settings', f'{module_name}_settings')
-    with open(config_init, 'w', encoding='utf-8') as f:
-        f.write(content)
-    os.rename(os.path.join(folder_name, 'settings/api_settings.py'),
-              os.path.join(folder_name, f'settings/{module_name}_settings.py'))
 
 def _add_pytest_ini(skel):
-    with open(f'{skel}/api/pytest.ini', 'r', encoding='utf-8') as f:
+    with open(f'{skel}/service/pytest.ini', 'r', encoding='utf-8') as f:
         content = f.read()
     content = content.replace('../', f'src/')
     with open('pytest.ini', 'w', encoding='utf-8') as f:
@@ -130,10 +119,10 @@ def _rename_test_templates(project_name, folder_name):
 
 
 # TODO: nothing here is DRY esp. these two:
-def _copy_api_skel(project_name, folder_name, skel):
+def _copy_service_skel(project_name, folder_name, skel):
     os.mkdir(folder_name)
-    api_folder = os.path.join(skel, 'api')
-    copytree(api_folder, folder_name, dirs_exist_ok=True)
+    service_folder = os.path.join(skel, 'service')
+    copytree(service_folder, folder_name, dirs_exist_ok=True)
 
 def _copy_tests_skel(project_name, folder_name, skel):
     os.mkdir(folder_name)
@@ -190,7 +179,7 @@ def _is_folder_ready(current_dir):
         return True
     else:
         return  click.confirm(
-            'This folder is not empty.  Do you still wish to create your API here?',
+            'This folder is not empty.  Do you still wish to create your service here?',
             show_default=True
         )
 

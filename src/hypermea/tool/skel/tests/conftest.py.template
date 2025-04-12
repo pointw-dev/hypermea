@@ -37,7 +37,7 @@ def dev_time_settings() -> dict[str, Any]:
 @pytest.fixture(scope='function')
 def deploy_time_settings() -> AllSettings:
     return build_settings(
-        hypermea=HypermeaSettings(api_port=1999),
+        hypermea=HypermeaSettings(service_port=1999),
         mongo=MongoSettings(dbname="pytest")
     )
 
