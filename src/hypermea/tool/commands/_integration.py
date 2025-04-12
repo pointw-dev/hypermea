@@ -11,7 +11,7 @@ def _create(integration, name, prefix):
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
-    if integration == 'empty' and name is None:
+    if integration == 'custom' and name is None:
         print('You must supply a name when choosing the "custom" integration.')
         hypermea.tool.jump_back_to(starting_folder)
         sys.exit(902)
@@ -30,20 +30,25 @@ def _create(integration, name, prefix):
 
     if not os.path.exists('integration'):
         os.makedirs('integration')
-    if not os.path.exists(f'integration/{name}'):
-        os.makedirs(f'integration/{name}')
+    if not os.path.exists(f'integration/{integration}'):
+        os.makedirs(f'integration/{integration}')
 
     replace = {
-        'integration': name,
+        'integration': name.title(),
         'prefix': prefix.upper() if prefix else name.upper()
     }
     hypermea.tool.copy_skel(settings['project_name'], f'integration/{integration}',
-                                  target_folder=f'integration/{name}',
+                                  target_folder=f'integration/{integration}',
                                   replace=replace)
-    with open(f'./integration/__init__.py', 'a') as f:
-        f.write(f'from . import {name}\n')
 
-    SettingsInserter('integration', 'S3Settings').transform('./settings/__init__.py')
+    if integration == 'custom':
+        # rename the folder from integration to name
+        os.rename(f'integration/{integration}', f'integration/{name.lower()}')
+
+    with open(f'./integration/__init__.py', 'a') as f:
+        f.write(f'from . import {name.lower()}\n')
+
+    SettingsInserter('integration', f'{name.title()}Settings').transform('./settings/__init__.py')
     # TODO: handle settings/prefix
     # TODO: ensure outer requirements.txt contains libraries required by the integration
     hypermea.tool.jump_back_to(starting_folder)
