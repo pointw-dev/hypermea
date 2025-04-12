@@ -11,7 +11,7 @@ import signal
 import time
 from contextlib import redirect_stdout, redirect_stderr
 
-import service.settings
+import settings
 
 
 FEATURE = 'hypermea/enhanced_logging.feature'
@@ -132,7 +132,7 @@ def then_i_see_the_base_settings_for_hypermea(context):
     assert_that(len(deploy_time_settings)).is_greater_than(0)
 
     missing = [
-        setting for setting in ['HY_API_NAME', 'HY_MONGO_HOST', 'HY_PAGINATION_DEFAULT']
+        setting for setting in ['HY_API_NAME', 'HY_API_PORT', 'HY_PAGINATION_DEFAULT']
         if not any(msg.startswith(setting) for _, _, msg in deploy_time_settings)
     ]
     assert_that(missing).described_as("Missing version logs for").is_empty()

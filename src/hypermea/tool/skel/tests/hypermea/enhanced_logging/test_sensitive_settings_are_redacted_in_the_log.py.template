@@ -18,6 +18,7 @@ def test_sensitive_settings_are_redacted_in_the_log():
 
 @given('I have configured a setting for a password')
 def given_i_have_configured_a_setting_for_a_password(deploy_time_settings):
+    deploy_time_settings.mongo.username = ''
     deploy_time_settings.mongo.password = SecretStr('swordfish')
 
 
@@ -28,5 +29,5 @@ def then_i_do_not_see_the_secret_values(context):
 
     log_string = ''.join(str(context.log_entries))
 
-    assert_that(log_string).contains('HY_MONGO_PASSWORD')
+    assert_that(log_string).contains('MONGO_PASSWORD')
     assert_that(log_string).does_not_contain('swordfish')

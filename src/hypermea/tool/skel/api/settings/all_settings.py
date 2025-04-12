@@ -66,3 +66,38 @@ def settings_dump(pretty: bool = False) -> str | dict:
         import json
         return json.dumps(settings_dict, indent=2)
     return settings_dict
+
+
+def devops_settings_dump(pretty: bool = False) -> str | list[dict]:
+    from settings import get_hypermea, get_logging, get_rate_limit, get_mongo, get_smtp
+
+    settings_models = [
+        ("hypermea", get_hypermea()),
+        ("logging", get_logging()),
+        ("rate_limit", get_rate_limit()),
+        ("mongo", get_mongo()),
+        ("smtp", get_smtp()),
+    ]
+
+    result = []
+    for _, model in settings_models:
+        fields = model.model_fields
+        values = model.model_dump()
+        section = {
+            "description": model.__doc__.strip() if model.__doc__ else "",
+            "settings": {}
+        }
+
+        env_prefix = model.model_config.get("env_prefix", "")
+
+        for field_name, field_info in fields.items():
+            alias = field_info.alias or (env_prefix + field_name).upper()
+            section["settings"][alias] = values[field_name]
+
+        result.append(section)
+
+    if pretty:
+        import json
+        return json.dumps(result, indent=2)
+
+    return result

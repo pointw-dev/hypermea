@@ -21,6 +21,12 @@ def log_starting_environment():
         logger.info(f"{name}{padding}{version}")
 
     logger = logging.getLogger("service")
-    # SETTINGS.dump(callback=logger.info)
+    settings_groups = start_env['settings_groups']
+    for group in settings_groups:
+        if not group.get('settings', {}):
+            continue
+        logger.info(f'== {group["description"]}')
+        for setting, value in group['settings'].items():
+            logger.info(f'{setting}: {value}')
 
-    logger.info("=========== end dump ===========")
+    logger.info('=========== end dump ===========')

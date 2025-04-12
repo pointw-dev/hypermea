@@ -3,20 +3,6 @@ from pytest_bdd import given, when, then, parsers
 from tests import *
 from tests.hypermea import *
 
-
-
-
-
-
-from flask import current_app
-
-
-
-
-
-
-
-
 FEATURE = 'hypermea/pagination.feature'
 
 

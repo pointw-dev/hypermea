@@ -7,7 +7,7 @@ class SmtpSettings(BaseSettings):
     """
     Connection details for the email server.
     """
-    model_config = SettingsConfigDict(env_prefix='STMP_')
+    model_config = SettingsConfigDict(env_prefix='SMTP_')
 
     host: Optional[str] = Field(
         default=None,

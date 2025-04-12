@@ -4,25 +4,23 @@ import logging
 from pathlib import Path
 from typing import Any
 
-# Ensure src/service is on sys.path to enable 'from settings import ...'
+#### Ensure src/service is on sys.path to enable 'from settings import ...'
 service_dir = Path(__file__).resolve().parents[1] / "service"
 sys.path.insert(0, str(service_dir))
+####
 
 import pytest
 from pymongo import MongoClient
 
 from hypermea.core.utils import is_mongo_running
 
-from settings import HypermeaSettings, LoggingSettings, RateLimitSettings
+from settings import HypermeaSettings
 from settings.all_settings import AllSettings, inject_settings, reset_settings, build_settings
 from integration.mongo.settings import MongoSettings
-from integration.smtp.settings import SmtpSettings
-
 
 from tests import load_settings_from_file
-
-
 os.environ["HYPERMEA_DISABLE_SETTINGS_AUTOLOAD"] = "1"
+
 
 @pytest.hookimpl(tryfirst=True)
 def pytest_sessionstart(session):
@@ -36,34 +34,16 @@ def dev_time_settings() -> dict[str, Any]:
         'OPTIMIZE_PAGINATION_FOR_SPEED': False
     }
 
-
 @pytest.fixture(scope='function')
 def deploy_time_settings() -> AllSettings:
     return build_settings(
-        hypermea=HypermeaSettings(pagination_default=999, api_port=2113),
+        hypermea=HypermeaSettings(api_port=1999),
         mongo=MongoSettings(dbname="pytest")
     )
-
-
-
-# @pytest.fixture(scope='function')
-# def deploy_time_settings() -> dict[str, str]:
-#     # These are deploy-time env vars that can now be used to construct
-#     # settings model instances instead of being pushed into os.environ
-#     return {
-#         'HY_API_PORT': '2113',
-#         'HY_MONGO_DBNAME': 'pytest',
-#         'HY_TRACE_LOGGING': 'Disabled',
-#         'HY_CACHE_CONTROL': 'no-cache, no-store, must-revalidate',
-#         'HY_CACHE_EXPIRES': '30',
-#         'HY_PAGINATION_LIMIT': '3000'
-#     }
-
 
 @pytest.fixture(scope='function')
 def service(deploy_time_settings: AllSettings, dev_time_settings):
     inject_settings(deploy_time_settings)
-
     service = service_with_test_starting_environment(dev_time_settings)
     app = service._app
 
@@ -82,6 +62,11 @@ def service(deploy_time_settings: AllSettings, dev_time_settings):
 
     cleanup_database()
     reset_settings()
+
+@pytest.fixture(scope='function')
+def api(service):
+    with service._app.test_client() as api:
+        yield api
 
 
 def service_with_test_starting_environment(dev_time_settings):
@@ -108,9 +93,3 @@ def service_with_test_starting_environment(dev_time_settings):
     )
 
     return service
-
-
-@pytest.fixture(scope='function')
-def api(service):
-    with service._app.test_client() as api:
-        yield api

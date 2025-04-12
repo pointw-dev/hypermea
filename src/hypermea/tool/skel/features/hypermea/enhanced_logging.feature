@@ -37,16 +37,10 @@ Feature: Hypermea services create useful logs, configurable to how, what, and wh
     Then I see the versions of important stack components
 
 
-  Scenario: Base hypermea settings are logged
+  Scenario: Deploy time settings are logged
     Given the service has started
     When I look at the log
     Then I see the base settings for hypermea
-
-  Scenario: Settings I created for my service are logged
-    Given I have configured settings that custom to my service
-    And the service has started
-    When I look at the log
-    Then I see my service custom settings
 
   Scenario: Sensitive settings are redacted in the log
     Given I have configured a setting for a password

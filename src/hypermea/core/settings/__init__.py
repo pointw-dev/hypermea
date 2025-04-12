@@ -1,3 +1,4 @@
+import json
 import platform
 from typing import Dict
 
@@ -9,11 +10,12 @@ from .promoter import SettingPromoter
 
 
 def starting_environment() -> Dict:
-    import settings
+    from settings.all_settings import get_settings, devops_settings_dump
+    all_settings = get_settings()
     from .. import VERSION as api_version
 
     rtn = {}
-    api_name = settings.hypermea.api_name
+    api_name = all_settings.hypermea.api_name
 
     rtn['versions'] = {
         api_name: api_version,
@@ -26,18 +28,7 @@ def starting_environment() -> Dict:
         "os_version": platform.version(),
         "os_platform": platform.platform(),
     }
-    #
-    # rtn['settings_groups'] = []
-    # for prefix in SETTINGS.settings:
-    #     group = {
-    #         'description': f'{SETTINGS.prefix_descriptions.get(prefix, "")}',
-    #         'settings': {}
-    #     }
-    #     for setting in SETTINGS.settings[prefix]:
-    #         value = SETTINGS.settings[prefix][setting]
-    #         if ('PASSWORD' in setting) or ('SECRET' in setting) or ('PRIVATE' in setting):
-    #             value = '***'
-    #         group['settings'][f'{prefix}_{setting}'] = value
-    #     rtn['settings_groups'].append(group)
-    #
+
+    rtn['settings_groups'] = devops_settings_dump()
+
     return rtn
