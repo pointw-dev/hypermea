@@ -10,11 +10,11 @@ To launch the service (I recommend you first create a [virtual environment](http
 hypermea run
 ```
 
-If you have created this service with docker support (`hypermea api create {$project_name} --add-docker`) then to launch the service with docker-compose:
+If you have created this service with docker support (`hypermea service create {$project_name} --add-docker`) then to launch the service with docker-compose:
 
 `docker compose up -d`
 
-If you have created this api with serverless support (`hypermea api create {$project_name} --add-serverless`) then launch with:
+If you have created this api with serverless support (`hypermea service create {$project_name} --add-serverless`) then launch with:
 
 `sls wsgi serve -p 2112`
 

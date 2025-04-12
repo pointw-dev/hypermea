@@ -27,7 +27,7 @@ If you are an **service developer** who will make changes to `{$project_name}` i
 
 ## Hypermedia Service
 
-Hypermedia is the organizing principle behind `{$project_name}`  Its main goal is to avoid client coupling - allowing the API and UI to evolve independently.  At least in theory, the only URL a client application needs to know is `{BASE_API_URL}`.  The rest is discoverable by following link relations.  If you follow this principle, your client will never break (after v0.8.0) no matter how the server side architecture changes.
+Hypermedia is the organizing principle behind `{$project_name}`  Its main goal is to avoid client coupling - allowing the service and UI to evolve independently.  At least in theory, the only URL a client application needs to know is `{BASE_API_URL}`.  The rest is discoverable by following link relations.  If you follow this principle, your client will never break (after v0.8.0) no matter how the server side architecture changes.
 
 This servoce uses a hypermedia type that is very similar to [HAL](https://en.wikipedia.org/wiki/Hypertext_Application_Language), i.e. it is JSON that reserves the object name `_links` to provide link relations.
 
