@@ -3,8 +3,9 @@ import hypermea.core.logging.setup    # do not remove this import
 import os
 import logging
 from hypermea.core import HypermeaEve
-from hypermea.core.gateway import register
+from hypermea.core.settings import build_static_settings
 from hypermea.core.logging import log_starting_environment
+from hypermea.core.gateway import register
 from flask_cors import CORS
 import hooks
 import settings
@@ -17,10 +18,8 @@ class HypermeaService:
         self._grab_kwargs(kwargs)
         self._name = settings.hypermea.service_name
 
-        eve_settings = os.path.join(os.path.dirname(__file__), 'static_settings.py')
-        if 'settings' in kwargs:
-            eve_settings = kwargs['settings']
-        self._app = HypermeaEve(import_name=self._name, settings=eve_settings)
+        static_settings = build_static_settings(kwargs)
+        self._app = HypermeaEve(import_name=self._name, settings=static_settings)
 
         CORS(self._app)
         hooks.add_hooks(self._app)
