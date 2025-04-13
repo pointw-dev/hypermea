@@ -99,12 +99,12 @@ class HypermeaValidator(Validator):
             self._error(field, message)
 
     @trace
-    def _validate_remote_relation(self, remote_relation, field, value):
+    def _validate_external_relation(self, external_relation, field, value):
         """
         The rule's arguments are validated against this schema:
         {'type': 'dict', 'schema': { 'rel': {'type': 'string'}, 'embeddable': {'type': 'boolean'} } }
         """
-        if not remote_relation:
+        if not external_relation:
             return
 
     #

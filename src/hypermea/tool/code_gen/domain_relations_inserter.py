@@ -70,7 +70,7 @@ class DomainRelationsInserter(FileTransformer):
                     'resource_title': 'children',
                     'datasource': {'source': 'children'}
                 }
-            or if remote parent
+            or if external parent
                 'parents_children': {
                     'schema': children.SCHEMA,
                     'url': 'children/parent/<regex("[a-f0-9]{24}"):_parent_ref>',
@@ -104,7 +104,7 @@ class DomainRelationsInserter(FileTransformer):
                             ],
                             start="f'",
                             end="'"
-                        ) if self.adder.remote_parent else FormattedString(
+                        ) if self.adder.external_parent else FormattedString(
                             parts=[
                                 FormattedStringText(f'{self.adder.parents}/<regex("'),
                                 FormattedStringExpression(expression=Name('OBJECT_ID_REGEX')),

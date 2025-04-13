@@ -51,8 +51,8 @@ class DomainChildrenDefinitionInserter(FileTransformer):
                         'embeddable': True
                     }
                 }
-            or if parent is remote:
-                '_parent_remote_id': {
+            or if parent is external:
+                '_parent_external_id': {
                     'type': 'objectid'
                 }
         """
@@ -129,8 +129,8 @@ class DomainChildrenDefinitionInserter(FileTransformer):
             )
         )
 
-        remote_relation_element = DictElement(
-            key=SimpleString("'remote_relation'"),
+        external_relation_element = DictElement(
+            key=SimpleString("'external_relation'"),
             whitespace_after_colon=SimpleWhitespace(' '),
             value=Dict(
                 elements=[
@@ -156,8 +156,8 @@ class DomainChildrenDefinitionInserter(FileTransformer):
 
 
         elements =[type_element]
-        if self.adder.remote_parent:
-            elements.append(remote_relation_element)
+        if self.adder.external_parent:
+            elements.append(external_relation_element)
         else:
             elements.append(data_relation_element)
 

@@ -12,10 +12,10 @@ def commands():
 
 @commands.command(name='create',
                   short_help='Create a parent/child link between two resources.  If one of the resources is in the '
-                       'domain of a different HypermeaService, add "remote:" in front of the name of that resource.',
+                       'domain of a different HypermeaService, add "external:" in front of the name of that resource.',
                   help_priority=1)
-@click.argument('parent', metavar='<parent|remote:parent>')
-@click.argument('child', metavar='<child|remote:child>')
+@click.argument('parent', metavar='<parent|external:parent>')
+@click.argument('child', metavar='<child|external:child>')
 @click.option('--as_parent_ref', '-p',
               is_flag=True,
               help='Change name of related ref to "parent" (instead of the name of the parent).')
@@ -40,8 +40,8 @@ def list_rels(output):
 @commands.command(name='remove',
                   short_help='Remove a link',
                   help_priority=3)
-@click.argument('parent', metavar='<parent|remote:parent>')
-@click.argument('child', metavar='<child|remote:child>')
+@click.argument('parent', metavar='<parent|external:parent>')
+@click.argument('child', metavar='<child|external:child>')
 def remove(parent, child):
     from ._link import _remove
     return _remove(parent, child)

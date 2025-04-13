@@ -146,13 +146,13 @@ def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
 
 @trace
 def _add_links_to_{singular}({singular}):
-    _add_remote_children_links({singular})
-    _add_remote_parent_links({singular})
+    _add_external_children_links({singular})
+    _add_external_parent_links({singular})
     affordances.rfc6861.edit_form.add_link({singular}, '{plural}')
 
 
 @trace
-def _add_remote_children_links({singular}):
+def _add_external_children_links({singular}):
     if not settings.hypermea.gateway_url:
         return
     {singular}_id = get_resource_id({singular}, '{plural}')
@@ -161,7 +161,7 @@ def _add_remote_children_links({singular}):
 
 
 @trace
-def _add_remote_parent_links({singular}):
+def _add_external_parent_links({singular}):
     if not settings.hypermea.gateway_url:
         return
     {singular}_id = get_resource_id({singular}, '{plural}')

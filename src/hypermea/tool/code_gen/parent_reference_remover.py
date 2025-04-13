@@ -15,7 +15,7 @@ class ParentReferenceRemover(FileTransformer):
         skip_it = True
         if isinstance(original_node.value, Dict):
             for element in original_node.value.elements:
-                if element.key.value in ["'data_relation'", "'remote_relation'"]:
+                if element.key.value in ["'data_relation'", "'external_relation'"]:
                     skip_it = False
                     break
         if skip_it:
@@ -24,7 +24,7 @@ class ParentReferenceRemover(FileTransformer):
         remove = False
 
         for element in original_node.value.elements:
-            if element.key.value not in ["'data_relation'", "'remote_relation'"]:
+            if element.key.value not in ["'data_relation'", "'external_relation'"]:
                 continue
             for sub_element in element.value.elements:   # TODO: is this universally safe?
                 if sub_element.value.value[1:-1] == self.resource:

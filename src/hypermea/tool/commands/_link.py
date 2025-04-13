@@ -55,13 +55,13 @@ def _print_plant_uml(rels):
 def _print_plant_uml_relations(rels):
     for rel in rels:
         for item in rels[rel].get('children', []):
-            if item.startswith(LinkManager.REMOTE_PREFIX):
-                item = item[len(LinkManager.REMOTE_PREFIX):]
+            if item.startswith(LinkManager.EXTERNAL_PREFIX):
+                item = item[len(LinkManager.EXTERNAL_PREFIX):]
             if ':' not in rel:
                 print(f'{rel} ||--o{{ {item}')
         for item in rels[rel].get('parents', []):
-            if item.startswith(LinkManager.REMOTE_PREFIX):
-                item = item[len(LinkManager.REMOTE_PREFIX):]
+            if item.startswith(LinkManager.EXTERNAL_PREFIX):
+                item = item[len(LinkManager.EXTERNAL_PREFIX):]
                 if ':' not in item:
                     print(f'{item} ||--o{{ {rel}')
 
@@ -72,18 +72,18 @@ def _print_plant_uml_classes(rels):
             print(f'class {rel} <<resource>>')
         for item in rels[rel]:
             for member in rels[rel][item]:
-                if member.startswith(LinkManager.REMOTE_PREFIX):
-                    target = member[len(LinkManager.REMOTE_PREFIX):]
-                    print(f'class {target} <<remote>>')
+                if member.startswith(LinkManager.EXTERNAL_PREFIX):
+                    target = member[len(LinkManager.EXTERNAL_PREFIX):]
+                    print(f'class {target} <<external>>')
 
 
 def _print_plant_uml_start():
     print('hide <<resource>> circle')
-    print('hide <<remote>> circle')
+    print('hide <<external>> circle')
     print('hide members ')
     print()
     print('skinparam class {')
-    print('    BackgroundColor<<remote>> LightBlue')
+    print('    BackgroundColor<<external>> LightBlue')
     print('}')
     print()
 

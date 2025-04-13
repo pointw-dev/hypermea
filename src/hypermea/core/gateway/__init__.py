@@ -96,26 +96,26 @@ def _get_prior_registration(url, name):
     return prior_registration
 
 
-def handle_post_from_remote(resource, request):
+def handle_post_from_external(resource, request):
     if 'where' not in request.args:
         return
     where = json.loads(request.args['where'])  # ASSERT: is json format, etc.
     if not len(where) == 1:
         return
     field = list(where.keys())[0]
-    remote_id = where[field]
+    external_id = where[field]
     definition = current_app.config['DOMAIN'][resource]['schema'][field]
-    remote_relation = definition.get('remote_relation', {})
-    if not remote_relation:
+    external_relation = definition.get('external_relation', {})
+    if not external_relation:
         return
 
     document = json.loads(request.get_data())  # ASSERT: is json format, etc
-    document[field] = remote_id
+    document[field] = external_id
     request._cached_data = json.dumps(document).encode('utf-8')
 
 
 @trace
-def embed_remote_parent_resource(resource, request, payload):
+def embed_external_parent_resource(resource, request, payload):
     embed_key = 'embedded'
     if embed_key not in request.args:
         return
@@ -125,9 +125,9 @@ def embed_remote_parent_resource(resource, request, payload):
             definition = current_app.config['DOMAIN'][resource]['schema'].get(field)
             if not definition:
                 return
-            remote_relation = definition.get('remote_relation', {})
-            rel = remote_relation.get('rel')
-            if rel and remote_relation.get('embeddable', False):
+            external_relation = definition.get('external_relation', {})
+            rel = external_relation.get('rel')
+            if rel and external_relation.get('embeddable', False):
                 response = json.loads(payload.data)
                 if field in response:
                     response[field] = _get_embedded_resource(response[field], rel)
@@ -140,11 +140,11 @@ def embed_remote_parent_resource(resource, request, payload):
 
 
 @trace
-def _get_embedded_resource(remote_id, rel):
+def _get_embedded_resource(external_id, rel):
     if not settings.hypermea.gateway_url:
         return
 
-    url = f'{get_href_from_gateway(rel)}/{remote_id}'
+    url = f'{get_href_from_gateway(rel)}/{external_id}'
     auth = request.headers.get('Authorization')
     auth_header = {}
     if auth:
@@ -155,8 +155,8 @@ def _get_embedded_resource(remote_id, rel):
     # ASSERT: ok
 
     return {
-        "_remote": {
-            "id": remote_id,
+        "_external": {
+            "id": external_id,
             "rel": rel,
             "href": url
         },

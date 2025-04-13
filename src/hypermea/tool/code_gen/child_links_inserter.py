@@ -9,7 +9,7 @@ class ChildLinksInserter(FileTransformer):
         self.adder = adder
 
     def leave_FunctionDef(self, original_node, updated_node):
-        method_name = '_add_remote_parent_links' if self.adder.remote_parent else f'_add_links_to_{self.adder.child}'
+        method_name = '_add_external_parent_links' if self.adder.external_parent else f'_add_links_to_{self.adder.child}'
         if not original_node.name.value == method_name and (not original_node.name.value == 'add_hooks'):
             return original_node
 
@@ -19,7 +19,7 @@ class ChildLinksInserter(FileTransformer):
 
         if original_node.name.value == method_name:
             new_body.append(self.make_parent_link())
-        if original_node.name.value == 'add_hooks' and not self.adder.remote_parent:
+        if original_node.name.value == 'add_hooks' and not self.adder.external_parent:
             new_body.extend(self.add_rel_hooks())
 
         return updated_node.with_changes(
@@ -48,7 +48,7 @@ class ChildLinksInserter(FileTransformer):
                         'href': '/children',
                         'title': 'children'
                     }
-            or this if the parent is remote to hooks.children:_add_remote_parent_links()
+            or this if the parent is external to hooks.children:_add_external_parent_links()
                 if '_parent_ref' in child:
                     child['_links']['parent'] = {  # not literally 'parent' here, rather the name of the parent resource
                         'href': '{get_href_from_gateway('parents')"]}/{child[_parent_ref]}",
@@ -57,7 +57,7 @@ class ChildLinksInserter(FileTransformer):
 
         """
 
-        if self.adder.remote_parent:
+        if self.adder.external_parent:
             href = FormattedString(
                 parts=[
                     FormattedStringExpression(

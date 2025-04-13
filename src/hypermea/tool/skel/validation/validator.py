@@ -5,7 +5,7 @@ HypermeaValidator defines the following validations and types:
 validations:
   unique_ignorecase
   unique_to_parent
-  remote_relation
+  external_relation
 
 types:
   iso_date
