@@ -95,15 +95,20 @@ def pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
         field_key = field.alias or field_name
         fields_schema[field_key] = field_schema
 
-    return {"schema": fields_schema}
+    return {"schema": fields_schema, "link_relation": model.__name__.lower()}
 
 
-def load_domain() -> Dict[str, Dict[str, Any]]:
-    import domain
-    domain_path = os.path.dirname(domain.__file__)
+def _discover_resource_models():
+    # TODO: this is hacky - find a better way to ensure when called from commands._resource.get_resource_list
+    try:
+        import domain
+        domain_path = os.path.dirname(domain.__file__)
+    except ModuleNotFoundError:
+        domain_path = './domain'
+
     sys.path.insert(0, domain_path)  # to allow import
 
-    all_schemas = {}
+    discovered = []
 
     for filename in os.listdir(domain_path):
         if filename.endswith(".py") and not filename.startswith("__"):
@@ -114,8 +119,17 @@ def load_domain() -> Dict[str, Dict[str, Any]]:
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
 
-            for name, obj in inspect.getmembers(module, is_pydantic_model):
-                schema = pydantic_to_cerberus(obj)
-                all_schemas[name.lower()] = schema
 
-    return all_schemas
+            for name, obj in inspect.getmembers(module, is_pydantic_model):
+                plural = getattr(getattr(obj, "Config", object), "plural", name.lower())
+                discovered.append((plural, obj))
+
+    return discovered
+
+
+def load_domain() -> Dict[str, Dict[str, Any]]:
+    return {name: pydantic_to_cerberus(obj) for name, obj in _discover_resource_models()}
+
+
+def list_domain_resources() -> list[str]:
+    return [obj.__name__.lower() for _, obj in _discover_resource_models()]

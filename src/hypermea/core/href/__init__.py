@@ -88,8 +88,10 @@ def adjust_etag_and_updated_date(record: dict) -> dict:
 
 
 def url_join(*parts: str) -> str:
-    url = ""
-    for p in parts:
+    start_at = 0 if parts[0] and not parts[0].startswith('/') else 1
+    url = '/' if not parts[0] else parts[0] if parts[0].startswith('/') else ''
+
+    for p in parts[start_at:]:
         p = p.strip()
         if p.startswith('?'):
             # Directly concatenate if part starts with '?'

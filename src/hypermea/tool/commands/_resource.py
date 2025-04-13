@@ -4,6 +4,7 @@ import os
 import click
 
 import hypermea.tool
+from hypermea.core.domain import list_domain_resources
 from hypermea.tool.code_gen import DomainDefinitionInserter, HooksInserter, DomainResourceRemover, HooksRemover, \
     ParentReferenceRemover, ChildLinksRemover
 
@@ -25,9 +26,9 @@ def _create(resource_name, no_common):
         hypermea.tool.escape('This resource already exist', 702)
     else:
         _create_resource_domain_file(singular, plural, add_common)
-        _insert_domain_definition(plural)
+        # _insert_domain_definition(plural)
         _create_resource_hook_file(singular, plural)
-        _insert_hooks(plural)
+        _insert_hooks(singular)
 
     hypermea.tool.jump_back_to(starting_folder)
 
@@ -48,14 +49,14 @@ def _remove(resource_name):
     if _is_resource_name_is_invalid(singular, plural):
         return hypermea.tool.escape(f'The resource name ({resource_name}) is invalid', 701)
 
-    if not _resource_already_exists(plural):
+    if not _resource_already_exists(singular):
         hypermea.tool.escape('This resource does not exist', 703)
 
-    _remove_domain_definition(plural)
-    _remove_hooks(plural)
-    _delete_resource_files(plural)
-    _remove_references_from_children(plural)
-    _remove_child_links(plural)
+    #_remove_domain_definition(plural)
+    _remove_hooks(singular)
+    _delete_resource_files(singular)
+    # _remove_references_from_children(plural)
+    # _remove_child_links(plural)
     hypermea.tool.jump_back_to(starting_folder)
 
 
@@ -81,79 +82,42 @@ def _is_resource_name_is_invalid(singular, plural):
 
 def _get_resource_list():
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/service/domain')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
-    with open('__init__.py', 'r') as f:
-        lines = f.readlines()
-
-    resources = set()
-    listening = False
-    for line in [line.strip() for line in lines]:
-        if line.startswith('DOMAIN_DEFINITIONS'):
-            listening = True
-            continue
-
-        if not listening:
-            continue
-
-        if line.startswith('}'):
-            break
-
-        if ':' not in line:
-            continue
-
-        resource = line.split(':')[0].strip().replace('"', '').replace("'", '')
-        if resource.startswith('_'):
-            continue
-
-        resources.add(resource)
+    resources = list_domain_resources()
 
     hypermea.tool.jump_back_to(starting_folder)
     return sorted(resources)
 
 
 def _create_resource_domain_file(singular, plural, add_common):
-    with open(f'domain/{plural}.py', 'w') as file:
+    with open(f'domain/{singular}.py', 'w') as file:
         file.write(f'''"""
 Defines the "{singular}" resource, and its "{plural}" resource collection.
 """
+from typing import Optional
+from pydantic import BaseModel, Field
+from hypermea.core.domain import ResourceModel
+
+class {singular.title()}(ResourceModel):    
+    name: str
+    description: Optional[str] = None
+    
+    class Config:
+        plural = '{plural}'
 ''')
 
-        if add_common:
-            file.write('from ._common import COMMON_FIELDS\n\n\n')
-
-        file.write('''SCHEMA = {
-    'name': {
-        'type': 'string',
-        'required': True
-    },
-    'description': {
-        'type': 'string'
-    }
-}
-
-''')
-
-        if add_common:
-            file.write('SCHEMA.update(COMMON_FIELDS)\n\n')
-
-        file.write(f'''DEFINITION = {{
-    'schema': SCHEMA,
-    'link_relation': '{singular}', 
-    'datasource': {{
-        'projection': {{'_owner': 0}}
-    }}
-}}
-''')
+    ## common fields (if add_common)
+    ##  'projection': {{'_owner': 0}}
 
 
 def _create_resource_hook_file(singular, plural):
-    with open(f'hooks/{plural}.py', 'w') as file:
+    with open(f'hooks/{singular}.py', 'w') as file:
         file.write(f'''"""
-hooks.{plural}
-This module defines functions to add link relations to {singular}.
+hooks.{singular}
+This module defines provides lifecycle hooks for the {singular} resource.
 """
 import logging
 import json
@@ -164,7 +128,7 @@ from hypermea.core.href import get_resource_id, add_etag_header_to_post
 from hypermea.core.gateway import get_href_from_gateway
 import affordances
 
-LOG = logging.getLogger('hooks.{plural}')
+LOG = logging.getLogger('hooks.{singular}')
 
 
 @trace

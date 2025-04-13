@@ -5,7 +5,7 @@ import logging
 import json
 from flask import make_response, current_app, request
 from hypermea.core.response import make_error_response, unauthorized_message
-from hypermea.core.href import get_my_base_url, inject_path
+from hypermea.core.href import get_my_base_url, inject_path, url_join
 from ._common import generate_hal_form, get_allowed_methods
 import settings
 
@@ -35,10 +35,11 @@ def add_link(collection, collection_name, self_href=''):
         return
 
     base_url = get_my_base_url()
+    url = url_join(base_url, self_href)
 
     collection['_links']['create-form'] = {
-        'href': inject_path(f'{base_url}/{self_href}', 'create-form', True),
-        '_note': f'GET to fetch create-form to add to {collection_name}'
+        'href': inject_path(url, 'create-form', True),
+        '_note': f'GET to fetch create-form to add to the collection of {collection_name}'
     }
 
 
