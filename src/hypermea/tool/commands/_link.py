@@ -24,7 +24,7 @@ def _create(parent, child, as_parent_ref):
 
 def _list_rels(output):
     try:
-        starting_folder, settings = hypermea.tool.jump_to_folder('src/service/domain')
+        starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
