@@ -1,9 +1,12 @@
 import json
 
 import os
+import os.path
 import glob
 import importlib.util
 from typing import Dict, Set
+
+from hypermea.core.domain import Relation
 
 import hypermea.tool
 import hypermea.tool.commands._service
@@ -20,7 +23,6 @@ class LinkManager:
     EXTERNAL_PREFIX = 'external:'
 
     def __init__(self, parent, child, as_parent_ref=False):
-        from domain._relation_model import Relation  # Delayed import for folder context
         self.relation = Relation.from_link_command(parent, child)
         self.parent, self.parents = hypermea.tool.get_singular_plural(self.relation.parent)
         self.child, self.children = hypermea.tool.get_singular_plural(self.relation.child)
@@ -48,13 +50,13 @@ class LinkManager:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
         rtn = ''
-        if not self.relation.parent_is_external and not os.path.exists(f'./{self.parents}.py'):
-            rtn += self.parents
+        if not self.relation.parent_is_external and not os.path.exists(f'./{self.parent}.py'):
+            rtn += self.parent
 
-        if not self.relation.child_is_external and not os.path.exists(f'./{self.children}.py'):
+        if not self.relation.child_is_external and not os.path.exists(f'./{self.child}.py'):
             if rtn:
                 rtn += ', '
-            rtn += self.children
+            rtn += self.child
 
         hypermea.tool.jump_back_to(starting_folder)
         return rtn
@@ -79,6 +81,10 @@ class LinkManager:
             starting_folder, _ = hypermea.tool.jump_to_folder('src/service')
         except RuntimeError:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
+
+        if not os.path.isfile('domain/_relations.py'):
+            hypermea.tool.jump_back_to(starting_folder)
+            return relations
 
         spec = importlib.util.spec_from_file_location("_relations", "domain/_relations.py")
         module = importlib.util.module_from_spec(spec)
