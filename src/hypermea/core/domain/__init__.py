@@ -9,7 +9,7 @@ from pydantic.fields import PydanticUndefined
 from typing import Dict, Type, Any, get_args, get_origin, Literal, List
 
 from .resource_model import ResourceModel
-from .relation import Relation
+from .relation import Relation, external, local
 
 TYPE_MAP = {
     str: "string",

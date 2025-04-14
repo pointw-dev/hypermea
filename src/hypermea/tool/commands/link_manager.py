@@ -1,5 +1,3 @@
-import json
-
 import os
 import os.path
 import glob
@@ -19,25 +17,33 @@ from hypermea.tool.code_gen import (
 from hypermea.tool.commands._resource import _get_resource_list
 
 
+
 class LinkManager:
     EXTERNAL_PREFIX = 'external:'
 
     def __init__(self, parent, child, as_parent_ref=False):
-        self.relation = Relation.from_link_command(parent, child)
-        self.parent, self.parents = hypermea.tool.get_singular_plural(self.relation.parent)
-        self.child, self.children = hypermea.tool.get_singular_plural(self.relation.child)
+        self.parent, self.parents = hypermea.tool.get_singular_plural(parent)
+        self.child, self.children = hypermea.tool.get_singular_plural(child)
+        self.relation = Relation(parent=self.parent, child=self.child)
+
+#######################
         self.parent_ref = '_parent_ref' if as_parent_ref else f'_{self.relation.parent}_ref'
+#######################
 
     def _link_already_exists(self):
         rels = LinkManager.get_relations()
 
         if 'children' in rels.get(self.parents, {}):
-            needle = self.children if not self.relation.child_is_external else LinkManager.EXTERNAL_PREFIX + self.children
+            needle = self.children  # if not self.relation.child.external else LinkManager.EXTERNAL_PREFIX + self.children
             if needle in rels[self.parents]['children']:
                 return True
 
-        if self.relation.parent_is_external and 'parents' in rels.get(self.children, {}):
-            needle = LinkManager.EXTERNAL_PREFIX + self.parent
+        # if self.relation.parent.external and 'parents' in rels.get(self.children, {}):
+        #     needle = LinkManager.EXTERNAL_PREFIX + self.parent
+        #     if needle in rels[self.children]['parents']:
+        #         return True
+        if 'parents' in rels.get(self.children, {}):
+            needle = self.parent
             if needle in rels[self.children]['parents']:
                 return True
 
@@ -50,10 +56,10 @@ class LinkManager:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
         rtn = ''
-        if not self.relation.parent_is_external and not os.path.exists(f'./{self.parent}.py'):
+        if not self.relation.parent.external and not os.path.exists(f'./{self.parent}.py'):
             rtn += self.parent
 
-        if not self.relation.child_is_external and not os.path.exists(f'./{self.child}.py'):
+        if not self.relation.child.external and not os.path.exists(f'./{self.child}.py'):
             if rtn:
                 rtn += ', '
             rtn += self.child
@@ -68,9 +74,6 @@ class LinkManager:
         missing = self._list_missing_resources()
         if missing:
             raise LinkManagerException(802, f'missing local resource: {missing}')
-
-        if self.relation.parent_is_external and self.relation.child_is_external:
-            raise LinkManagerException(803, 'Both parent and child cannot be external')
 
     @staticmethod
     def get_relations() -> Dict[str, Dict[str, Set[str]]]:
@@ -92,22 +95,22 @@ class LinkManager:
 
         registry = getattr(module, 'RELATION_REGISTRY', [])
         for rel in registry:
-            parent, parents = hypermea.tool.get_singular_plural(rel.parent)
-            child, children = hypermea.tool.get_singular_plural(rel.child)
+            parent, parents = hypermea.tool.get_singular_plural(str(rel.parent))
+            child, children = hypermea.tool.get_singular_plural(str(rel.child))
 
-            if not rel.parent_is_external and parent not in resources:
+            if not rel.parent.external and parent not in resources:
                 continue
             if parents not in relations:
                 relations[parents] = {}
             if 'children' not in relations[parents]:
                 relations[parents]['children'] = set()
-            relations[parents]['children'].add(children if not rel.child_is_external else LinkManager.EXTERNAL_PREFIX + children)
+            relations[parents]['children'].add(children if not rel.child.external else LinkManager.EXTERNAL_PREFIX + children)
 
             if children not in relations:
                 relations[children] = {}
             if 'parents' not in relations[children]:
                 relations[children]['parents'] = set()
-            relations[children]['parents'].add(parent if not rel.parent_is_external else LinkManager.EXTERNAL_PREFIX + parent)
+            relations[children]['parents'].add(parent if not rel.parent.external else LinkManager.EXTERNAL_PREFIX + parent)
 
         LinkManager._add_external_relations(relations)
         hypermea.tool.jump_back_to(starting_folder)
@@ -168,16 +171,16 @@ class LinkManager:
 
         self._validate()
         print(
-            f'Creating link rel from {"external " if self.relation.parent_is_external else ""}{self.parent} (parent) '
-            f'to {"external " if self.relation.child_is_external else ""}{self.children} (children)'
+            f'Creating link rel from {"external " if self.relation.parent.external else ""}{self.parent} (parent) '
+            f'to {"external " if self.relation.child.external else ""}{self.children} (children)'
         )
 
-        if self.relation.parent_is_external:
+        if self.relation.parent.external:
             hypermea.tool.commands._service._add_addins({'add_validation': 'n/a'}, silent=True)
 
-        if not self.relation.child_is_external:
-            DomainRelationsInserter(self).transform('domain/_relations.py')
-            ## DomainChildrenDefinitionInserter(self).transform(f'domain/{self.children}.py')
+        DomainRelationsInserter(self).transform('domain/_relations.py')
+        # if not self.relation.child.external:
+        #     DomainChildrenDefinitionInserter(self).transform(f'domain/{self.children}.py')
 
         hypermea.tool.jump_back_to(starting_folder)
 
@@ -194,7 +197,7 @@ class LinkManager:
 
         DomainRelationsRemover(self.parents, self.children).transform('domain/_relations.py')
 
-        ## if not self.relation.child_is_external:
+        ## if not self.relation.child.external:
         ##     ParentReferenceRemover(self.parents).transform(f'domain/{self.children}.py')
 
         hypermea.tool.jump_back_to(starting_folder)

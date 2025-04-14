@@ -1,42 +1,67 @@
-from pydantic import BaseModel, field_validator, model_validator
-from typing import Literal
+from pydantic import BaseModel, model_validator
+from typing import Union
+
+class ResourceRef(BaseModel):
+    name: str
+    external: bool = False  # True means this resource is defined in another service
+
+    def __str__(self) -> str:
+        return self.name
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, str):
+            return self.name == other
+        if isinstance(other, ResourceRef):
+            return self.name == other.name and self.external == other.external
+        return False
+
+    def __contains__(self, item: str) -> bool:
+        return item in self.name
+
+    def __iter__(self):
+        return iter(self.name)
+
+def external(name: str) -> ResourceRef:
+    """Helper to declare an external resource reference with minimal syntax."""
+    return ResourceRef(name=name, external=True)
+
+def local(name: str) -> ResourceRef:
+    """Helper to declare a local resource reference with minimal syntax."""
+    return ResourceRef(name=name, external=False)
 
 class Relation(BaseModel):
-    parent: str
-    child: str
+    parent: Union[str, ResourceRef]
+    child: Union[str, ResourceRef]
     rel: str | None = None
     reverse: str | None = None
     collection_name: str | None = None
-    parent_is_external: bool = False
-    child_is_external: bool = False
 
     def model_post_init(self, __context):
+        # Allow "external:" prefix in str-based shorthand
+        if isinstance(self.parent, str):
+            if self.parent.startswith("external:"):
+                self.parent = external(self.parent.replace("external:", ""))
+            else:
+                self.parent = local(self.parent)
+
+        if isinstance(self.child, str):
+            if self.child.startswith("external:"):
+                self.child = external(self.child.replace("external:", ""))
+            else:
+                self.child = local(self.child)
+
         if self.rel is None:
-            self.rel = self.parent
+            self.rel = self.parent.name
+
         if self.collection_name is None:
-            self.collection_name = f"{self.parent}_{self.child}"
-
-    @property
-    def has_external_relation(self) -> bool:
-        return self.parent_is_external or self.child_is_external
-
-    @classmethod
-    def from_link_command(cls, parent: str, child: str):
-        parent_is_external = parent.startswith("external:")
-        child_is_external = child.startswith("external:")
-
-        clean_parent = parent.replace("external:", "")
-        clean_child = child.replace("external:", "")
-
-        return cls(
-            parent=clean_parent,
-            child=clean_child,
-            parent_is_external=parent_is_external,
-            child_is_external=child_is_external
-        )
+            self.collection_name = f"{self.parent.name}_{self.child.name}"
 
     @model_validator(mode="after")
-    def check_only_one_external(cls, values):
-        if values.parent_is_external and values.child_is_external:
-            raise ValueError("Only one of parent or child may be external, not both.")
-        return values
+    def check_external_exclusivity(self):
+        if self.parent.external and self.child.external:
+            raise ValueError("A relation cannot have both parent and child marked as external.")
+        return self
+
+    @property
+    def is_cross_service(self) -> bool:
+        return self.parent.external or self.child.external

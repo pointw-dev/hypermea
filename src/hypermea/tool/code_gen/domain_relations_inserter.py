@@ -1,6 +1,7 @@
 import os
 
 from libcst import *
+
 from .file_transformer import FileTransformer
 from hypermea.tool import code_gen
 
@@ -43,22 +44,52 @@ class DomainRelationsInserter(FileTransformer):
         )
 
     def make_domain_relation(self):
-        return Element(
+        parent_arg = self.get_arg('parent')
+        child_arg = self.get_arg('child')
+
+        relation = Element(
             value=Call(
                 func=Name(value='Relation',),
-                args=[
-                    Arg(
-                        value=SimpleString(value=f'"{self.adder.parent}"',),
-                        keyword=Name(value='parent',),
-                        equal=AssignEqual(),
-                        comma=Comma(),
-                    ),
-                    Arg(
-                        value=SimpleString(value=f"'{self.adder.child}'",),
-                        keyword=Name(value='child',),
-                        equal=AssignEqual(),
-                        comma=MaybeSentinel.DEFAULT,
-                    ),
-                ],
+                args=[parent_arg, child_arg],
             )
         )
+
+        return relation
+
+    def get_arg(self, which):
+        rel = self.adder.relation.parent if which == 'parent' else self.adder.relation.child
+
+        if rel.external:
+            parent_arg = Arg(
+                value=Call(
+                    func=Name(value='external', ),
+                    args=[
+                        Arg(
+                            value=SimpleString(value=f"'{rel}'", ),
+                            keyword=None,
+                            equal=MaybeSentinel.DEFAULT,
+                            comma=MaybeSentinel.DEFAULT,
+                            star='',
+                            whitespace_after_star=SimpleWhitespace(value='', ),
+                            whitespace_after_arg=SimpleWhitespace(value='', ),
+                        ),
+                    ],
+                ),
+                keyword=Name(value=f'{which}', ),
+                equal=AssignEqual(
+                    whitespace_before=SimpleWhitespace(value='', ),
+                    whitespace_after=SimpleWhitespace(value='', ),
+                ),
+                comma=MaybeSentinel.DEFAULT if which == 'child' else Comma(whitespace_after=SimpleWhitespace(value=' ', ), ),
+            )
+        else:
+            parent_arg = Arg(
+                value=SimpleString(value=f"'{rel}'", ),
+                keyword=Name(value=f'{which}', ),
+                equal=AssignEqual(
+                    whitespace_before=SimpleWhitespace(value='', ),
+                    whitespace_after=SimpleWhitespace(value='', ),
+                ),
+                comma=MaybeSentinel.DEFAULT if which == 'child' else Comma(whitespace_after=SimpleWhitespace(value=' ', ), ),
+            )
+        return parent_arg
