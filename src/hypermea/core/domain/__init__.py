@@ -8,9 +8,14 @@ from pydantic import BaseModel
 from pydantic.fields import PydanticUndefined
 from typing import Dict, Type, Any, get_args, get_origin, Literal, List
 
-from .resource_model import ResourceModel
-from .relation import Relation, external, local
+from hypermea.tool import get_singular_plural
 
+from .resource_model import ResourceModel
+from .relation import Relation
+from .resource_ref import ResourceRef, external, local
+
+ALPHA_NUM_REGEX = r'[a-zA-Z0-9]*'
+OBJECT_ID_REGEX = r'[a-f0-9]{24}'
 TYPE_MAP = {
     str: "string",
     int: "integer",
@@ -27,11 +32,11 @@ TYPE_MAP = {
     Decimal: "decimal",
 }
 
-def is_pydantic_model(obj):
+def _is_pydantic_model(obj):
     return inspect.isclass(obj) and issubclass(obj, ResourceModel) and obj is not ResourceModel
 
 
-def enrich_with_constraints(field_schema: Dict[str, Any], field) -> None:
+def _enrich_with_constraints(field_schema: Dict[str, Any], field) -> None:
     for metadata_entry in field.metadata:
         if not isinstance(metadata_entry, dict):
             continue
@@ -54,7 +59,7 @@ def enrich_with_constraints(field_schema: Dict[str, Any], field) -> None:
             field_schema["allowed"] = list(metadata_entry["enum"])
 
 
-def pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
+def _pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
     fields_schema = {}
     for field_name, field in model.model_fields.items():
         field_schema = {}
@@ -68,14 +73,14 @@ def pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
             field_schema["allowed"] = list(args)
         elif inspect.isclass(python_type) and issubclass(python_type, BaseModel):
             field_schema["type"] = "dict"
-            field_schema["schema"] = pydantic_to_cerberus(python_type)["schema"]
+            field_schema["schema"] = _pydantic_to_cerberus(python_type)["schema"]
         elif origin in (list, List):
             item_type = args[0]
             field_schema["type"] = "list"
             if inspect.isclass(item_type) and issubclass(item_type, BaseModel):
                 field_schema["schema"] = {
                     "type": "dict",
-                    "schema": pydantic_to_cerberus(item_type)["schema"]
+                    "schema": _pydantic_to_cerberus(item_type)["schema"]
                 }
             else:
                 field_schema["schema"] = {
@@ -91,7 +96,7 @@ def pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
         if field.default is None:
             field_schema["nullable"] = True
 
-        enrich_with_constraints(field_schema, field)
+        _enrich_with_constraints(field_schema, field)
 
         field_key = field.alias or field_name
         fields_schema[field_key] = field_schema
@@ -99,14 +104,24 @@ def pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
     return {"schema": fields_schema, "link_relation": model.__name__.lower()}
 
 
-def _discover_resource_models():
-    # TODO: this is hacky - find a better way to ensure when called from commands._resource.get_resource_list
+
+def _get_domain_path():
     try:
         import domain
-        domain_path = os.path.dirname(domain.__file__)
+        return os.path.dirname(domain.__file__)
     except ModuleNotFoundError:
-        domain_path = './domain'
+        return './domain'
 
+
+def _import_module_from_path(module_name: str, file_path: str):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _discover_resource_models():
+    domain_path = _get_domain_path()
     sys.path.insert(0, domain_path)  # to allow import
 
     discovered = []
@@ -116,12 +131,9 @@ def _discover_resource_models():
             module_name = filename[:-3]
             file_path = os.path.join(domain_path, filename)
 
-            spec = importlib.util.spec_from_file_location(module_name, file_path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
+            module = _import_module_from_path(module_name, file_path)
 
-
-            for name, obj in inspect.getmembers(module, is_pydantic_model):
+            for name, obj in inspect.getmembers(module, _is_pydantic_model):
                 plural = getattr(getattr(obj, "Config", object), "plural", name.lower())
                 discovered.append((plural, obj))
 
@@ -129,8 +141,87 @@ def _discover_resource_models():
 
 
 def load_domain() -> Dict[str, Dict[str, Any]]:
-    return {name: pydantic_to_cerberus(obj) for name, obj in _discover_resource_models()}
+    domain_path = _get_domain_path()
+    relations_file = os.path.join(domain_path, '_relations.py')
+    relations_module = _import_module_from_path('domain', relations_file)
+    relation_registry = getattr(relations_module, 'RELATION_REGISTRY', [])
+
+    models = _discover_resource_models()
+
+    domain = {
+        name: _pydantic_to_cerberus(obj)
+        for name, obj in models
+    }
+
+    for rel in relation_registry:
+        if rel.child.external:
+            continue # no changes to the DOMAIN are required - links added by hooks
+        _add_sub_resource_to_domain(domain, models, rel)
+
+    return domain
+
+
+def _add_sub_resource_to_domain(domain, models, rel):
+    child_class = get_resource_model_by_rel(rel.child, models=models)
+    child, children = child_class.singplu()
+    if rel.parent.external:
+        parent, parents = get_singular_plural(str(rel.parent))
+        ref_field = f'_{parent}_ref'
+        url = f'{children}/{parent}/<regex("{OBJECT_ID_REGEX}"):{ref_field}>'
+    else:
+        parent_class = get_resource_model_by_rel(rel.parent, models=models)
+        parent, parents = parent_class.singplu()
+        ref_field = f'_{parent}_ref'
+        url = f'{parents}/<regex("{OBJECT_ID_REGEX}"):{ref_field}>/{children}'
+    sub_resource = f'{parents}_{children}'
+    schema = domain[children]['schema']
+    schema[ref_field] = {
+        'type': 'objectid',
+        'external_relation': {
+            'rel': parent,
+            'embeddable': True
+        }
+    } if rel.parent.external else {
+        'type': 'objectid',
+        'data_relation': {
+            'field': '_id',  # TODO: get_id_field?
+            'resource': parents,
+            'embeddable': True,
+        }
+    }
+    resource_title = f'{children}'
+    domain[sub_resource] = {
+        'schema': schema,
+        'url': url,
+        'resource_title': resource_title,
+        'datasource': {
+            'source': children
+        }
+    }
 
 
 def list_domain_resources() -> list[str]:
     return [obj.__name__.lower() for _, obj in _discover_resource_models()]
+
+
+def get_resource_model_by_rel(rel: str, *, models=None, retry=False):
+    model = None
+    if models is None:
+        models = _discover_resource_models()
+    for _, obj in models:
+        if obj.__name__.lower().startswith(str(rel).lower()):
+            model = obj
+
+    if model is None and not retry:
+        # rel s/b singular, but retry as singular for max flexibility and reducing mistakes...
+        singular, _ = get_singular_plural(str(rel).lower())
+        model = get_resource_model_by_rel(singular, models=models, retry=True)
+
+    return model
+
+
+__all__ = [
+    ResourceModel, Relation, external, local,
+    ALPHA_NUM_REGEX, OBJECT_ID_REGEX,
+    load_domain, list_domain_resources, get_resource_model_by_rel
+]

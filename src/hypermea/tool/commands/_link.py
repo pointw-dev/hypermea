@@ -7,14 +7,14 @@ import hypermea.tool
 from hypermea.tool.commands.link_manager import LinkManager, LinkManagerException
 
 
-def _create(parent, child, as_parent_ref):
+def _create(parent, child):
     try:
         starting_folder, settings = hypermea.tool.jump_to_folder('src/service')
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
     try:
-        LinkManager(parent, child, as_parent_ref).add()
+        LinkManager(parent, child).add()
     except LinkManagerException as err:
         click.echo(err)
         sys.exit(err.exit_code)
@@ -28,19 +28,23 @@ def _list_rels(output):
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
-    rels = LinkManager.get_relations()
+    ## TODO: UGLEEEEE!
+    if output=='raw':
+        rels = LinkManager.get_relation_registry()
+        for rel in rels:
+            print(rel)
+    else:
+        rels = LinkManager.get_relations()
+        globals()[f'_print_{output}'](rels)
 
-    globals()[f'_print_{output}'](rels)
-
-    # if output == 'english':
-    #     _print_english(rels)
-    # elif output == 'json':
-    #     _print_json(rels)
-    # elif output == 'python_dict':
-    #     _print_python_dict(rels)
-    # elif output == 'plant_uml':  # TODO: wonky/needs help
-    #     _print_plant_uml(rels)
     hypermea.tool.jump_back_to(starting_folder)
+
+def _print_raw(rels):
+    for resource, targets in rels.items():
+        if 'children' in targets:
+            print(resource)
+            for child in targets['children']:
+                print(f'- {child}')
 
 
 def _print_plant_uml(rels):

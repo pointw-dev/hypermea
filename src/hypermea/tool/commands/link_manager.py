@@ -2,33 +2,43 @@ import os
 import os.path
 import glob
 import importlib.util
+from argparse import ArgumentError
 from typing import Dict, Set
 
-from hypermea.core.domain import Relation
+from hypermea.core.domain import Relation, get_resource_model_by_rel
 
 import hypermea.tool
 import hypermea.tool.commands._service
 from hypermea.tool.code_gen import (
-    DomainChildrenDefinitionInserter,
     DomainRelationsInserter,
-    ## ParentReferenceRemover,
     DomainRelationsRemover,
 )
 from hypermea.tool.commands._resource import _get_resource_list
 
 
-
 class LinkManager:
     EXTERNAL_PREFIX = 'external:'
 
-    def __init__(self, parent, child, as_parent_ref=False):
-        self.parent, self.parents = hypermea.tool.get_singular_plural(parent)
-        self.child, self.children = hypermea.tool.get_singular_plural(child)
-        self.relation = Relation(parent=self.parent, child=self.child)
+    def __init__(self, parent, child):
+        relation = Relation(parent=parent, child=child)
+        parent_class = get_resource_model_by_rel(str(relation.parent))
+        child_class = get_resource_model_by_rel(str(relation.child))
 
-#######################
-        self.parent_ref = '_parent_ref' if as_parent_ref else f'_{self.relation.parent}_ref'
-#######################
+        good_parent = parent_class or relation.parent.external
+        good_child = child_class or relation.child.external
+
+        if not (good_parent and good_child):
+            message = 'Invalid link:'
+            if not good_parent:
+                message += f' Parent "{parent}" must either exist in the domain or be prefixed with "external:"'
+            if not good_child:
+                message += f' Child "{child}" must exist in the domain or be prefixed with "external:"'
+            raise ArgumentError(None, message)
+
+        self.parent, self.parents = hypermea.tool.get_singular_plural(str(parent)) if relation.parent.external else parent_class.singplu()
+        self.child, self.children = hypermea.tool.get_singular_plural(str(child)) if relation.child.external else child_class.singplu()
+
+        self.relation = Relation(parent=self.parent, child=self.child)
 
     def _link_already_exists(self):
         rels = LinkManager.get_relations()
@@ -77,29 +87,22 @@ class LinkManager:
 
     @staticmethod
     def get_relations() -> Dict[str, Dict[str, Set[str]]]:
-        relations: Dict[str, Dict[str, Set[str]]] = {}
-        resources = _get_resource_list()
-
         try:
             starting_folder, _ = hypermea.tool.jump_to_folder('src/service')
         except RuntimeError:
             return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
+        relations: Dict[str, Dict[str, Set[str]]] = {}
+
         if not os.path.isfile('domain/_relations.py'):
             hypermea.tool.jump_back_to(starting_folder)
             return relations
 
-        spec = importlib.util.spec_from_file_location("_relations", "domain/_relations.py")
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-
-        registry = getattr(module, 'RELATION_REGISTRY', [])
+        registry = LinkManager.get_relation_registry()
         for rel in registry:
             parent, parents = hypermea.tool.get_singular_plural(str(rel.parent))
             child, children = hypermea.tool.get_singular_plural(str(rel.child))
 
-            if not rel.parent.external and parent not in resources:
-                continue
             if parents not in relations:
                 relations[parents] = {}
             if 'children' not in relations[parents]:
@@ -115,6 +118,14 @@ class LinkManager:
         LinkManager._add_external_relations(relations)
         hypermea.tool.jump_back_to(starting_folder)
         return relations
+
+    @staticmethod
+    def get_relation_registry():
+        spec = importlib.util.spec_from_file_location("_relations", "domain/_relations.py")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        registry = getattr(module, 'RELATION_REGISTRY', [])
+        return registry
 
     @staticmethod
     def _add_external_relations(rels):
@@ -195,7 +206,7 @@ class LinkManager:
 
         print(f'Removing link from {self.parent} to {self.children}')
 
-        DomainRelationsRemover(self.parents, self.children).transform('domain/_relations.py')
+        DomainRelationsRemover(self.relation).transform('domain/_relations.py')
 
         ## if not self.relation.child.external:
         ##     ParentReferenceRemover(self.parents).transform(f'domain/{self.children}.py')

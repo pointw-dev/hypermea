@@ -16,12 +16,9 @@ def commands():
                   help_priority=1)
 @click.argument('parent', metavar='<parent|external:parent>')
 @click.argument('child', metavar='<child|external:child>')
-@click.option('--as_parent_ref', '-p',
-              is_flag=True,
-              help='Change name of related ref to "parent" (instead of the name of the parent).')
-def create(parent, child, as_parent_ref):
+def create(parent, child):
     from ._link import _create
-    return _create(parent, child, as_parent_ref)
+    return _create(parent, child)
 
 
 # TODO: refactor/SLAP
@@ -29,8 +26,8 @@ def create(parent, child, as_parent_ref):
                   short_help='List the relationships amongst the resources.',
                   help_priority=2)
 @click.option('output', '--format', '-f',
-              type=click.Choice(['english', 'json', 'python_dict', 'plant_uml']),
-              default='english',
+              type=click.Choice(['raw', 'english', 'json', 'python_dict', 'plant_uml']),
+              default='raw',
               help='Choose the output format of the relationships list')
 def list_rels(output):
     from ._link import _list_rels

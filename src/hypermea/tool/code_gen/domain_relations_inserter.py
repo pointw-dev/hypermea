@@ -2,8 +2,8 @@ import os
 
 from libcst import *
 
-from .file_transformer import FileTransformer
 from hypermea.tool import code_gen
+from .file_transformer import FileTransformer
 
 
 class DomainRelationsInserter(FileTransformer):
