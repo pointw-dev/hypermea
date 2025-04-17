@@ -20,6 +20,12 @@ class ResourceRef(BaseModel):
     def __iter__(self):
         return iter(self.name)
 
+    def __len__(self) -> int:
+        return len(self.name)
+
+    def isidentifier(self):
+        return self.name.isidentifier()
+
 
 def external(name: str) -> ResourceRef:
     """Helper to declare an external resource reference with minimal syntax."""

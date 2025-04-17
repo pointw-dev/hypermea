@@ -4,7 +4,7 @@ from .domain_definition_inserter import DomainDefinitionInserter
 from .hooks_inserter import HooksInserter
 from .authorization_inserter import AuthorizationInserter
 from .validation_inserter import ValidationInserter
-### from .child_links_inserter import ChildLinksInserter
+from .child_links_inserter import ChildLinksInserter
 from .parent_links_inserter import ParentLinksInserter
 ### from .domain_children_definition_inserter import DomainChildrenDefinitionInserter
 from .domain_relations_inserter import DomainRelationsInserter

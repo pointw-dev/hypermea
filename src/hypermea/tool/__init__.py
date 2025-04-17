@@ -146,6 +146,8 @@ def replace_project_name(project_name, folder):
               continue
             if '.idea' in dname and 'icon' in fname:
               continue
+            if 'favicon' in fname:
+              continue
             fpath = os.path.join(dname, fname)
             try:
               with open(fpath) as f:

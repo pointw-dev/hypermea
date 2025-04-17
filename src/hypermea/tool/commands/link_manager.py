@@ -12,8 +12,9 @@ import hypermea.tool.commands._service
 from hypermea.tool.code_gen import (
     DomainRelationsInserter,
     DomainRelationsRemover,
+    ParentLinksInserter,
+    ChildLinksInserter
 )
-from hypermea.tool.commands._resource import _get_resource_list
 
 
 class LinkManager:
@@ -39,6 +40,7 @@ class LinkManager:
         self.child, self.children = hypermea.tool.get_singular_plural(str(child)) if relation.child.external else child_class.singplu()
 
         self.relation = Relation(parent=self.parent, child=self.child)
+        self.parent_ref = f'_{self.relation.parent}_ref'
 
     def _link_already_exists(self):
         rels = LinkManager.get_relations()
@@ -187,11 +189,12 @@ class LinkManager:
         )
 
         if self.relation.parent.external:
+            ChildLinksInserter(self).transform(f'hooks/{self.child}.py')
             hypermea.tool.commands._service._add_addins({'add_validation': 'n/a'}, silent=True)
 
         DomainRelationsInserter(self).transform('domain/_relations.py')
-        # if not self.relation.child.external:
-        #     DomainChildrenDefinitionInserter(self).transform(f'domain/{self.children}.py')
+        if self.relation.child.external:
+            ParentLinksInserter(self).transform(f'hooks/{self.parent}.py')
 
         hypermea.tool.jump_back_to(starting_folder)
 

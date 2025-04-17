@@ -9,8 +9,7 @@ class ParentLinksInserter(FileTransformer):
         self.adder = adder
 
     def leave_FunctionDef(self, original_node, updated_node):
-        method_name = '_add_external_children_links' if self.adder.external_child else f'_add_links_to_{self.adder.parent}'
-        if not original_node.name.value == method_name:
+        if not self.adder.relation.child.external or not original_node.name.value == '_add_external_children_links':
             return original_node
 
         new_body = []
@@ -31,7 +30,7 @@ class ParentLinksInserter(FileTransformer):
                     expression=Call(
                         func=Name('get_href_from_gateway'),
                         args=[
-                            Arg(SimpleString(f"'{self.adder.children}'"))
+                            Arg(SimpleString(f"'{self.adder.child}'"))
                         ]
                     )
                 ),
@@ -40,25 +39,17 @@ class ParentLinksInserter(FileTransformer):
             ],
             start='f"',
             end='"'
-        ) if self.adder.external_child else [
-            FormattedStringText(f'/{self.adder.parents}/'),
-            FormattedStringExpression(expression=Name(f'{self.adder.parent}_id')),
-            FormattedStringText(f'/{self.adder.children}')
-        ]
+        )
 
     def make_children_link(self):
-        """ This adds the following to hooks.parents:_add_links_to_parent()
-                parent['_links']['children'] = {
-                 'href': f'/parents/{parent["_id"]}/children'
-                }
-            or this if the child is external to hooks.parents:_add_external_children_links()
-                parent['_links']['children'] = {
-                    'href': "{get_href_from_gateway('children')}/parents/parent['_id']/children'
+        """ This adds the following to hooks.parents:_add_external_children_links()
+                parent['_links']['child'] = {
+                    'href': "{get_href_from_gateway('child')}/parents/parent['_id']/children'
                 }
         """
 
         return code_gen.get_link_statement_line(
             resource=self.adder.parent,
-            rel=self.adder.children,
+            rel=self.adder.child,
             href=self._get_href_value()
         )
