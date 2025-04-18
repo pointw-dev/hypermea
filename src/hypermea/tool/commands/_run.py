@@ -11,8 +11,7 @@ def _run(host, debug, single_threaded):
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
     try:
-        import eve
-        import cerberus
+        import dotenv
     except ModuleNotFoundError:
         # TODO: ask first?
         os.system('pip install -r requirements.txt')

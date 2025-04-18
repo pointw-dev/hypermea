@@ -135,8 +135,20 @@ LOG = logging.getLogger('hooks.{singular}')
 def add_hooks(app):
     """Wire up the hooks for {singular}."""
     app.on_post_POST_{plural} += add_etag_header_to_post
+    app.on_post_POST_{plural} += _post_{plural}
     app.on_fetched_item_{plural} += _add_links_to_{singular}
     app.on_fetched_resource_{plural} += _add_links_to_{plural}_collection
+
+
+@trace
+def _post_{plural}(request, payload):
+    if payload.status_code == 201:
+        j = json.loads(payload.data)
+        if '_items' in j:
+            _add_links_to_{plural}_collection(j, request.url)
+        else:
+            _add_links_to_{singular}(j)
+        payload.data = json.dumps(j)
 
 
 @trace

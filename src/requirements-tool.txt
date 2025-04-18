@@ -1,0 +1,4 @@
+libcst==1.7.0
+inflect==4.1.0 # 4.1.0   7.5.0 runs verrrrry slowly ?!??!
+click==8.1.8
+requests==2.32.3

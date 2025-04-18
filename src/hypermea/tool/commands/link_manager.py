@@ -188,15 +188,16 @@ class LinkManager:
             f'to {"external " if self.relation.child.external else ""}{self.children} (children)'
         )
 
-        if self.relation.parent.external:
-            ChildLinksInserter(self).transform(f'hooks/{self.child}.py')
-            hypermea.tool.commands._service._add_addins({'add_validation': 'n/a'}, silent=True)
-
         DomainRelationsInserter(self).transform('domain/_relations.py')
+        ChildLinksInserter(self).transform(f'hooks/{self.child}.py')
+
+        if self.relation.parent.external:
+            hypermea.tool.commands._service._add_addins({'add_validation': 'n/a'}, silent=True)
         if self.relation.child.external:
             ParentLinksInserter(self).transform(f'hooks/{self.parent}.py')
 
         hypermea.tool.jump_back_to(starting_folder)
+        return None
 
     def remove(self):
         try:

@@ -25,6 +25,10 @@ setup(
     author_email='michael@pointw.com',
     package_dir={'hypermea.core':'hypermea/core'},
     packages=['hypermea.core'],
+    install_requires=[
+        'Eve==2.2.0',
+        'pydantic==2.11.3'
+    ],
     include_package_data=True,
     zip_safe=False
 )

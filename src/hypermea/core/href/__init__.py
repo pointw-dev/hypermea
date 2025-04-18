@@ -1,14 +1,7 @@
-import traceback
-import os
-import logging
 import json
-import socket
-from typing import List, Dict, Optional
 import re
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
-from flask import jsonify, make_response, current_app, request, Response, g, after_this_request
-from flask.testing import FlaskClient
-from pymongo.database import Database
+from flask import current_app, request, g, after_this_request
 from eve.utils import document_etag
 from datetime import datetime
 from bson import ObjectId
