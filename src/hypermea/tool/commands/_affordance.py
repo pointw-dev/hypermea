@@ -89,7 +89,7 @@ def _resource_exists(resource_name):
     singular, plural = hypermea.tool.get_singular_plural(resource_name)  # TODO: DRY
 
     hypermea.tool.jump_back_to(starting_folder)
-    return os.path.exists(f'hooks/{plural}.py')
+    return os.path.exists(f'hooks/{singular}.py')
 
 
 def _append_import_if_needed(filename, import_statement):
@@ -128,7 +128,7 @@ def _get_affordances():
 
 def _add_affordance_resource(affordance, resource):
     singular, plural = hypermea.tool.get_singular_plural(resource)  # TODO: DRY
-    AffordanceLinkInserter(affordance, singular, plural).transform(f'hooks/{plural}.py')
+    AffordanceLinkInserter(affordance, singular, plural).transform(f'hooks/{singular}.py')
 
 
 def _detach_affordance(affordance, resource_name):
