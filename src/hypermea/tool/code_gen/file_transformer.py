@@ -6,7 +6,6 @@ class FileTransformer(CSTTransformer):
         super().__init__()
 
     def transform(self, filename):
-        print('-----> transforming', filename)
         with open(filename, 'r') as source:
             tree = parse_module(source.read())
 
