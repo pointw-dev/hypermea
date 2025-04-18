@@ -49,7 +49,6 @@ def _create(integration, name, prefix):
         f.write(f'from . import {name.lower()}\n')
 
     SettingsInserter('integration', f'{name.title()}Settings').transform('./settings/__init__.py')
-    # TODO: handle settings/prefix
     # TODO: ensure outer requirements.txt contains libraries required by the integration
     hypermea.tool.jump_back_to(starting_folder)
 

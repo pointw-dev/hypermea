@@ -71,7 +71,7 @@ def _create_service(project_name):
     _create_hypermea_config_file(project_name)
     _copy_documentation(skel)
     _create_idea_folder(project_name, skel)
-    _add_pytest_ini(skel)
+    # _add_pytest_ini(skel)
 
     os.mkdir('src')
     os.chdir('src')

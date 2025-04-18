@@ -32,9 +32,11 @@ License:
 """
 
 import os
+from shutil import move
 
 import hypermea.tool
-from hypermea.tool.code_gen import AuthorizationInserter
+from hypermea.tool.code_gen import AuthorizationInserter, SettingsInserter
+
 
 # TODO: script getting default values (e.g. client keys)
 # TODO: provide non Auth0
@@ -54,10 +56,12 @@ def add(silent=False):
         hypermea.tool.escape('auth has already been added', 201, silent)
 
     hypermea.tool.copy_skel(settings['project_name'], 'auth', silent=silent)
+    move(os.path.join('auth', 'settings.py'), os.path.join('settings', 'auth.py'))
     hypermea.tool.install_packages(['hypermea-negotiable-auth', 'PyJWT', 'cryptography'], 'add-auth')
+    SettingsInserter('settings', f'AuthSettings').transform('./settings/__init__.py')
+
     # hypermea_negotiable_auth also installs authparser and pyparsing    
     # cryptography also installs cffi, pycparser
-    # requests also installs certifi, chardet, idna, urllib3
     wire_up_service()
 
     hypermea.tool.jump_back_to(starting_folder)

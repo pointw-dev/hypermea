@@ -121,11 +121,11 @@ This module defines provides lifecycle hooks for the {singular} resource.
 """
 import logging
 import json
-from flask import g, after_this_request, request as current_request
+from flask import request as current_request
 from hypermea.core.logging import trace
-import settings
-from hypermea.core.href import get_resource_id, add_etag_header_to_post
+from hypermea.core.href import get_resource_id, add_etag_header_to_post, get_self_href_from_request
 from hypermea.core.gateway import get_href_from_gateway
+import settings
 import affordances
 
 LOG = logging.getLogger('hooks.{singular}')
@@ -145,15 +145,16 @@ def _post_{plural}(request, payload):
     if payload.status_code == 201:
         j = json.loads(payload.data)
         if '_items' in j:
-            _add_links_to_{plural}_collection(j, request.url)
+            _add_links_to_{plural}_collection(j)
         else:
             _add_links_to_{singular}(j)
         payload.data = json.dumps(j)
 
 
 @trace
-def _add_links_to_{plural}_collection({plural}_collection, self_href=None):
-    affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', '/{plural}')
+def _add_links_to_{plural}_collection({plural}_collection):
+    self_href = get_self_href_from_request()
+    affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', self_href)
 
 
 @trace
@@ -161,6 +162,16 @@ def _add_links_to_{singular}({singular}):
     _add_external_children_links({singular})
     _add_external_parent_links({singular})
     affordances.rfc6861.edit_form.add_link({singular}, '{plural}')
+
+## The following three methods are here for use by `hy link create`
+## Modifying them may make it more difficult to create a link from
+## another resource to this one.
+
+@trace
+def _add_links_to_sub_resource_collection({plural}_collection):
+    _add_links_to_{plural}_collection({plural}_collection)
+    for {singular} in {plural}_collection['_items']:
+        _add_links_to_{singular}({singular})
 
 
 @trace

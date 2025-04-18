@@ -1,10 +1,22 @@
+"""
+This file is mainly for hypermea use.  It is managed by hypermea and it is
+not recommended to modify it.  Its two main purposes are
+* dump settings to the log
+* for tests (to override settings to drive test scenarios)
+"""
+
 from typing import Union
 from pydantic import BaseModel
+
+from settings import _registry
 from settings.hypermea import HypermeaSettings
 from settings.logging import LoggingSettings
 from settings.rate_limit import RateLimitSettings
+
 from integration.mongo.settings import MongoSettings
 from integration.smtp.settings import SmtpSettings
+
+from settings import get_hypermea, get_logging, get_rate_limit, get_mongo, get_smtp
 
 
 class AllSettings(BaseModel):
@@ -16,7 +28,6 @@ class AllSettings(BaseModel):
 
 
 def get_settings() -> AllSettings:
-    from settings import get_hypermea, get_logging, get_rate_limit, get_mongo, get_smtp
     return AllSettings(
         hypermea=get_hypermea(),
         logging=get_logging(),
@@ -39,12 +50,11 @@ def build_settings(
         logging=logging or defaults.logging,
         rate_limit=rate_limit or defaults.rate_limit,
         mongo=mongo or defaults.mongo,
-        smtp=smtp or defaults.smtp,
+        smtp=smtp or defaults.smtp
     )
 
 
 def inject_settings(overrides: AllSettings):
-    from settings import _registry
     current = get_settings()
 
     for key, override in overrides.model_dump(exclude_none=True).items():
@@ -54,7 +64,6 @@ def inject_settings(overrides: AllSettings):
 
 
 def reset_settings():
-    from settings import _registry
     all_settings = get_settings()
     for key in _registry:
         _registry[key] = getattr(all_settings, key)
@@ -69,8 +78,6 @@ def settings_dump(pretty: bool = False) -> str | dict:
 
 
 def devops_settings_dump(pretty: bool = False) -> str | list[dict]:
-    from settings import get_hypermea, get_logging, get_rate_limit, get_mongo, get_smtp
-
     settings_models = [
         ("hypermea", get_hypermea()),
         ("logging", get_logging()),

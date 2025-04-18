@@ -148,7 +148,7 @@ class ChildLinksInserter(FileTransformer):
                         dot=Dot(),
                     ),
                     operator=AddAssign(),
-                    value=Name(f'_add_links_to_{self.adder.children}_collection'),
+                    value=Name(f'_add_links_to_sub_resource_collection'),
                 ),
             ],
             leading_lines=[],
