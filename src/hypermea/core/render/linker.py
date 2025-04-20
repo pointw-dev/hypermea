@@ -1,5 +1,7 @@
 from flask import request, current_app
-from hypermea.core.href import clean_href, add_search_link, get_resource_id, get_resource_rel, get_my_base_url, get_self_href_from_request
+from hypermea.core.href import clean_href, add_search_link, get_resource_id, get_resource_rel, get_my_base_url, \
+    get_self_href_from_request, url_join
+from hypermea.core.gateway import get_href_from_gateway
 import settings
 
 
@@ -93,25 +95,31 @@ class HalLinker:
     def _add_parent_links(self, item):
         # add any parent links if I am a child to anyone
         added_parent_link = False
+        parent_resource_name = 'n/a'
+        for field, spec in [spec for spec in self.resource.schema.items() if ('data_relation' in spec[1] or 'external_relation' in spec[1])]:
+            if 'data_relation' in spec:
+                parent_resource_name = spec['data_relation'].get('resource')
+                parent_rel = get_resource_rel(parent_resource_name)
+            else:
+                parent_rel = spec['external_relation'].get('rel')
 
-        for field, spec in [spec for spec in self.resource.schema.items() if 'data_relation' in spec[1]]:
-            parent_resource_name = spec['data_relation'].get('resource')
-            parent_rel = get_resource_rel(parent_resource_name)
             if parent_rel:
                 if field in item:
-                    parent_id = item[field]
+                    parent_id = str(item[field])
                 else:
-                    parent_id = request.view_args.get(field)
+                    parent_id = str(request.view_args.get(field))
 
+                base_href = f'{self.resource.base_url}/{parent_resource_name}' if 'data_relation' in spec else get_href_from_gateway(parent_rel)
+                href = url_join(base_href, parent_id)
                 item['_links'][parent_rel] = {
-                    'href': f'{self.resource.base_url}/{parent_resource_name}/{parent_id}',
+                    'href': href,
                 }
                 if not added_parent_link:
                     item['_links']['parent'] = {
-                        'href': f'{self.resource.base_url}/{parent_resource_name}/{parent_id}',
+                        'href': href,
                     }
                     item['_links']['collection'] = {
-                        'href': f'{self.resource.base_url}/{parent_resource_name}/{parent_id}/{self.resource.name}',
+                        'href': f'{href}/{self.resource.name}',
                     }
                     added_parent_link = True
 

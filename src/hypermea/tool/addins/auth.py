@@ -36,6 +36,7 @@ from shutil import move
 
 import hypermea.tool
 from hypermea.tool.code_gen import AuthorizationInserter, SettingsInserter
+from hypermea.tool.code_gen.all_settings_inserter import AllSettingsInserter
 
 
 # TODO: script getting default values (e.g. client keys)
@@ -58,10 +59,12 @@ def add(silent=False):
     hypermea.tool.copy_skel(settings['project_name'], 'auth', silent=silent)
     move(os.path.join('auth', 'settings.py'), os.path.join('settings', 'auth.py'))
     hypermea.tool.install_packages(['hypermea-negotiable-auth', 'PyJWT', 'cryptography'], 'add-auth')
-    SettingsInserter('settings', f'AuthSettings').transform('./settings/__init__.py')
-
-    # hypermea_negotiable_auth also installs authparser and pyparsing    
+    # hypermea_negotiable_auth also installs authparser and pyparsing
     # cryptography also installs cffi, pycparser
+
+    SettingsInserter('settings', f'AuthSettings').transform('./settings/__init__.py')
+    AllSettingsInserter('settings', f'AuthSettings').transform('./settings/all_settings.py')
+
     wire_up_service()
 
     hypermea.tool.jump_back_to(starting_folder)

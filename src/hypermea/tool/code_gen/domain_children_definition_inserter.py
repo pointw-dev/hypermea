@@ -4,9 +4,9 @@ from hypermea.tool import code_gen
 
 
 class DomainChildrenDefinitionInserter(FileTransformer):
-    def __init__(self, adder):
+    def __init__(self, link_manager):
         super().__init__()
-        self.adder = adder
+        self.lm = link_manager
 
     def visit_SimpleStatementLine(self, node):
         if not isinstance(node.body[0], Assign):
@@ -74,7 +74,7 @@ class DomainChildrenDefinitionInserter(FileTransformer):
         resource_element = DictElement(
             key=SimpleString("'resource'"),
             whitespace_after_colon=SimpleWhitespace(' '),
-            value=SimpleString(f"'{self.adder.parents}'"),
+            value=SimpleString(f"'{self.lm.parents}'"),
             comma=Comma(
                 whitespace_after=ParenthesizedWhitespace(
                     first_line=code_gen.TWNL,
@@ -93,7 +93,7 @@ class DomainChildrenDefinitionInserter(FileTransformer):
         gateway_element = DictElement(
             key=SimpleString("'rel'"),
             whitespace_after_colon=SimpleWhitespace(' '),
-            value=SimpleString(f"'{self.adder.parents}'"),
+            value=SimpleString(f"'{self.lm.parents}'"),
             comma=Comma(
                 whitespace_after=ParenthesizedWhitespace(
                     first_line=code_gen.TWNL,
@@ -156,13 +156,13 @@ class DomainChildrenDefinitionInserter(FileTransformer):
 
 
         elements =[type_element]
-        if self.adder.external_parent:
+        if self.lm.external_parent:
             elements.append(external_relation_element)
         else:
             elements.append(data_relation_element)
 
         return DictElement(
-            key=SimpleString(f"'{self.adder.parent_ref}'"),
+            key=SimpleString(f"'{self.lm.parent_ref}'"),
             value=Dict(
                 elements=elements,
                 lbrace=LeftCurlyBrace(

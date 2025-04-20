@@ -27,7 +27,8 @@ setup(
     packages=['hypermea.core'],
     install_requires=[
         'Eve==2.2.0',
-        'pydantic==2.11.3'
+        'pydantic==2.11.3',
+        'inflect==4.1.0'   # 4.1.0   7.5.0 runs verrrrry slowly ?!??!        
     ],
     include_package_data=True,
     zip_safe=False

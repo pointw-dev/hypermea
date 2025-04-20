@@ -7,9 +7,9 @@ from .file_transformer import FileTransformer
 
 
 class DomainRelationsInserter(FileTransformer):
-    def __init__(self, adder):
+    def __init__(self, link_manager):
         super().__init__()
-        self.adder = adder
+        self.lm = link_manager
 
     def transform(self, filename):
         super().transform(filename)
@@ -57,7 +57,7 @@ class DomainRelationsInserter(FileTransformer):
         return relation
 
     def get_arg(self, which):
-        rel = self.adder.relation.parent if which == 'parent' else self.adder.relation.child
+        rel = self.lm.relation.parent if which == 'parent' else self.lm.relation.child
 
         if rel.external:
             parent_arg = Arg(

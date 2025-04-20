@@ -5,7 +5,7 @@ import logging
 import json
 from flask import make_response, current_app, request
 from hypermea.core.response import make_error_response, unauthorized_message
-from hypermea.core.href import get_my_base_url, inject_path, url_join
+from hypermea.core.href import get_self_href_from_request, get_my_base_url, inject_path
 from ._common import generate_hal_form, get_allowed_methods
 import settings
 
@@ -34,12 +34,10 @@ def add_link(collection, collection_name, self_href=''):
     if 'POST' not in get_allowed_methods(current_app, collection_name)['resource_methods']:
         return
 
-    base_url = get_my_base_url()
-    url = url_join(base_url, self_href)
-
+    url = get_self_href_from_request()
     collection['_links']['create-form'] = {
         'href': inject_path(url, 'create-form', True),
-        '_note': f'GET to fetch create-form to add to the collection of {collection_name}'
+        '_note': f'GET to fetch create-form'
     }
 
 

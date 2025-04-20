@@ -26,9 +26,9 @@ from hypermea.tool import code_gen
 
 
 class ChildLinksInserter(FileTransformer):
-    def __init__(self, adder):
+    def __init__(self, link_manager):
         super().__init__()
-        self.adder = adder
+        self.lm = link_manager
         self.dejavu = False
 
     def leave_FunctionDef(self, original_node, updated_node):
@@ -43,7 +43,7 @@ class ChildLinksInserter(FileTransformer):
         if original_node.name.value == method_name:
             pass
             new_body.append(self.make_external_parent_link())
-        if original_node.name.value == 'add_hooks' and not self.adder.relation.parent.external:
+        if original_node.name.value == 'add_hooks' and not self.lm.relation.parent.external:
             new_body.extend(self.add_rel_hooks())
 
         return updated_node.with_changes(
@@ -59,17 +59,17 @@ class ChildLinksInserter(FileTransformer):
                     expression=Call(
                         func=Name('get_href_from_gateway'),
                         args=[
-                            Arg(SimpleString(f"'{self.adder.relation.parent}'"))
+                            Arg(SimpleString(f"'{self.lm.relation.parent}'"))
                         ]
                     )
                 ),
                 FormattedStringText('/'),
                 FormattedStringExpression(
                     expression=Subscript(
-                        value=Name(str(self.adder.relation.child)),
+                        value=Name(str(self.lm.relation.child)),
                         slice=[
                             SubscriptElement(
-                                slice=Index(SimpleString(f"'_{self.adder.relation.parent}_ref'"))
+                                slice=Index(SimpleString(f"'_{self.lm.relation.parent}_ref'"))
                             )
                         ],
                         lbracket=LeftSquareBracket(),
@@ -81,21 +81,21 @@ class ChildLinksInserter(FileTransformer):
             end='"'
         )
         additional_link = code_gen.get_link_statement_line(
-            resource=str(self.adder.relation.child),
-            rel=str(self.adder.relation.parent),
+            resource=str(self.lm.relation.child),
+            rel=str(self.lm.relation.parent),
             href=href,
         )
 
         return If(
             test=Comparison(
-                left=SimpleString(f"'_{self.adder.relation.parent}_ref'"),
+                left=SimpleString(f"'_{self.lm.relation.parent}_ref'"),
                 comparisons=[
                     ComparisonTarget(
                         operator=In(
                             whitespace_before=SimpleWhitespace(' '),
                             whitespace_after=SimpleWhitespace(' ')
                         ),
-                        comparator=Name(str(self.adder.relation.child))
+                        comparator=Name(str(self.lm.relation.child))
                     )
                 ]
             ),
@@ -117,11 +117,11 @@ class ChildLinksInserter(FileTransformer):
                 AugAssign(
                     target=Attribute(
                         value=Name('app'),
-                        attr=Name(f'on_fetched_item_{self.adder.parents}_{self.adder.children}'),
+                        attr=Name(f'on_fetched_item_{self.lm.parents}_{self.lm.children}'),
                         dot=Dot(),
                     ),
                     operator=AddAssign(),
-                    value=Name(f'_add_links_to_{self.adder.child}'),
+                    value=Name(f'_add_links_to_{self.lm.child}'),
                 ),
             ],
             leading_lines=[
@@ -144,11 +144,11 @@ class ChildLinksInserter(FileTransformer):
                 AugAssign(
                     target=Attribute(
                         value=Name('app'),
-                        attr=Name(f'on_fetched_resource_{self.adder.parents}_{self.adder.children}'),
+                        attr=Name(f'on_fetched_resource_{self.lm.parents}_{self.lm.children}'),
                         dot=Dot(),
                     ),
                     operator=AddAssign(),
-                    value=Name(f'_add_links_to_sub_resource_collection'),
+                    value=Name(f'_add_links_to_{self.lm.parents}_collection'),
                 ),
             ],
             leading_lines=[],
@@ -164,7 +164,7 @@ class ChildLinksInserter(FileTransformer):
                 AugAssign(
                     target=Attribute(
                         value=Name('app'),
-                        attr=Name(f'on_post_POST_{self.adder.parents}_{self.adder.children}'),
+                        attr=Name(f'on_post_POST_{self.lm.parents}_{self.lm.children}'),
                         dot=Dot(),
                     ),
                     operator=AddAssign(),
@@ -184,11 +184,11 @@ class ChildLinksInserter(FileTransformer):
                 AugAssign(
                     target=Attribute(
                         value=Name('app'),
-                        attr=Name(f'on_post_POST_{self.adder.parents}_{self.adder.children}'),
+                        attr=Name(f'on_post_POST_{self.lm.parents}_{self.lm.children}'),
                         dot=Dot(),
                     ),
                     operator=AddAssign(),
-                    value=Name(f'_post_{self.adder.children}'),
+                    value=Name(f'_post_{self.lm.children}'),
                 ),
             ],
             leading_lines=[],

@@ -5,7 +5,8 @@ import importlib.util
 from argparse import ArgumentError
 from typing import Dict, Set
 
-from hypermea.core.domain import Relation, get_resource_model_by_rel
+from hypermea.core.domain import Relation, external, get_resource_model_by_rel
+from hypermea.core.utils import get_singular_plural
 
 import hypermea.tool
 import hypermea.tool.commands._service
@@ -20,27 +21,39 @@ from hypermea.tool.code_gen import (
 class LinkManager:
     EXTERNAL_PREFIX = 'external:'
 
-    def __init__(self, parent, child):
+    def __init__(self, parent: str, child: str):
         relation = Relation(parent=parent, child=child)
-        parent_class = get_resource_model_by_rel(str(relation.parent))
-        child_class = get_resource_model_by_rel(str(relation.child))
 
-        good_parent = parent_class or relation.parent.external
-        good_child = child_class or relation.child.external
+        parent_name = str(relation.parent)
+        child_name = str(relation.child)
 
-        if not (good_parent and good_child):
-            message = 'Invalid link:'
-            if not good_parent:
-                message += f' Parent "{parent}" must either exist in the domain or be prefixed with "external:"'
-            if not good_child:
-                message += f' Child "{child}" must exist in the domain or be prefixed with "external:"'
-            raise ArgumentError(None, message)
+        parent_class = get_resource_model_by_rel(parent_name)
+        child_class = get_resource_model_by_rel(child_name)
 
-        self.parent, self.parents = hypermea.tool.get_singular_plural(str(parent)) if relation.parent.external else parent_class.singplu()
-        self.child, self.children = hypermea.tool.get_singular_plural(str(child)) if relation.child.external else child_class.singplu()
+        is_parent_valid = parent_class is not None or relation.parent.external
+        is_child_valid = child_class is not None or relation.child.external
 
-        self.relation = Relation(parent=self.parent, child=self.child)
+        if not (is_parent_valid and is_child_valid):
+            problems = []
+            if not is_parent_valid:
+                problems.append(f'Parent "{parent}" must either exist in the domain or be prefixed with "external:"')
+            if not is_child_valid:
+                problems.append(f'Child "{child}" must exist in the domain or be prefixed with "external:"')
+            raise ArgumentError(None, 'Invalid link: ' + ' '.join(problems))
+
+        self.parent, self.parents = (
+            get_singular_plural(parent_name) if relation.parent.external else parent_class.singplu()
+        )
+        self.child, self.children = (
+            get_singular_plural(child_name) if relation.child.external else child_class.singplu()
+        )
+
+        self.relation = Relation(
+            parent=external(self.parent) if relation.parent.external else self.parent,
+            child=external(self.child) if relation.child.external else self.child,
+        )
         self.parent_ref = f'_{self.relation.parent}_ref'
+
 
     def _link_already_exists(self):
         rels = LinkManager.get_relations()
@@ -50,10 +63,6 @@ class LinkManager:
             if needle in rels[self.parents]['children']:
                 return True
 
-        # if self.relation.parent.external and 'parents' in rels.get(self.children, {}):
-        #     needle = LinkManager.EXTERNAL_PREFIX + self.parent
-        #     if needle in rels[self.children]['parents']:
-        #         return True
         if 'parents' in rels.get(self.children, {}):
             needle = self.parent
             if needle in rels[self.children]['parents']:
@@ -102,8 +111,8 @@ class LinkManager:
 
         registry = LinkManager.get_relation_registry()
         for rel in registry:
-            parent, parents = hypermea.tool.get_singular_plural(str(rel.parent))
-            child, children = hypermea.tool.get_singular_plural(str(rel.child))
+            parent, parents = get_singular_plural(str(rel.parent))
+            child, children = get_singular_plural(str(rel.child))
 
             if parents not in relations:
                 relations[parents] = {}
@@ -158,10 +167,10 @@ class LinkManager:
 
                 if my_relationship and '_links' in line:
                     external = line.split("'")[3]
-                    singular, plural = hypermea.tool.get_singular_plural(external)
+                    singular, plural = get_singular_plural(external)
                     external = 'external:' + (singular if my_relationship == 'parents' else plural)
                     externals = 'external:' + plural
-                    singular, plural = hypermea.tool.get_singular_plural(resource)
+                    singular, plural = get_singular_plural(resource)
                     if resource not in rels:
                         rels[resource] = {}
                     if my_relationship not in rels[resource]:
@@ -189,12 +198,13 @@ class LinkManager:
         )
 
         DomainRelationsInserter(self).transform('domain/_relations.py')
-        ChildLinksInserter(self).transform(f'hooks/{self.child}.py')
-
         if self.relation.parent.external:
             hypermea.tool.commands._service._add_addins({'add_validation': 'n/a'}, silent=True)
+
         if self.relation.child.external:
-            ParentLinksInserter(self).transform(f'hooks/{self.parent}.py')
+            ParentLinksInserter(self).transform(f'hooks/{self.relation.parent}.py')
+        else:
+            ChildLinksInserter(self).transform(f'hooks/{self.relation.child}.py')
 
         hypermea.tool.jump_back_to(starting_folder)
         return None

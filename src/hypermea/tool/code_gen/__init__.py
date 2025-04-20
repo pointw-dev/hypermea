@@ -60,7 +60,7 @@ def get_link_statement_line(resource, rel, href):
             either a CST object that resolves to a quoted string
                 e.g. SimpleString("'https://example.com'"
             or an array to insert into the parts of a FormattedString, to build a href on base_url
-                e.g. [FormattedStringText(f'/{self.adder.children}')]
+                e.g. [FormattedStringText(f'/{self.lm.children}')]
                     or the BinaryOperator return value of parent_links_inserter:_get_href_value()
     """
 

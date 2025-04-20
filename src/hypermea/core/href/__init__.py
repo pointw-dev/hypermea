@@ -119,12 +119,6 @@ def get_my_base_url() -> str:
 def inject_path(base, path, remove_query_string=False):
     parts = base.split('?', 1)
     base_part = parts[0]
-    query_string = '?' + parts[1] if len(parts) > 1 else ''
-
-    if remove_query_string:
-        query_string = ''
+    query_string = '?' + parts[1] if len(parts) > 1 and not remove_query_string else ''
 
     return url_join(base_part, path, query_string)
-
-
-

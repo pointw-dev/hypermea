@@ -8,6 +8,7 @@ import hypermea.tool
 from hypermea.tool.code_gen import AffordanceLinkInserter, AffordanceRouteRemover, AffordanceRemover, \
     AffordanceImportRemover, AffordanceRouteInserter
 from hypermea.tool.commands.affordance import NA
+from hypermea.core.utils import get_singular_plural
 
 ROUTE_TEMPLATE = """    @app.route("/{plural}/<{singular}_id>/{affordance_name}", methods=["PUT"])
     def do_{affordance_identifier}_{singular}({singular}_id):
@@ -23,7 +24,7 @@ HANDLER_TEMPLATE = """def _do_{affordance_identifier}_{singular}({singular}_id):
 
 
 def _write_affordance_file(affordance, resource_name):
-    singular, plural = hypermea.tool.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = get_singular_plural(resource_name)  # TODO: DRY
     route = ROUTE_TEMPLATE.format(
         affordance_name=affordance.name,
         affordance_identifier=affordance.identifier,
@@ -42,8 +43,7 @@ This module defines functions to add affordances.{affordance.full_name}.
 """
 import logging
 from flask import make_response
-from hypermea.core.utils import make_error_response
-from hypermea.core.response import unauthorized_message
+from hypermea.core.response import make_error_response, unauthorized_message
 from hypermea.core.href import get_resource_id, get_id_field, get_my_base_url
 
 LOG = logging.getLogger("affordances.{affordance.full_name}")
@@ -73,7 +73,7 @@ def _affordance_is_already_attached(affordance, resource_name):
         return False
     affordances = _get_affordances()
 
-    singular, plural = hypermea.tool.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = get_singular_plural(resource_name)  # TODO: DRY
 
     return plural in affordances.get(affordance.name, [])
 
@@ -86,7 +86,7 @@ def _resource_exists(resource_name):
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
-    singular, plural = hypermea.tool.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = get_singular_plural(resource_name)  # TODO: DRY
 
     hypermea.tool.jump_back_to(starting_folder)
     return os.path.exists(f'hooks/{singular}.py')
@@ -127,12 +127,12 @@ def _get_affordances():
 
 
 def _add_affordance_resource(affordance, resource):
-    singular, plural = hypermea.tool.get_singular_plural(resource)  # TODO: DRY
+    singular, plural = get_singular_plural(resource)  # TODO: DRY
     AffordanceLinkInserter(affordance, singular, plural).transform(f'hooks/{singular}.py')
 
 
 def _detach_affordance(affordance, resource_name):
-    singular, plural = hypermea.tool.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = get_singular_plural(resource_name)  # TODO: DRY
     click.echo(f'Detaching affordances.{affordance.full_name} from {resource_name}')
     AffordanceRouteRemover(affordance, singular).transform(affordance.filename)
     AffordanceRemover(affordance, singular).transform(f'hooks/__init__.py')
@@ -152,7 +152,7 @@ def _remove_affordance(affordance):
     for filename in [file for file in glob.glob('hooks/*.py') if
                      not (file.startswith('hooks/_') or file.startswith('hooks\\_'))]:
         resource_name = filename[6:-3]
-        singular, plural = hypermea.tool.get_singular_plural(resource_name)  # TODO: DRY
+        singular, plural = get_singular_plural(resource_name)  # TODO: DRY
         AffordanceRemover(affordance, singular).transform(filename)
     AffordanceImportRemover(affordance.identifier).transform(
         f'affordances/{affordance.folder + "/" if affordance.folder else ""}__init__.py')
@@ -284,7 +284,7 @@ def _attach(affordance_name, resource_name):
 
     click.echo(attaching)
 
-    singular, plural = hypermea.tool.get_singular_plural(resource_name)  # TODO: DRY
+    singular, plural = get_singular_plural(resource_name)  # TODO: DRY
     route = ROUTE_TEMPLATE.format(
         affordance_name=affordance.name,
         affordance_identifier=affordance.identifier,

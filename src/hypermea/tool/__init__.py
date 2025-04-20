@@ -1,7 +1,6 @@
 import os
 import sys
 import subprocess
-import inflect
 import json
 from shutil import copytree, rmtree
 
@@ -184,20 +183,3 @@ def escape(message, code, silent=False):
 def urljoin(*parts):
     trailing_slash = '/' if parts[-1].endswith('/') else ''
     return "/".join([str(part).strip("/") for part in parts]) + trailing_slash
-
-
-def get_singular_plural(word):
-    if ',' in word:
-        # ASSERT word.count(',') == 1
-        a = word.split(',')
-        return a[0], a[1]
-
-    p = inflect.engine()
-
-    singular = word if not p.singular_noun(word) else p.singular_noun(word)
-    plural = word if p.singular_noun(word) else p.plural_noun(word)
-
-    if singular == plural:  # in case of words like moose, fish
-        plural = plural + 's'
-
-    return singular, plural

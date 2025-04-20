@@ -5,18 +5,17 @@ not recommended to modify it.  Its two main purposes are
 * for tests (to override settings to drive test scenarios)
 """
 
-from typing import Union
 from pydantic import BaseModel
 
-from settings import _registry
-from settings.hypermea import HypermeaSettings
-from settings.logging import LoggingSettings
-from settings.rate_limit import RateLimitSettings
+from . import _registry, get_hypermea, get_logging, get_rate_limit, get_mongo, get_smtp
+
+from .hypermea import HypermeaSettings
+from .logging import LoggingSettings
+from .rate_limit import RateLimitSettings
 
 from integration.mongo.settings import MongoSettings
 from integration.smtp.settings import SmtpSettings
 
-from settings import get_hypermea, get_logging, get_rate_limit, get_mongo, get_smtp
 
 
 class AllSettings(BaseModel):
@@ -33,7 +32,7 @@ def get_settings() -> AllSettings:
         logging=get_logging(),
         rate_limit=get_rate_limit(),
         mongo=get_mongo(),
-        smtp=get_smtp(),
+        smtp=get_smtp()
     )
 
 
@@ -42,7 +41,7 @@ def build_settings(
     logging: LoggingSettings = None,
     rate_limit: RateLimitSettings = None,
     mongo: MongoSettings = None,
-    smtp: SmtpSettings = None,
+    smtp: SmtpSettings = None
 ) -> AllSettings:
     defaults = get_settings()
     return AllSettings(
@@ -83,7 +82,7 @@ def devops_settings_dump(pretty: bool = False) -> str | list[dict]:
         ("logging", get_logging()),
         ("rate_limit", get_rate_limit()),
         ("mongo", get_mongo()),
-        ("smtp", get_smtp()),
+        ("smtp", get_smtp())
     ]
 
     result = []

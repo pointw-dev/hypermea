@@ -10,3 +10,5 @@ README.md
 **/.pylintrc
 **/_env.conf
 **/*.db
+# hypermea settings files
+.[0-9][0-9]-*.env

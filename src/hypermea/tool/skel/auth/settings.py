@@ -39,6 +39,6 @@ class AuthSettings(BaseSettings):
         default=False
     )
     root_password: Optional[SecretStr] = SecretField(
-        default=None,
-        description='MongoDB password.'
+        default='password',
+        description='Password for the root user (if enabled).'
     )

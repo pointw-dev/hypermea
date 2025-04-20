@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from pydantic.fields import PydanticUndefined
 from typing import Dict, Type, Any, get_args, get_origin, Literal, List
 
-from hypermea.tool import get_singular_plural
+from hypermea.core.utils import get_singular_plural
 
 from .resource_model import ResourceModel
 from .relation import Relation

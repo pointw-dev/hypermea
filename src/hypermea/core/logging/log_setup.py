@@ -24,6 +24,7 @@ class LogSetup:
         logging.config.dictConfig(self.logging_config)
         logging.getLogger('werkzeug').setLevel(logging.ERROR)
         logging.getLogger('pymongo').setLevel(logging.ERROR)
+        logging.getLogger('urllib3').setLevel(logging.ERROR)
 
     def _setup_file_logging(self):
         if settings.logging.log_to_folder:

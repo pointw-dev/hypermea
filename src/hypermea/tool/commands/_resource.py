@@ -5,6 +5,7 @@ import click
 
 import hypermea.tool
 from hypermea.core.domain import list_domain_resources
+from hypermea.core.utils import get_singular_plural
 from hypermea.tool.code_gen import DomainDefinitionInserter, HooksInserter, DomainResourceRemover, HooksRemover, \
     ParentReferenceRemover, ChildLinksRemover
 
@@ -15,7 +16,7 @@ def _create(resource_name, no_common):
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
-    singular, plural = hypermea.tool.get_singular_plural(resource_name)
+    singular, plural = get_singular_plural(resource_name)
     if _is_resource_name_is_invalid(singular, plural):
         return hypermea.tool.escape(f'The resource name ({resource_name}) is invalid', 701)
 
@@ -45,7 +46,7 @@ def _remove(resource_name):
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
-    singular, plural = hypermea.tool.get_singular_plural(resource_name)
+    singular, plural = get_singular_plural(resource_name)
     if _is_resource_name_is_invalid(singular, plural):
         return hypermea.tool.escape(f'The resource name ({resource_name}) is invalid', 701)
 
@@ -61,7 +62,7 @@ def _remove(resource_name):
 
 
 def _check(resource_name):
-    singular, plural = hypermea.tool.get_singular_plural(resource_name)
+    singular, plural = get_singular_plural(resource_name)
     click.echo(f'You entered {resource_name}')
     click.echo(f'- singular: {singular}')
     click.echo(f'- plural:   {plural}')
@@ -153,8 +154,9 @@ def _post_{plural}(request, payload):
 
 @trace
 def _add_links_to_{plural}_collection({plural}_collection):
-    self_href = get_self_href_from_request()
-    affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}', self_href)
+    affordances.rfc6861.create_form.add_link({plural}_collection, '{plural}')
+    for {singular} in {plural}_collection['_items']:
+        _add_links_to_{singular}({singular})
 
 
 @trace
@@ -163,16 +165,10 @@ def _add_links_to_{singular}({singular}):
     _add_external_parent_links({singular})
     affordances.rfc6861.edit_form.add_link({singular}, '{plural}')
 
-## The following three methods are here for use by `hy link create`
+
+## The following two methods are here for use by `hy link create`
 ## Modifying them may make it more difficult to create a link from
 ## another resource to this one.
-
-@trace
-def _add_links_to_sub_resource_collection({plural}_collection):
-    _add_links_to_{plural}_collection({plural}_collection)
-    for {singular} in {plural}_collection['_items']:
-        _add_links_to_{singular}({singular})
-
 
 @trace
 def _add_external_children_links({singular}):

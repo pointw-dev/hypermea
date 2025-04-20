@@ -59,6 +59,8 @@ class HalEmbedder:
         headers = {
             'Accept': 'application/hal+json, application/json;q=0.9, */*;q=0'
         }
+        if request.authorization:
+            headers['Authorization'] = request.authorization.to_header()
 
         if href.startswith('http'):
             resp = requests.get(href, headers=headers)
