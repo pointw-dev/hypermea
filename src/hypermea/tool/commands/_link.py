@@ -1,5 +1,6 @@
 import json
 import sys
+from argparse import ArgumentError
 
 import click
 
@@ -18,6 +19,9 @@ def _create(parent, child):
     except LinkManagerException as err:
         click.echo(err)
         sys.exit(err.exit_code)
+    except ArgumentError as err:
+        click.echo(err)
+        sys.exit(805)
     finally:
         hypermea.tool.jump_back_to(starting_folder)
 
@@ -28,24 +32,22 @@ def _list_rels(output):
     except RuntimeError:
         return hypermea.tool.escape('This command must be run in a hypermea folder structure', 1)
 
-    ## TODO: UGLEEEEE!
-    if output=='raw':
-        rels = LinkManager.get_relation_registry()
-        for rel in rels:
-            print(rel)
+    if output in ['raw', 'commands']:
+        registry = LinkManager.get_relation_registry()
+        if output == 'raw':
+            for rel in registry:
+                print(rel)
+        if output == 'commands':
+            for rel in registry:
+                parent = ('external:' if rel.parent.external else '') + str(rel.parent)
+                child = ('external:' if rel.child.external else '') + str(rel.child)
+                entered = f'hy link create {parent} {child}'
+                print(entered)
     else:
         rels = LinkManager.get_relations()
         globals()[f'_print_{output}'](rels)
 
     hypermea.tool.jump_back_to(starting_folder)
-
-def _print_raw(rels):
-    for resource, targets in rels.items():
-        if 'children' in targets:
-            print(resource)
-            for child in targets['children']:
-                print(f'- {child}')
-
 
 def _print_plant_uml(rels):
     print('@startuml')
@@ -57,28 +59,25 @@ def _print_plant_uml(rels):
 
 
 def _print_plant_uml_relations(rels):
-    for rel in rels:
-        for item in rels[rel].get('children', []):
-            if item.startswith(LinkManager.EXTERNAL_PREFIX):
-                item = item[len(LinkManager.EXTERNAL_PREFIX):]
-            if ':' not in rel:
-                print(f'{rel} ||--o{{ {item}')
-        for item in rels[rel].get('parents', []):
-            if item.startswith(LinkManager.EXTERNAL_PREFIX):
-                item = item[len(LinkManager.EXTERNAL_PREFIX):]
-                if ':' not in item:
-                    print(f'{item} ||--o{{ {rel}')
+    relations = set()
+    for resource, relationships in rels.items():
+        for singular, plural, external in relationships.get('children', []):
+            relations.add(f'{resource} ||--o{{ {singular}')
+        for singular, plural, external in relationships.get('parents', []):
+            relations.add(f'{singular} ||--o{{ {resource}')
+
+    for relation in relations:
+        print(relation)
 
 
 def _print_plant_uml_classes(rels):
-    for rel in rels:
-        if ':' not in rel:
-            print(f'class {rel} <<resource>>')
-        for item in rels[rel]:
-            for member in rels[rel][item]:
-                if member.startswith(LinkManager.EXTERNAL_PREFIX):
-                    target = member[len(LinkManager.EXTERNAL_PREFIX):]
-                    print(f'class {target} <<external>>')
+    for resource, relationships in rels.items():
+        cls = f'class {resource} '
+        if relationships['external']:
+            cls += '<<external>>'
+        else:
+            cls += '<<resource>>'
+        print(cls)
 
 
 def _print_plant_uml_start():
@@ -101,13 +100,19 @@ def _print_json(rels):
 
 
 def _print_english(rels):
-    for rel in rels:
-        print(rel)
-        for item in rels[rel].get('parents', []):
-            article = 'an' if item[0].lower() in 'aeiou' else 'a'
-            print(f'- belong to {article} {item}')
-        for item in rels[rel].get('children', []):
-            print(f'- have {item}')
+    def apply_article_to_word(word):
+        article = 'an' if word[0].lower() in 'aeiou' else 'a'
+        return f'{article} {word}'
+
+    for resource, relationships in rels.items():
+        label = apply_article_to_word(resource)
+        if relationships['external']:
+            label += ' (external)'
+        print(label)
+        for singular, plural, external in relationships.get('parents', []):
+            print(f'- belongs to {apply_article_to_word(singular)}{' (external)' if external else ''}')
+        for singular, plural, external in relationships.get('children', []):
+            print(f'- has {plural}{' (external)' if external else ''}')
 
 
 def _remove(parent, child):

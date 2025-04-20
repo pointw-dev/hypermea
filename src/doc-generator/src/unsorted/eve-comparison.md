@@ -36,6 +36,9 @@ This warning will be removed once this page has passed testing.
 
 This page is for those coming to hypermea from eve.  Hypermea is powered by eve so many things will be familiar.  However, there are some significant departures.  
 
+## Dates and times
+* Eve handles fields of type `datetime` well, enforcing that incoming dates comply with the `DATE_FORMAT` setting.  However, Eve does not do plain `date` well, and does not handle `time` nor `timedelta` at all.
+* Hypermea improves this by providing `iso_date`, `iso_time`, `iso_datetime`, and `iso_duration`, and sets the default DATE_FORMAT to ISO 8601 (instead of RFC 1123)
 
 
 ## Settings

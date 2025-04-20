@@ -35,9 +35,7 @@ import os
 from shutil import move
 
 import hypermea.tool
-from hypermea.tool.code_gen import AuthorizationInserter, SettingsInserter
-from hypermea.tool.code_gen.all_settings_inserter import AllSettingsInserter
-
+from hypermea.tool.code_gen import AuthorizationInserter, SettingsInserter, AllSettingsInserter
 
 # TODO: script getting default values (e.g. client keys)
 # TODO: provide non Auth0
@@ -62,8 +60,8 @@ def add(silent=False):
     # hypermea_negotiable_auth also installs authparser and pyparsing
     # cryptography also installs cffi, pycparser
 
-    SettingsInserter('settings', f'AuthSettings').transform('./settings/__init__.py')
-    AllSettingsInserter('settings', f'AuthSettings').transform('./settings/all_settings.py')
+    SettingsInserter('settings', 'AuthSettings').transform('./settings/__init__.py')
+    AllSettingsInserter('settings', 'AuthSettings').transform('./settings/all_settings.py')
 
     wire_up_service()
 

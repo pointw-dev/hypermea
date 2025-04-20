@@ -122,6 +122,7 @@ class HypermeaValidator(Validator):
 
         if is_valid:
             return True
+        return None
 
     @trace
     def _validate_type_iso_time(self, time_value):
@@ -137,6 +138,7 @@ class HypermeaValidator(Validator):
 
         if is_valid:
             return True
+        return None
 
     @trace
     def _validate_type_iso_duration(self, duration_value):
@@ -148,3 +150,21 @@ class HypermeaValidator(Validator):
 
         if is_valid:
             return True
+        return None
+
+    @trace
+    def _validate_type_iso_datetime(self, datetime_value):
+        is_valid = True
+        try:
+            isodate.parse_datetime(datetime_value)
+            if not re.match(
+                r'^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2}(\.\d{1,6})?)?(Z|[+-]\d{2}:\d{2})?$',
+                datetime_value
+            ):
+                is_valid = False
+        except isodate.ISO8601Error:
+            is_valid = False
+
+        if is_valid:
+            return True
+        return None

@@ -7,10 +7,11 @@ not recommended to modify it.  Its two main purposes are
 
 from pydantic import BaseModel
 
-from . import _registry, get_hypermea, get_logging, get_rate_limit, get_mongo, get_smtp
+from . import _registry, get_hypermea, get_logging, get_timezone, get_rate_limit, get_mongo, get_smtp
 
 from .hypermea import HypermeaSettings
 from .logging import LoggingSettings
+from .timezone import TimezoneSettings
 from .rate_limit import RateLimitSettings
 
 from integration.mongo.settings import MongoSettings
@@ -21,6 +22,7 @@ from integration.smtp.settings import SmtpSettings
 class AllSettings(BaseModel):
     hypermea: HypermeaSettings
     logging: LoggingSettings
+    timezone: TimezoneSettings
     rate_limit: RateLimitSettings
     mongo: MongoSettings
     smtp: SmtpSettings
@@ -30,6 +32,7 @@ def get_settings() -> AllSettings:
     return AllSettings(
         hypermea=get_hypermea(),
         logging=get_logging(),
+        timezone=get_timezone(),
         rate_limit=get_rate_limit(),
         mongo=get_mongo(),
         smtp=get_smtp()
@@ -39,6 +42,7 @@ def get_settings() -> AllSettings:
 def build_settings(
     hypermea: HypermeaSettings = None,
     logging: LoggingSettings = None,
+    timezone: TimezoneSettings = None,
     rate_limit: RateLimitSettings = None,
     mongo: MongoSettings = None,
     smtp: SmtpSettings = None
@@ -47,6 +51,7 @@ def build_settings(
     return AllSettings(
         hypermea=hypermea or defaults.hypermea,
         logging=logging or defaults.logging,
+        timezone=timezone or defaults.timezone,
         rate_limit=rate_limit or defaults.rate_limit,
         mongo=mongo or defaults.mongo,
         smtp=smtp or defaults.smtp
@@ -80,6 +85,7 @@ def devops_settings_dump(pretty: bool = False) -> str | list[dict]:
     settings_models = [
         ("hypermea", get_hypermea()),
         ("logging", get_logging()),
+        ("timezone", get_timezone()),
         ("rate_limit", get_rate_limit()),
         ("mongo", get_mongo()),
         ("smtp", get_smtp())

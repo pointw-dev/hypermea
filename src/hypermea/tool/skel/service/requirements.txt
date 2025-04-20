@@ -3,6 +3,7 @@ Flask-Cors==5.0.0
 requests==2.32.3
 hypermea-core==0.9.50
 html2text==2024.2.26
+isodate==0.7.2
 
 pydantic==2.11.3
 pydantic-settings==2.8.1

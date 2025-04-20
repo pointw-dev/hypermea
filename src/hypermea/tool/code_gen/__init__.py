@@ -19,6 +19,7 @@ from .affordance_route_remover import AffordanceRouteRemover
 from .affordance_remover import AffordanceRemover
 from .affordance_import_remover import AffordanceImportRemover
 from .settings_inserter import SettingsInserter
+from .all_settings_inserter import AllSettingsInserter
 
 
 TWNL = TrailingWhitespace(newline=Newline())

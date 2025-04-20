@@ -9,6 +9,7 @@ from hypermea.core.settings import build_static_settings
 from hypermea.core.logging import log_starting_environment
 from hypermea.core.gateway import register
 from flask_cors import CORS
+from validation.validator import CustomValidator
 import hooks
 import settings
 
@@ -21,7 +22,7 @@ class HypermeaService:
         self._name = settings.hypermea.service_name
 
         static_settings = build_static_settings(kwargs)
-        self._app = HypermeaEve(import_name=self._name, settings=static_settings)
+        self._app = HypermeaEve(import_name=self._name, settings=static_settings, validator=CustomValidator)
 
         CORS(self._app)
         hooks.add_hooks(self._app)

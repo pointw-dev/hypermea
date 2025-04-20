@@ -29,7 +29,6 @@ class ChildLinksInserter(FileTransformer):
     def __init__(self, link_manager):
         super().__init__()
         self.lm = link_manager
-        self.dejavu = False
 
     def leave_FunctionDef(self, original_node, updated_node):
         method_name = '_add_external_parent_links'

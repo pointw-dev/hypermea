@@ -2,7 +2,7 @@ import importlib.util
 import inspect
 import os
 import sys
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
 from decimal import Decimal
 from pydantic import BaseModel
 from pydantic.fields import PydanticUndefined
@@ -26,9 +26,10 @@ TYPE_MAP = {
     dict: "dict",
     set: "set",
     tuple: "tuple",
-    datetime: "datetime",
-    date: "date",
-    time: "time",
+    datetime: "iso_datetime",
+    date: "iso_date",
+    time: "iso_time",
+    timedelta: "iso_duration",
     Decimal: "decimal",
 }
 
@@ -87,7 +88,17 @@ def _pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
                     "type": TYPE_MAP.get(item_type, "string")
                 }
         else:
-            field_schema["type"] = TYPE_MAP.get(python_type, "string")
+            fmt = field.json_schema_extra.get('format') if field.json_schema_extra else None
+            if fmt == 'date':
+                field_schema["type"] = "iso_date"
+            elif fmt == 'time':
+                field_schema["type"] = "iso_time"
+            elif fmt == 'date-time':
+                field_schema["type"] = "iso_datetime"
+            elif fmt == 'timedelta':
+                field_schema["type"] = "iso_duration"
+            else:
+                field_schema["type"] = TYPE_MAP.get(python_type, "string")
 
         # Required/nullable/default logic
         field_schema["required"] = field.is_required()
@@ -209,7 +220,7 @@ def get_resource_model_by_rel(rel: str, *, models=None, retry=False):
     if models is None:
         models = _discover_resource_models()
     for _, obj in models:
-        if obj.__name__.lower().startswith(str(rel).lower()):
+        if obj.__name__.lower() == str(rel).lower():
             model = obj
 
     if model is None and not retry:

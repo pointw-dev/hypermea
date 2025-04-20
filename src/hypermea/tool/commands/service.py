@@ -23,10 +23,6 @@ def addin_params(func):
     @click.option('--add-auth', '-a',
                   is_flag=True, help='add authorization class and supporting files',
                   flag_value='n/a')
-    @click.option('--add-validation', '-v',
-                  is_flag=True,
-                  help='add custom validation class that you can extend',
-                  flag_value='n/a')
     @click.option('--add-websocket', '-w',
                   is_flag=True,
                   help='add web socket and supporting files',

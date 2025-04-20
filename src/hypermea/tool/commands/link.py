@@ -26,8 +26,8 @@ def create(parent, child):
                   short_help='List the relationships amongst the resources.',
                   help_priority=2)
 @click.option('output', '--format', '-f',
-              type=click.Choice(['raw', 'english', 'json', 'python_dict', 'plant_uml']),
-              default='raw',
+              type=click.Choice(['english', 'commands', 'raw', 'json', 'python_dict', 'plant_uml']),
+              default='english',
               help='Choose the output format of the relationships list')
 def list_rels(output):
     from ._link import _list_rels

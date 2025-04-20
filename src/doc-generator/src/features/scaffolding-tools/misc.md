@@ -130,6 +130,7 @@ COMMON_FIELDS = {
   802 - local resource does not exist
   803 - both parent and child of a link cannot be remote (at least one must be local)
   804 - link does not exist
+* 805 - invalid link (parent and or child must be a resource, or marked external)
 
   90x - integration
   901 - integration already exists

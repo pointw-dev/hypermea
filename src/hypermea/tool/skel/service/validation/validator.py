@@ -10,6 +10,7 @@ validations:
 types:
   iso_date
   iso_time
+  iso_datetime
   iso_duration
 """
 import re
@@ -25,7 +26,7 @@ from hypermea.core.validation import HypermeaValidator
 LOG = logging.getLogger('validator')
 
 
-class CustomHypermeaValidator(HypermeaValidator):
+class CustomValidator(HypermeaValidator):
     """
     add a custom validation by defining a method that starts with _validate_{your_validation_name}(self, {your_validation_name}, field, value):
         do nothing if the validation of the value passes validation for field, else call self._error(field, {message})
