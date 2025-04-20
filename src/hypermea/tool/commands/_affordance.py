@@ -136,7 +136,7 @@ def _detach_affordance(affordance, resource_name):
     click.echo(f'Detaching affordances.{affordance.full_name} from {resource_name}')
     AffordanceRouteRemover(affordance, singular).transform(affordance.filename)
     AffordanceRemover(affordance, singular).transform(f'hooks/__init__.py')
-    AffordanceRemover(affordance, singular).transform(f'hooks/{plural}.py')
+    AffordanceRemover(affordance, singular).transform(f'hooks/{singular}.py')
 
 
 def _detach_all_resources(affordance):
