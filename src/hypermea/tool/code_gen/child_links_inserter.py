@@ -147,7 +147,7 @@ class ChildLinksInserter(FileTransformer):
                         dot=Dot(),
                     ),
                     operator=AddAssign(),
-                    value=Name(f'_add_links_to_{self.lm.parents}_collection'),
+                    value=Name(f'_add_links_to_{self.lm.children}_collection'),
                 ),
             ],
             leading_lines=[],

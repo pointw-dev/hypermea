@@ -1,5 +1,5 @@
 {
-    "version": "0.9.50",
+    "version": "0.9.51",
     "files": [
         {
             "path": "./version.py",
@@ -14,7 +14,7 @@
             "pattern": "VERSION = '{version}'"
         },
         {
-            "path": "./hypermea/tool/skel/api/requirements.txt",
+            "path": "./hypermea/tool/skel/service/requirements.txt",
             "pattern": "^hypermea-core=={version}$"
         }
     ]
