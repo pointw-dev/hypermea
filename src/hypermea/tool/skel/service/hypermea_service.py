@@ -9,6 +9,8 @@ from hypermea.core.settings import build_static_settings
 from hypermea.core.logging import log_starting_environment
 from hypermea.core.gateway import register
 from flask_cors import CORS
+
+from hypermea.core.utils import is_mongo_running
 from validation.validator import CustomValidator
 import hooks
 import settings
@@ -42,6 +44,9 @@ class HypermeaService:
     def start(self):
         self.starting_banner()
         log_starting_environment()
+
+        if not is_mongo_running():
+            LOG.critical('MongoDB is not accessible with current settings.')
 
         try:
             register(self._app)

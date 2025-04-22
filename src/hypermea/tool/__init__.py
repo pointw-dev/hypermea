@@ -2,7 +2,8 @@ import os
 import sys
 import subprocess
 import json
-from shutil import copytree, rmtree
+from pathlib import Path
+from shutil import copytree, rmtree, ignore_patterns
 
 
 def jump_to_folder(path=None):
@@ -38,7 +39,7 @@ def get_settings():
     try:
         starting_folder, settings = jump_to_folder()
     except RuntimeError:
-        return escape('This command must be run in a hypermea folder structure', 1, silent)
+        return escape('This command must be run in a hypermea folder structure', 1)
 
     jump_back_to(starting_folder)
     return settings
@@ -96,6 +97,19 @@ def install_packages(packages, command):
         f.write(f'# end: added by {command}\n')
 
 
+def run_setup(integration, silent=False):
+    from hypermea.core.utils import import_module_from_path
+    try:
+        filename = os.path.join(os.path.dirname(__file__), f'skel/integration/{integration}', '_setup.py')
+        integration_module = import_module_from_path(integration, filename)
+        integration_setup = getattr(integration_module, 'setup', None)
+    except FileNotFoundError:
+        integration_setup = None
+    if integration_setup:
+        integration_setup()
+
+
+
 def copy_skel(project_name, skel_folder, target_folder=None, replace=None, silent=False):
     if not silent: print(f'Adding {skel_folder} to {project_name} service')
 
@@ -105,10 +119,18 @@ def copy_skel(project_name, skel_folder, target_folder=None, replace=None, silen
     if not target_folder:
         if not os.path.isdir(skel_folder):
             os.mkdir(skel_folder)  # TODO: ensure doesn't already exist, etc
-    copytree(source, destination, dirs_exist_ok=True)
+    copytree(source, destination, dirs_exist_ok=True,
+        ignore=ignore_patterns(
+            '__pycache__',
+            '*.pyc',
+            '_setup.py'
+        )
+    )
 
     # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
-    remove_folder_if_exists(destination, '__pycache__')
+    for pycache_dir in Path(destination).rglob("__pycache__"):
+        print(f'---Removing {pycache_dir}')
+        rmtree(pycache_dir)
 
     if replace is None:
         replace = {}

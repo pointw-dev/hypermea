@@ -20,9 +20,11 @@ class SettingPromoter:
             setting = settings.get_mongo()
             value = getattr(setting, eve_setting[6:].lower(), None)
 
-        # if eve_setting.startswith('RATE_LIMIT_'):
-        #     setting = settings.rate_limit
-        #     value = getattr(setting, eve_setting.lower()).to_tuple()
+        if eve_setting.startswith('RATE_LIMIT_'):
+            setting = settings.get_rate_limit()
+            value = getattr(setting, eve_setting[11:].lower(), setting.all_methods)
+            if value:
+                value = value.as_tuple()
 
         if value:
             self.globals[eve_setting] = value

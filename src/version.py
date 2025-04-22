@@ -1,2 +1,2 @@
 # do not change version manually here, use version-stamper
-VERSION = '0.9.51'
+VERSION = '0.9.52'

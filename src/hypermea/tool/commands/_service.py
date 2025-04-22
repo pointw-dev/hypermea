@@ -3,7 +3,7 @@ import json
 import os
 import re
 import keyword
-from shutil import copyfile, copytree, move
+from shutil import copyfile, copytree, move, ignore_patterns
 
 import click
 
@@ -122,7 +122,11 @@ def _rename_test_templates(project_name, folder_name):
 def _copy_service_skel(project_name, folder_name, skel):
     os.mkdir(folder_name)
     service_folder = os.path.join(skel, 'service')
-    copytree(service_folder, folder_name, dirs_exist_ok=True)
+    copytree(service_folder, folder_name, dirs_exist_ok=True,
+        ignore=ignore_patterns(
+            '__pycache__',
+            '*.pyc')
+    )
 
 def _copy_tests_skel(project_name, folder_name, skel):
     os.mkdir(folder_name)

@@ -1,4 +1,3 @@
-import importlib.util
 import inspect
 import os
 import sys
@@ -8,7 +7,7 @@ from pydantic import BaseModel
 from pydantic.fields import PydanticUndefined
 from typing import Dict, Type, Any, get_args, get_origin, Literal, List
 
-from hypermea.core.utils import get_singular_plural
+from hypermea.core.utils import get_singular_plural, import_module_from_path
 
 from .resource_model import ResourceModel
 from .relation import Relation
@@ -124,13 +123,6 @@ def _get_domain_path():
         return './domain'
 
 
-def _import_module_from_path(module_name: str, file_path: str):
-    spec = importlib.util.spec_from_file_location(module_name, file_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
 def _discover_resource_models():
     domain_path = _get_domain_path()
     sys.path.insert(0, domain_path)  # to allow import
@@ -142,7 +134,7 @@ def _discover_resource_models():
             module_name = filename[:-3]
             file_path = os.path.join(domain_path, filename)
 
-            module = _import_module_from_path(module_name, file_path)
+            module = import_module_from_path(module_name, file_path)
 
             for name, obj in inspect.getmembers(module, _is_pydantic_model):
                 plural = getattr(getattr(obj, "Config", object), "plural", name.lower())
@@ -154,7 +146,7 @@ def _discover_resource_models():
 def load_domain() -> Dict[str, Dict[str, Any]]:
     domain_path = _get_domain_path()
     relations_file = os.path.join(domain_path, '_relations.py')
-    relations_module = _import_module_from_path('domain', relations_file)
+    relations_module = import_module_from_path('domain', relations_file)
     relation_registry = getattr(relations_module, 'RELATION_REGISTRY', [])
 
     models = _discover_resource_models()

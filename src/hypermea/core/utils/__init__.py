@@ -1,3 +1,4 @@
+import importlib.util
 import logging
 import socket
 
@@ -50,3 +51,10 @@ def get_singular_plural(word):
         plural = plural + 's'
 
     return singular, plural
+
+
+def import_module_from_path(module_name: str, file_path: str):
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module

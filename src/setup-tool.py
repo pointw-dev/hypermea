@@ -29,6 +29,9 @@ setup(
     author_email='michael@pointw.com',
     packages=['hypermea'],
     include_package_data=True,
+    # package_data={
+    #     "hypermea": ["skel/**/*.py"]  # or use **/* if nested
+    # },    
     install_requires=[
         'libcst',
         'inflect==4.1.0',   # 4.1.0   7.5.0 runs verrrrry slowly ?!??!

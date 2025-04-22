@@ -67,6 +67,13 @@ promote.to_deploy_time('URL_PREFIX')
 promote.to_deploy_time('MEDIA_BASE_URL')
 
 promote.all_to_deploy_time([
+    'RATE_LIMIT_GET',
+    'RATE_LIMIT_POST',
+    'RATE_LIMIT_PATCH',
+    'RATE_LIMIT_DELETE'
+])
+
+promote.all_to_deploy_time([
     'MONGO_HOST',
     'MONGO_PORT',
     'MONGO_DBNAME',
@@ -77,19 +84,5 @@ promote.all_to_deploy_time([
 
 if settings.mongo.atlas:
     MONGO_URI = f'mongodb+srv://{settings.mongo.username}:{settings.mongo.password}@{settings.mongo.host}/{settings.mongo.dbname}?retryWrites=true&w=majority'
-
-if settings.rate_limit.rate_limit_global:
-    rate = settings.rate_limit.rate_limit_global.as_tuple()
-    RATE_LIMIT_GET = rate
-    RATE_LIMIT_POST = rate
-    RATE_LIMIT_PATCH = rate
-    RATE_LIMIT_DELETE = rate
-
-promote.all_to_deploy_time(
-    ['RATE_LIMIT_GET',
-    'RATE_LIMIT_POST',
-    'RATE_LIMIT_PATCH',
-    'RATE_LIMIT_DELETE'
-])
 
 ########################################################################

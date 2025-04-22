@@ -16,8 +16,6 @@ def _run(host, debug, single_threaded):
         # TODO: ask first?
         os.system('pip install -r requirements.txt')
 
-    # TODO: warn if mongo is not running at localhost:27017
-
     command = 'python run.py'
     if platform.system() == 'Windows':
         title = f"{settings['project_name']}"

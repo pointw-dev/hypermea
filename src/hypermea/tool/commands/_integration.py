@@ -51,6 +51,8 @@ def _create(integration, name, prefix):
 
     SettingsInserter('integration', f'{name.title()}Settings').transform('./settings/__init__.py')
     AllSettingsInserter('integration', f'{name.title()}Settings').transform('./settings/all_settings.py')
+    hypermea.tool.run_setup(integration)
+
     # TODO: ensure outer requirements.txt contains libraries required by the integration
     hypermea.tool.jump_back_to(starting_folder)
 

@@ -54,25 +54,25 @@ class RateLimitSettings(BaseSettings):
     """
     Settings to limit the allowed rate of requests.
     """
-    model_config = SettingsConfigDict(env_prefix='HY_')
+    model_config = SettingsConfigDict(env_prefix='HY_RATE_LIMIT_')
 
-    rate_limit_global: Optional[RateLimit] = Field(
+    all_methods: Optional[RateLimit] = Field(
         default=None,
         description='Global rate limit applied to all request methods.'
     )
-    rate_limit_get: Optional[RateLimit] = Field(
+    get: Optional[RateLimit] = Field(
         default=None,
         description='Rate limit applied to GET requests (overrides global if both are set).'
     )
-    rate_limit_post: Optional[RateLimit] = Field(
+    post: Optional[RateLimit] = Field(
         default=None,
         description='Rate limit applied to POST requests (overrides global if both are set).'
     )
-    rate_limit_patch: Optional[RateLimit] = Field(
+    patch: Optional[RateLimit] = Field(
         default=None,
         description='Rate limit applied to PATCH requests (overrides global if both are set).'
     )
-    rate_limit_delete: Optional[RateLimit] = Field(
+    delete: Optional[RateLimit] = Field(
         default=None,
         description='TRate limit applied to DELETE requests (overrides global if both are set).'
     )
