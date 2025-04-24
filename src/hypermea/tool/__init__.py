@@ -83,13 +83,13 @@ def add_to_settings(key, value):
 
 def install_packages(packages, command):
     trigger = 'Successfully installed '
-    subprocess.check_output([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+    subprocess.check_output([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
 
     with open('requirements.txt', 'a') as f:
         f.write(f'\n# start: added by {command}\n')
         for package in packages:
-            subprocess.check_output([sys.executable, "-m", "pip", "install", package]).decode('utf-8')
-            out = subprocess.check_output([sys.executable, "-m", "pip", "freeze"]).decode('utf-8')
+            subprocess.check_output([sys.executable, '-m', 'pip', 'install', package]).decode('utf-8')
+            out = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze']).decode('utf-8')
             for line in out.split('\n'):
                 if package in line:
                     f.write(f'{line.strip()}\n')
@@ -128,8 +128,7 @@ def copy_skel(project_name, skel_folder, target_folder=None, replace=None, silen
     )
 
     # TODO: can the following remove_tree calls be obviated if skel is packaged differently?
-    for pycache_dir in Path(destination).rglob("__pycache__"):
-        print(f'---Removing {pycache_dir}')
+    for pycache_dir in Path(destination).rglob('__pycache__'):
         rmtree(pycache_dir)
 
     if replace is None:
@@ -173,8 +172,8 @@ def replace_project_name(project_name, folder):
             try:
               with open(fpath) as f:
                   s = f.read()
-              s = s.replace("{$project_name}", project_name)
-              with open(fpath, "w") as f:
+              s = s.replace('{$project_name}', project_name)
+              with open(fpath, 'w') as f:
                   f.write(s)
             except UnicodeDecodeError as ex:
               print(f'Skipping unprocessable file: {dname}/{fname}')
@@ -204,4 +203,4 @@ def escape(message, code, silent=False):
 
 def urljoin(*parts):
     trailing_slash = '/' if parts[-1].endswith('/') else ''
-    return "/".join([str(part).strip("/") for part in parts]) + trailing_slash
+    return '/'.join([str(part).strip('/') for part in parts]) + trailing_slash

@@ -16,20 +16,20 @@ from .resource_ref import ResourceRef, external, local
 ALPHA_NUM_REGEX = r'[a-zA-Z0-9]*'
 OBJECT_ID_REGEX = r'[a-f0-9]{24}'
 TYPE_MAP = {
-    str: "string",
-    int: "integer",
-    float: "float",
-    bool: "boolean",
-    bytes: "binary",
-    list: "list",
-    dict: "dict",
-    set: "set",
-    tuple: "tuple",
-    datetime: "iso_datetime",
-    date: "iso_date",
-    time: "iso_time",
-    timedelta: "iso_duration",
-    Decimal: "decimal",
+    str: 'string',
+    int: 'integer',
+    float: 'float',
+    bool: 'boolean',
+    bytes: 'binary',
+    list: 'list',
+    dict: 'dict',
+    set: 'set',
+    tuple: 'tuple',
+    datetime: 'iso_datetime',
+    date: 'iso_date',
+    time: 'iso_time',
+    timedelta: 'iso_duration',
+    Decimal: 'decimal',
 }
 
 def _is_pydantic_model(obj):
@@ -41,22 +41,22 @@ def _enrich_with_constraints(field_schema: Dict[str, Any], field) -> None:
         if not isinstance(metadata_entry, dict):
             continue
 
-        if metadata_entry.get("min_length") is not None:
-            field_schema["minlength"] = metadata_entry["min_length"]
-        if metadata_entry.get("max_length") is not None:
-            field_schema["maxlength"] = metadata_entry["max_length"]
-        if metadata_entry.get("ge") is not None:
-            field_schema["min"] = metadata_entry["ge"]
-        if metadata_entry.get("le") is not None:
-            field_schema["max"] = metadata_entry["le"]
-        if metadata_entry.get("const") is not None:
-            field_schema["allowed"] = [metadata_entry["const"]]
-        if metadata_entry.get("multiple_of") is not None:
-            field_schema["multipleof"] = metadata_entry["multiple_of"]
-        if metadata_entry.get("pattern") is not None:
-            field_schema["regex"] = metadata_entry["pattern"]
-        if metadata_entry.get("enum") is not None:
-            field_schema["allowed"] = list(metadata_entry["enum"])
+        if metadata_entry.get('min_length') is not None:
+            field_schema['minlength'] = metadata_entry['min_length']
+        if metadata_entry.get('max_length') is not None:
+            field_schema['maxlength'] = metadata_entry['max_length']
+        if metadata_entry.get('ge') is not None:
+            field_schema['min'] = metadata_entry['ge']
+        if metadata_entry.get('le') is not None:
+            field_schema['max'] = metadata_entry['le']
+        if metadata_entry.get('const') is not None:
+            field_schema['allowed'] = [metadata_entry['const']]
+        if metadata_entry.get('multiple_of') is not None:
+            field_schema['multipleof'] = metadata_entry['multiple_of']
+        if metadata_entry.get('pattern') is not None:
+            field_schema['regex'] = metadata_entry['pattern']
+        if metadata_entry.get('enum') is not None:
+            field_schema['allowed'] = list(metadata_entry['enum'])
 
 
 def _pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
@@ -69,49 +69,49 @@ def _pydantic_to_cerberus(model: Type[BaseModel]) -> Dict[str, Any]:
 
         # Determine field type and handle Literal
         if origin is Literal:
-            field_schema["type"] = TYPE_MAP.get(type(args[0]), "string")
-            field_schema["allowed"] = list(args)
+            field_schema['type'] = TYPE_MAP.get(type(args[0]), 'string')
+            field_schema['allowed'] = list(args)
         elif inspect.isclass(python_type) and issubclass(python_type, BaseModel):
-            field_schema["type"] = "dict"
-            field_schema["schema"] = _pydantic_to_cerberus(python_type)["schema"]
+            field_schema['type'] = 'dict'
+            field_schema['schema'] = _pydantic_to_cerberus(python_type)['schema']
         elif origin in (list, List):
             item_type = args[0]
-            field_schema["type"] = "list"
+            field_schema['type'] = 'list'
             if inspect.isclass(item_type) and issubclass(item_type, BaseModel):
-                field_schema["schema"] = {
-                    "type": "dict",
-                    "schema": _pydantic_to_cerberus(item_type)["schema"]
+                field_schema['schema'] = {
+                    'type': 'dict',
+                    'schema': _pydantic_to_cerberus(item_type)['schema']
                 }
             else:
-                field_schema["schema"] = {
-                    "type": TYPE_MAP.get(item_type, "string")
+                field_schema['schema'] = {
+                    'type': TYPE_MAP.get(item_type, 'string')
                 }
         else:
             fmt = field.json_schema_extra.get('format') if field.json_schema_extra else None
             if fmt == 'date':
-                field_schema["type"] = "iso_date"
+                field_schema['type'] = 'iso_date'
             elif fmt == 'time':
-                field_schema["type"] = "iso_time"
+                field_schema['type'] = 'iso_time'
             elif fmt == 'date-time':
-                field_schema["type"] = "iso_datetime"
+                field_schema['type'] = 'iso_datetime'
             elif fmt == 'timedelta':
-                field_schema["type"] = "iso_duration"
+                field_schema['type'] = 'iso_duration'
             else:
-                field_schema["type"] = TYPE_MAP.get(python_type, "string")
+                field_schema['type'] = TYPE_MAP.get(python_type, 'string')
 
         # Required/nullable/default logic
-        field_schema["required"] = field.is_required()
+        field_schema['required'] = field.is_required()
         if field.default is not PydanticUndefined:
-            field_schema["default"] = field.default
+            field_schema['default'] = field.default
         if field.default is None:
-            field_schema["nullable"] = True
+            field_schema['nullable'] = True
 
         _enrich_with_constraints(field_schema, field)
 
         field_key = field.alias or field_name
         fields_schema[field_key] = field_schema
 
-    return {"schema": fields_schema, "link_relation": model.__name__.lower()}
+    return {'schema': fields_schema, 'link_relation': model.__name__.lower()}
 
 
 
@@ -130,14 +130,14 @@ def _discover_resource_models():
     discovered = []
 
     for filename in os.listdir(domain_path):
-        if filename.endswith(".py") and not filename.startswith("__"):
+        if filename.endswith('.py') and not filename.startswith('__'):
             module_name = filename[:-3]
             file_path = os.path.join(domain_path, filename)
 
             module = import_module_from_path(module_name, file_path)
 
             for name, obj in inspect.getmembers(module, _is_pydantic_model):
-                plural = getattr(getattr(obj, "Config", object), "plural", name.lower())
+                plural = getattr(getattr(obj, 'Config', object), 'plural', name.lower())
                 discovered.append((plural, obj))
 
     return discovered

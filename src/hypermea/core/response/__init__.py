@@ -8,18 +8,18 @@ LOG = logging.getLogger('hypermea')
 
 
 unauthorized_message = {
-    "_status": "ERR",
-    "_error": {
-        "message": "Please provide proper credentials",
-        "code": 401
+    '_status': 'ERR',
+    '_error': {
+        'message': 'Please provide proper credentials',
+        'code': 401
     }
 }
 
 not_found_message = {
-    "_status": "ERR",
-    "_error": {
-        "message": "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.",
-        "code": 404
+    '_status': 'ERR',
+    '_error': {
+        'message': 'The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.',
+        'code': 404
     }
 }
 

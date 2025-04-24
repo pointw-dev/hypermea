@@ -27,7 +27,7 @@ class HalLinker:
         if self.resource.scope == 'generated':
             data['_links'] = {
                 'self': {
-                    'href': f"{self.resource.base_url}/{self.resource.name}"
+                    'href': f'{self.resource.base_url}/{self.resource.name}'
                 }
             }
         elif self.resource.scope == 'item':
@@ -76,7 +76,7 @@ class HalLinker:
 
     def _add_self_link(self, item):
         item['_links']['self'] = {
-            'href': f"{self.resource.base_url}/{self.resource.name}/{self.item_id}"
+            'href': f'{self.resource.base_url}/{self.resource.name}/{self.item_id}'
         }
 
 

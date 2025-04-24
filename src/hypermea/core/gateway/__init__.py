@@ -62,7 +62,7 @@ def get_href_from_gateway(rel):
     # ASSERT: the gateway it points to is up and running
     # ASSERT: the rel is afforded on the gateway
     global REGISTRATIONS
-    url = f"{settings.hypermea.gateway_url}/"
+    url = f'{settings.hypermea.gateway_url}/'
     etag = REGISTRATIONS.get('_etag')
     headers = {}
     if etag:

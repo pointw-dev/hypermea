@@ -8,9 +8,9 @@ import settings
 
 @trace
 def log_starting_environment():
-    logger = logging.getLogger("environment")
-    logger.info("== dump starting environment ==")
-    logger.info("== stack versions")
+    logger = logging.getLogger('environment')
+    logger.info('== dump starting environment ==')
+    logger.info('== stack versions')
 
     start_env = starting_environment()
 
@@ -20,7 +20,7 @@ def log_starting_environment():
         padding = " " * (max_key_length - len(name) + 1)
         logger.info(f"{name}{padding}{version}")
 
-    logger = logging.getLogger("service")
+    logger = logging.getLogger('service')
     settings_groups = start_env['settings_groups']
     for group in settings_groups:
         if not group.get('settings', {}):

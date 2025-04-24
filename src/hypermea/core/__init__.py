@@ -12,7 +12,7 @@ class HypermeaWSGIRequestHandler(EveWSGIRequestHandler):
     @property
     def server_version(self):
         return (
-            "hypermea/%s " % VERSION
+            'hypermea/%s ' % VERSION
             + super().server_version
         )
 
@@ -23,5 +23,5 @@ class HypermeaEve(Eve):
         to Flask.
         """
 
-        options.setdefault("request_handler", HypermeaWSGIRequestHandler)
+        options.setdefault('request_handler', HypermeaWSGIRequestHandler)
         super().run(host, port, debug, **options)

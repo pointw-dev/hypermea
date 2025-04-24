@@ -2,6 +2,7 @@ import json
 import re
 from urllib.parse import urlparse, parse_qsl, urlencode, urlunparse
 from flask import current_app, request, g, after_this_request
+from hypermea.core.utils import get_db
 from eve.utils import document_etag
 from datetime import datetime
 from bson import ObjectId
@@ -30,7 +31,7 @@ def get_resource_id(resource: dict, collection_name: str) -> str:
     id_field = get_id_field(collection_name)
     rtn = resource.get(id_field, None)
     if not rtn:
-        record = get_db()[collection_name].find_one({"_id": ObjectId(resource['_id'])})
+        record = get_db()[collection_name].find_one({'_id': ObjectId(resource['_id'])})
         rtn = record[id_field]
     return rtn
 
