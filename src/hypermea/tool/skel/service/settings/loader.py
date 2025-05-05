@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Type
 from dotenv import dotenv_values, load_dotenv
@@ -39,9 +40,13 @@ def check_file_for_secrets(model: Type[BaseSettings], file_path: Path):
             )
 
 
-def load_ordered_env_files(models: list[Type[BaseSettings]]):
-    for path in sorted(Path(".").glob('.[0-9][0-9]*.env')):
-        for model in models:
-            check_file_for_secrets(model, path)
-        print(f'💡 Loading {path.name}')
-        load_dotenv(path, override=True)
+def load_settings_from_env_files(models: list[Type[BaseSettings]]):
+    if os.getenv('HYPERMEA_ORDERED_ENV_FILES'):
+        # Load from ordered files, i.e., .10-description.env, with secrets check
+        for path in sorted(Path(".").glob('.[0-9][0-9]*.env')):
+            for model in models:
+                check_file_for_secrets(model, path)
+            print(f'💡 Loading {path.name}')
+            load_dotenv(path, override=True)
+    else:
+        load_dotenv('.env', override=True, encoding='utf-8')

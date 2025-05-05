@@ -1,4 +1,4 @@
-# <span class="command">docker</span>
+# <span class="code">docker</span>
 
 :::warning Work in progress
 <centered-image src="/img/work-in-progress.png" />

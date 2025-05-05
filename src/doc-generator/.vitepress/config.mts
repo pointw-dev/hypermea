@@ -1,7 +1,6 @@
 import { defineConfig, withBase } from 'vitepress'
 import { fileURLToPath, URL } from 'node:url'
- const pkg = require('../../version_stamp.json')
-
+const pkg = require('../../version_stamp.json')
 
 const hostname = 'https://pointw-dev.github.io'
 const basePath = 'hypermea'
@@ -9,7 +8,8 @@ const seoLogo = 'https://pointw-dev.github.io/hypermea/img/hypermea-card.png'
 const title = 'hypermea'
 const tagline = 'Simple Commands, Serious APIs'
 
-const siteUrl = hostname + (basePath? `/${basePath}/` : '')
+const calculatedBasePath = (basePath? `/${basePath}/` : '/')
+const siteUrl = hostname + calculatedBasePath
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -17,7 +17,7 @@ export default defineConfig({
   description: tagline,
   
   themeConfig: {
-    siteTitle: 'hypermea',
+    siteTitle: title,
     stackOverflowTags: ['hypermea', 'hypermedia', 'rest', 'api'],
     socialLinks: [
       { icon: 'github', link: 'https://github.com/pointw-dev/hypermea' },
@@ -45,9 +45,9 @@ export default defineConfig({
     }
   },
   
-  base: `/${basePath}/`,
+  base: calculatedBasePath,
   head: [
-    ['link', { rel: 'icon', href: `/${basePath}/favicon.ico` }],
+    ['link', { rel: 'icon', href: `/${calculatedBasePath}/favicon.ico` }],
 
     // test with https://www.opengraph.xyz/url/
     ['meta', {property: 'og:image', content: seoLogo}],
@@ -75,6 +75,17 @@ export default defineConfig({
   },
   sitemap: {
     hostname: siteUrl
+  },
+  transformPageData(pageData) {
+    const canonicalUrl = siteUrl + `${pageData.relativePath}`
+        .replace(/index\.md$/, '')
+        .replace(/\.md$/, '.html')
+
+    pageData.frontmatter.head ??= []
+    pageData.frontmatter.head.push([
+      'link',
+      { rel: 'canonical', href: canonicalUrl }
+    ])
   }
 })
 
@@ -102,39 +113,39 @@ function getSidebar() {
             link: '/features/scaffolding-tools',
             items: [
               {
-                text: '<span class="command">api</span>',
+                text: '<span class="code">api</span>',
                 link: '/features/scaffolding-tools/api',
               },
               {
-                text: '<span class="command">resource</span>',
+                text: '<span class="code">resource</span>',
                 link: '/features/scaffolding-tools/resource',
               },
               {
-                text: '<span class="command">link</span>',
+                text: '<span class="code">link</span>',
                 link: '/features/scaffolding-tools/link',
               },
               {
-                text: '<span class="command">affordance</span>',
+                text: '<span class="code">affordance</span>',
                 link: '/features/scaffolding-tools/affordance',
               },
               {
-                text: '<span class="command">endpoint</span>',
+                text: '<span class="code">endpoint</span>',
                 link: '/features/scaffolding-tools/endpoint',
               },
               {
-                text: '<span class="command">docker</span>',
+                text: '<span class="code">docker</span>',
                 link: '/features/scaffolding-tools/docker',
               },
               {
-                text: '<span class="command">integration</span>',
+                text: '<span class="code">integration</span>',
                 link: '/features/scaffolding-tools/integration',
               },
               {
-                text: '<span class="command">setting</span>',
+                text: '<span class="code">setting</span>',
                 link: '/features/scaffolding-tools/setting',
               },
               {
-                text: '<span class="command">run</span>',
+                text: '<span class="code">run</span>',
                 link: '/features/scaffolding-tools/run',
               },
               {

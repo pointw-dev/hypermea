@@ -6,7 +6,7 @@ prev:
   link: '/features/'
 
 next:
-  text: '<span class="command">api</span>'
+  text: '<span class="code">api</span>'
   link: '/features/scaffolding-tools/api'
 ---
 # Scaffolding tools

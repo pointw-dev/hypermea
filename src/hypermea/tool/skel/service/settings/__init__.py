@@ -1,5 +1,5 @@
 import os
-from .loader import load_ordered_env_files
+from .loader import load_settings_from_env_files
 
 from .hypermea import HypermeaSettings
 from .logging import LoggingSettings
@@ -11,7 +11,7 @@ from integration.smtp.settings import SmtpSettings
 
 
 if not os.getenv('HYPERMEA_DISABLE_SETTINGS_AUTOLOAD'):
-    load_ordered_env_files([
+    load_settings_from_env_files([
         HypermeaSettings, LoggingSettings, TimezoneSettings, RateLimitSettings,
         MongoSettings, SmtpSettings
     ])

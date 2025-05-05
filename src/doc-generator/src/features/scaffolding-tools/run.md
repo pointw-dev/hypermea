@@ -1,4 +1,4 @@
-# <span class="command">run</span>
+# <span class="code">run</span>
 
 :::warning Work in progress
 <centered-image src="/img/work-in-progress.png" />
